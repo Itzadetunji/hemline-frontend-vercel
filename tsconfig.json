@@ -12,7 +12,7 @@
 		"target": "es2017",
 		"types": ["vite/client"],
 		"paths": {
-			"@/*": ["./global/*"]
+			"@/*": ["./src/*"]
 		}
 	},
 	"compileOnSave": true

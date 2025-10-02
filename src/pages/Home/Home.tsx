@@ -1,8 +1,6 @@
-import { useState } from "preact/hooks";
+import { Count } from "./components/Count";
 
 export const Home = () => {
-	const [count, setCount] = useState(0);
-
 	return (
 		<>
 			<div>
@@ -18,17 +16,7 @@ export const Home = () => {
 				</a>
 			</div>
 			<h1>Vite + Preact</h1>
-			<div>
-				<button
-					onClick={() => setCount((count) => count + 1)}
-					class="font-primary"
-				>
-					count is {count}
-				</button>
-				<p class=" font-bold">
-					Edit <code>src/app.tsx</code> and save to test HMR
-				</p>
-			</div>
+			<Count />
 			<p class="bg-gray-200">
 				Check out{" "}
 				<a

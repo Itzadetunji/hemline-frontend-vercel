@@ -9,7 +9,7 @@ export default defineConfig(({ mode }) => ({
 	plugins: [preact(), vitePWAOptions, tailwindcss()],
 	resolve: {
 		alias: {
-			"@": fileURLToPath(new URL("./global", import.meta.url)),
+			"@": fileURLToPath(new URL("./src", import.meta.url)),
 		},
 	},
 	define: {
