@@ -1,6 +1,10 @@
-import { CreateAccount } from "@/pages/CreateAccount/page";
+import { ErrorBoundary, LocationProvider, Route, Router } from "preact-iso";
+
+import { Onboarding } from "@/pages/Auth/Onboarding/page";
+import { SignIn } from "@/pages/Auth/SignIn/page";
+import { SignUp } from "@/pages/Auth/SignUp/page";
+import { VerifyEmail } from "@/pages/Auth/VerifyEmail/page";
 import { Home } from "@/pages/Home/Home";
-import { LocationProvider, ErrorBoundary, Router, Route } from "preact-iso";
 
 export const Routes = () => {
 	return (
@@ -13,7 +17,19 @@ export const Routes = () => {
 					/>
 					<Route
 						path="/sign-up"
-						component={CreateAccount}
+						component={SignUp}
+					/>
+					<Route
+						path="/sign-in"
+						component={SignIn}
+					/>
+					<Route
+						path="/onboarding"
+						component={Onboarding}
+					/>
+					<Route
+						path="/verify-email"
+						component={VerifyEmail}
 					/>
 				</Router>
 			</ErrorBoundary>

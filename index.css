@@ -87,6 +87,7 @@
 	--color-grey-900: var(--grey-900);
 
 	/* Line */
+	--color-line: var(--line);
 	--color-line-50: var(--line-50);
 	--color-line-100: var(--line-100);
 	--color-line-200: var(--line-200);
@@ -97,6 +98,19 @@
 	--color-line-700: var(--line-700);
 	--color-line-800: var(--line-800);
 	--color-line-900: var(--line-900);
+
+	/* Dark */
+	--color-dark: var(--dark);
+	--color-dark-50: var(--dark-50);
+	--color-dark-100: var(--dark-100);
+	--color-dark-200: var(--dark-200);
+	--color-dark-300: var(--dark-300);
+	--color-dark-400: var(--dark-400);
+	--color-dark-500: var(--dark-500);
+	--color-dark-600: var(--dark-600);
+	--color-dark-700: var(--dark-700);
+	--color-dark-800: var(--dark-800);
+	--color-dark-900: var(--dark-900);
 }
 
 :root {
@@ -176,6 +190,7 @@
 	--grey-900: hsl(0, 0%, 14%); /* #232323 */
 
 	/* Line - light mode */
+	--line: var(--line-500);
 	--line-50: #fcfcfc;
 	--line-100: #f5f5f5;
 	--line-200: #f1f1f1;
@@ -186,6 +201,19 @@
 	--line-700: #9f9f9f;
 	--line-800: #7b7b7b;
 	--line-900: #5e5e5e;
+
+	/* Black - dark mode */
+	--dark: var(--dark-500);
+	--dark-50: #e7e7e7;
+	--dark-100: #b3b3b3;
+	--dark-200: #8e8e8e;
+	--dark-300: #5b5b5b;
+	--dark-400: #3b3b3b;
+	--dark-500: #0a0a0a;
+	--dark-600: #090909;
+	--dark-700: #070707;
+	--dark-800: #060606;
+	--dark-900: #040404;
 
 	--font-primary: "Grenze Gotisch", serif;
 	--font-secondary: "Manrope", sans-serif;
@@ -267,6 +295,7 @@
 	--grey-900: hsl(0, 0%, 14%); /* #232323 */
 
 	/* Line - dark mode */
+	--line: var(--line-500);
 	--line-50: #e8e8e8;
 	--line-100: #b8b8b8;
 	--line-200: #969595;
@@ -279,18 +308,20 @@
 	--line-900: #0b0b0b;
 
 	/* Black - dark mode */
-	--black-dark-mode-50: #e7e7e7;
-	--black-dark-mode-100: #b3b3b3;
-	--black-dark-mode-200: #8e8e8e;
-	--black-dark-mode-300: #5b5b5b;
-	--black-dark-mode-400: #3b3b3b;
-	--black-dark-mode-500: #0a0a0a;
-	--black-dark-mode-600: #090909;
-	--black-dark-mode-700: #070707;
-	--black-dark-mode-800: #060606;
-	--black-dark-mode-900: #040404;
+	--dark: var(--dark-500);
+	--dark-50: #e7e7e7;
+	--dark-100: #b3b3b3;
+	--dark-200: #8e8e8e;
+	--dark-300: #5b5b5b;
+	--dark-400: #3b3b3b;
+	--dark-500: #0a0a0a;
+	--dark-600: #090909;
+	--dark-700: #070707;
+	--dark-800: #060606;
+	--dark-900: #040404;
 
 	/* Shades - dark mode */
+	--shade: var(--shade-500);
 	--shade-50: #e7e7e7;
 	--shade-100: #5b5b5b;
 	--shade-200: #919191;
