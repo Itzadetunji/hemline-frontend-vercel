@@ -1,7 +1,6 @@
-import { useState } from "preact/hooks";
 import type { ComponentChildren } from "preact";
 
-import { cn } from "@/lib/utils";
+import { cn } from "../lib/utils";
 
 // Generic CheckboxGroup component
 interface CheckboxGroupProps<T> {

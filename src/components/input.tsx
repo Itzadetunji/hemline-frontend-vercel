@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "../lib/utils";
 import type { JSX } from "preact";
 
 function Input({ className, type, ...props }: JSX.IntrinsicElements["input"]) {

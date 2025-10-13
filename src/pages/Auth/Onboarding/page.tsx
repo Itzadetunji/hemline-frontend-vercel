@@ -8,7 +8,7 @@ import {
 import { Button } from "@/components/button";
 import { CheckboxGroup } from "@/components/checkbox-group";
 import { Label } from "@/components/label";
-import { cn } from "@/lib/utils";
+import { cn } from "../../../lib/utils";
 
 export const Onboarding = () => {
 	const [step, setStep] = useState(1);

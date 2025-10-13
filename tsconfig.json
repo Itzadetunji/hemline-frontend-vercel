@@ -18,7 +18,6 @@
 		"lib": ["DOM", "DOM.Iterable", "WebWorker"],
 		"types": ["vite/client"],
 		"paths": {
-			"*": ["./src/*"],
 			"@/*": ["./src/*"]
 		}
 	},
