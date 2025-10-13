@@ -1,6 +1,6 @@
 import preact from "@preact/preset-vite";
 import tailwindcss from "@tailwindcss/vite";
-import { fileURLToPath } from "node:url";
+import path from "node:path";
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 
@@ -9,7 +9,7 @@ export default defineConfig(({ mode }) => ({
 	plugins: [preact(), vitePWAOptions, tailwindcss()],
 	resolve: {
 		alias: {
-			"@": fileURLToPath(new URL("./src", import.meta.url)),
+			"@": path.resolve(__dirname, "./src"),
 			react: "preact/compat",
 			"react-dom": "preact/compat",
 		},
