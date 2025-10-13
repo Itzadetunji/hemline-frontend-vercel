@@ -1,5 +1,5 @@
-import { AxiosResponse } from "axios";
-import $http from "../xhr";
+import type { AxiosResponse } from "axios";
+import $http from "../../xhr";
 
 export const APIVersion1GetUserProfile = async (
 	data: unknown

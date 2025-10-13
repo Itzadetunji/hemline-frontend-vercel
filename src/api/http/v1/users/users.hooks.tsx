@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { APIVersion1PatchUserProfile } from "../http/v1/users.api";
+import { APIVersion1PatchUserProfile } from "./users.api";
 
 export const useJoinWaitlist = () => {
 	return useMutation({

@@ -1,8 +1,8 @@
-import { defineConfig } from "vite";
-import { fileURLToPath } from "url";
 import preact from "@preact/preset-vite";
-import { VitePWA } from "vite-plugin-pwa";
 import tailwindcss from "@tailwindcss/vite";
+import { fileURLToPath } from "node:url";
+import { defineConfig } from "vite";
+import { VitePWA } from "vite-plugin-pwa";
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => ({

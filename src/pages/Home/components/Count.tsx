@@ -1,18 +1,17 @@
-import { useState } from "preact/hooks";
-import React from "react";
+import { userActions, userSignal } from "@/stores/userStore";
 
 export const Count = () => {
-	const [count, setCount] = useState(0);
-
 	return (
 		<div>
 			<button
-				onClick={() => setCount((count) => count + 1)}
+				onClick={() =>
+					userSignal.value && userActions.increment(userSignal.value?.count + 1)
+				}
 				class="font-primary"
 			>
-				count is {count}
+				count is {userSignal.value?.count}
 			</button>
-			<p class=" font-bold">
+			<p class="font-bold">
 				Edit <code>src/app.tsx</code> and save to test HMR
 			</p>
 		</div>
