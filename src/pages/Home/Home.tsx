@@ -6,10 +6,11 @@ export const Home = () => {
 			<div>
 				<a
 					href="https://vite.dev"
-					target="_blank" rel="noopener"
+					target="_blank"
+					rel="noopener"
 				>
 					<img
-						src="/assets/favicon.ico"
+						src="/assets/brand/favicon.ico"
 						class="logo"
 						alt="Vite logo"
 					/>
@@ -21,7 +22,8 @@ export const Home = () => {
 				Check out{" "}
 				<a
 					href="https://preactjs.com/guide/v10/getting-started#create-a-vite-powered-preact-app"
-					target="_blank" rel="noopener"
+					target="_blank"
+					rel="noopener"
 				>
 					create-preact
 				</a>

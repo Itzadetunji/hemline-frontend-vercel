@@ -73,18 +73,30 @@
 	--font-primary: "Grenze Gotisch", serif;
 	--font-secondary: "Manrope", sans-serif;
 
-	/* Gray scale */
-	--color-gray: var(--gray);
-	--color-gray-50: var(--gray-50);
-	--color-gray-100: var(--gray-100);
-	--color-gray-200: var(--gray-200);
-	--color-gray-300: var(--gray-300);
-	--color-gray-400: var(--gray-400);
-	--color-gray-500: var(--gray-500);
-	--color-gray-600: var(--gray-600);
-	--color-gray-700: var(--gray-700);
-	--color-gray-800: var(--gray-800);
-	--color-gray-900: var(--gray-900);
+	/* Grey scale */
+	--color-grey: var(--grey);
+	--color-grey-50: var(--grey-50);
+	--color-grey-100: var(--grey-100);
+	--color-grey-200: var(--grey-200);
+	--color-grey-300: var(--grey-300);
+	--color-grey-400: var(--grey-400);
+	--color-grey-500: var(--grey-500);
+	--color-grey-600: var(--grey-600);
+	--color-grey-700: var(--grey-700);
+	--color-grey-800: var(--grey-800);
+	--color-grey-900: var(--grey-900);
+
+	/* Line */
+	--color-line-50: var(--line-50);
+	--color-line-100: var(--line-100);
+	--color-line-200: var(--line-200);
+	--color-line-300: var(--line-300);
+	--color-line-400: var(--line-400);
+	--color-line-500: var(--line-500);
+	--color-line-600: var(--line-600);
+	--color-line-700: var(--line-700);
+	--color-line-800: var(--line-800);
+	--color-line-900: var(--line-900);
 }
 
 :root {
@@ -135,7 +147,7 @@
 	--destructive: oklch(0.577 0.245 27.325);
 	--border: oklch(0.92 0.004 286.32);
 	--input: oklch(0.92 0.004 286.32);
-	--ring: oklch(0.6892 0.1149 175.75);
+	--ring: var(--primary-500);
 	--chart-1: oklch(0.646 0.222 41.116);
 	--chart-2: oklch(0.6 0.118 184.704);
 	--chart-3: oklch(0.398 0.07 227.392);
@@ -143,25 +155,37 @@
 	--chart-5: oklch(0.769 0.188 70.08);
 	--sidebar: oklch(0.985 0 0);
 	--sidebar-foreground: oklch(0.141 0.005 285.823);
-	--sidebar-primary: oklch(0.6892 0.1149 175.75);
+	--sidebar-primary: var(--primary-500);
 	--sidebar-primary-foreground: oklch(0.98 0.007 287.69);
 	--sidebar-accent: oklch(0.967 0.001 286.375);
 	--sidebar-accent-foreground: oklch(0.21 0.006 285.885);
 	--sidebar-border: oklch(0.92 0.004 286.32);
-	--sidebar-ring: oklch(0.6892 0.1149 175.75);
+	--sidebar-ring: var(--primary-500);
 
-	/* Gray scale */
-	--gray: var(--gray-500);
-	--gray-50: hsl(0, 0%, 93%); /* #eeeeee */
-	--gray-100: hsl(0, 0%, 79%); /* #cacaca */
-	--gray-200: hsl(0, 0%, 69%); /* #b0b0b0 */
-	--gray-300: hsl(0, 0%, 55%); /* #8c8c8c */
-	--gray-400: hsl(0, 0%, 46%); /* #767676 */
-	--gray-500: hsl(0, 0%, 33%); /* #545454 */
-	--gray-600: hsl(0, 0%, 30%); /* #4c4c4c */
-	--gray-700: hsl(0, 0%, 24%); /* #3c3c3c */
-	--gray-800: hsl(0, 0%, 18%); /* #2e2e2e */
-	--gray-900: hsl(0, 0%, 14%); /* #232323 */
+	/* Grey scale */
+	--grey: var(--grey-500);
+	--grey-50: hsl(0, 0%, 93%); /* #eeeeee */
+	--grey-100: hsl(0, 0%, 79%); /* #cacaca */
+	--grey-200: hsl(0, 0%, 69%); /* #b0b0b0 */
+	--grey-300: hsl(0, 0%, 55%); /* #8c8c8c */
+	--grey-400: hsl(0, 0%, 46%); /* #767676 */
+	--grey-500: hsl(0, 0%, 33%); /* #545454 */
+	--grey-600: hsl(0, 0%, 30%); /* #4c4c4c */
+	--grey-700: hsl(0, 0%, 24%); /* #3c3c3c */
+	--grey-800: hsl(0, 0%, 18%); /* #2e2e2e */
+	--grey-900: hsl(0, 0%, 14%); /* #232323 */
+
+	/* Line - light mode */
+	--line-50: #fcfcfc;
+	--line-100: #f5f5f5;
+	--line-200: #f1f1f1;
+	--line-300: #eaeaea;
+	--line-400: #e6e6e6;
+	--line-500: #e0e0e0;
+	--line-600: #cccccc;
+	--line-700: #9f9f9f;
+	--line-800: #7b7b7b;
+	--line-900: #5e5e5e;
 
 	--font-primary: "Grenze Gotisch", serif;
 	--font-secondary: "Manrope", sans-serif;
@@ -229,18 +253,54 @@
 	--sidebar-border: oklch(1 0 0 / 10%);
 	--sidebar-ring: oklch(0.6892 0.1149 175.75);
 
-	/* Gray scale */
-	--gray: var(--gray-500);
-	--gray-50: hsl(0, 0%, 93%); /* #eeeeee */
-	--gray-100: hsl(0, 0%, 79%); /* #cacaca */
-	--gray-200: hsl(0, 0%, 69%); /* #b0b0b0 */
-	--gray-300: hsl(0, 0%, 55%); /* #8c8c8c */
-	--gray-400: hsl(0, 0%, 46%); /* #767676 */
-	--gray-500: hsl(0, 0%, 33%); /* #545454 */
-	--gray-600: hsl(0, 0%, 30%); /* #4c4c4c */
-	--gray-700: hsl(0, 0%, 24%); /* #3c3c3c */
-	--gray-800: hsl(0, 0%, 18%); /* #2e2e2e */
-	--gray-900: hsl(0, 0%, 14%); /* #232323 */
+	/* Grey scale */
+	--grey: var(--grey-500);
+	--grey-50: hsl(0, 0%, 93%); /* #eeeeee */
+	--grey-100: hsl(0, 0%, 79%); /* #cacaca */
+	--grey-200: hsl(0, 0%, 69%); /* #b0b0b0 */
+	--grey-300: hsl(0, 0%, 55%); /* #8c8c8c */
+	--grey-400: hsl(0, 0%, 46%); /* #767676 */
+	--grey-500: hsl(0, 0%, 33%); /* #545454 */
+	--grey-600: hsl(0, 0%, 30%); /* #4c4c4c */
+	--grey-700: hsl(0, 0%, 24%); /* #3c3c3c */
+	--grey-800: hsl(0, 0%, 18%); /* #2e2e2e */
+	--grey-900: hsl(0, 0%, 14%); /* #232323 */
+
+	/* Line - dark mode */
+	--line-50: #e8e8e8;
+	--line-100: #b8b8b8;
+	--line-200: #969595;
+	--line-300: #666565;
+	--line-400: #484747;
+	--line-500: #1a1919;
+	--line-600: #181717;
+	--line-700: #121212;
+	--line-800: #0e0e0e;
+	--line-900: #0b0b0b;
+
+	/* Black - dark mode */
+	--black-dark-mode-50: #e7e7e7;
+	--black-dark-mode-100: #b3b3b3;
+	--black-dark-mode-200: #8e8e8e;
+	--black-dark-mode-300: #5b5b5b;
+	--black-dark-mode-400: #3b3b3b;
+	--black-dark-mode-500: #0a0a0a;
+	--black-dark-mode-600: #090909;
+	--black-dark-mode-700: #070707;
+	--black-dark-mode-800: #060606;
+	--black-dark-mode-900: #040404;
+
+	/* Shades - dark mode */
+	--shade-50: #e7e7e7;
+	--shade-100: #5b5b5b;
+	--shade-200: #919191;
+	--shade-300: #5f5f5f;
+	--shade-400: #404040;
+	--shade-500: #101010;
+	--shade-600: #0f0f0f;
+	--shade-700: #0b0b0b;
+	--shade-800: #090909;
+	--shade-900: #070707;
 }
 
 @layer base {
