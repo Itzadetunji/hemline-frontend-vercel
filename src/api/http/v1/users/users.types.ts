@@ -1,3 +1,22 @@
+import { z } from "zod";
+
+export const VerifyMagicCodeSchema = z.object({
+	code: z.union([
+		z.string().regex(/^\d{6}$/, "Must be exactly 6 digits"),
+		z.number().int().min(100000).max(999999),
+	]),
+});
+
+export type VerifyMagicCodePayload = z.infer<typeof VerifyMagicCodeSchema>;
+
+export const RequestMagicLinkPayloadSchema = z.object({
+	email: z.email(),
+});
+
+export type RequestMagicLinkPayload = z.infer<
+	typeof RequestMagicLinkPayloadSchema
+>;
+
 export interface CustomFieldAttributes {
 	id: string;
 	field_name: string;

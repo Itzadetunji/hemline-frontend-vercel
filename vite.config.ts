@@ -10,6 +10,8 @@ export default defineConfig(({ mode }) => ({
 	resolve: {
 		alias: {
 			"@": fileURLToPath(new URL("./src", import.meta.url)),
+			react: "preact/compat",
+			"react-dom": "preact/compat",
 		},
 	},
 	define: {

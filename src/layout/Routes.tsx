@@ -3,7 +3,6 @@ import { ErrorBoundary, LocationProvider, Route, Router } from "preact-iso";
 import { Onboarding } from "@/pages/Auth/Onboarding/page";
 import { SignIn } from "@/pages/Auth/SignIn/page";
 import { SignUp } from "@/pages/Auth/SignUp/page";
-import { VerifyEmail } from "@/pages/Auth/VerifyEmail/page";
 import { Home } from "@/pages/Home/Home";
 
 export const Routes = () => {
@@ -26,10 +25,6 @@ export const Routes = () => {
 					<Route
 						path="/onboarding"
 						component={Onboarding}
-					/>
-					<Route
-						path="/verify-email"
-						component={VerifyEmail}
 					/>
 				</Router>
 			</ErrorBoundary>
