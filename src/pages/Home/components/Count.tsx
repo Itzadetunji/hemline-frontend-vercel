@@ -1,11 +1,12 @@
-import { userActions, userSignal } from "@/stores/userStore";
+import { userStore, userSignal } from "@/stores/userStore";
 
 export const Count = () => {
 	return (
 		<div>
 			<button
+				type="button"
 				onClick={() =>
-					userSignal.value && userActions.increment(userSignal.value?.count + 1)
+					userSignal.value && userStore.increment(userSignal.value?.count + 1)
 				}
 				class="font-primary"
 			>

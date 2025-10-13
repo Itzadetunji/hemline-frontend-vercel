@@ -101,7 +101,8 @@
 				"useNumberToFixedDigitsArgument": "error",
 				"noExplicitAny": "off",
 				"noArrayIndexKey": "off",
-				"noDuplicateCustomProperties": "error"
+				"noDuplicateCustomProperties": "error",
+				"noUnknownAtRules": "off"
 			}
 		}
 	},

@@ -32,4 +32,7 @@ const Document = () => {
 	);
 };
 
-render(<Document />, document.getElementById("app")!);
+const appElement = document.getElementById("app");
+if (appElement) {
+	render(<Document />, appElement);
+}
