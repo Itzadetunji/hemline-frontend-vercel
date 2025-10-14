@@ -30,10 +30,10 @@ const getInitialState = (): UserSignal => {
 	};
 };
 
-const initialState = getInitialState();
+const userStoreInitialState = getInitialState();
 
 // Create signals for user state
-export const userSignal = signal<UserSignal | null>(initialState);
+export const userSignal = signal<UserSignal | null>(userStoreInitialState);
 
 export const userThemeSignal = computed(
 	() => userSignal.value?.theme || "light"

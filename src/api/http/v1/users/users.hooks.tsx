@@ -1,13 +1,13 @@
+import { userStore } from "@/stores/userStore";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { APIVersion1PatchUserProfile, USERS_API } from "./users.api";
 import { AxiosError } from "axios";
+import { useEffect } from "preact/hooks";
+import { APIVersion1PatchUserProfile, USERS_API } from "./users.api";
 import type {
 	GetUserProfileResponse,
 	RequestMagicLinkPayload,
 	VerifyMagicCodePayload,
 } from "./users.types";
-import { useEffect } from "preact/hooks";
-import { userStore } from "@/stores/userStore";
 
 export const useJoinWaitlist = () => {
 	return useMutation({
@@ -30,6 +30,13 @@ export const useGetUserProfile = () => {
 	useEffect(() => {
 		if (getUserProfileQuery.status === "error") {
 			console.error("Error fetching user profile:", getUserProfileQuery.error);
+			userStore.updateUser({
+				user: null,
+				theme: window.matchMedia("(prefers-color-scheme: dark)").matches
+					? "dark"
+					: "light",
+				token: undefined,
+			});
 		}
 		if (getUserProfileQuery.status === "success") {
 			console.log(
