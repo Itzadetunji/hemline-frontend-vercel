@@ -5,7 +5,7 @@ import { useEffect } from "preact/hooks";
 import { APIVersion1PatchUserProfile, USERS_API } from "./users.api";
 import type {
 	GetUserProfileResponse,
-	OnboardingUserPayload,
+	OnboardingFormData,
 	OnboardingUserResponse,
 	RequestMagicLinkPayload,
 	VerifyMagicCodePayload,
@@ -75,7 +75,7 @@ export const useUpdateUserProfile = () => {
 	return useMutation<
 		OnboardingUserResponse,
 		AxiosError<{ error: string }>,
-		OnboardingUserPayload
+		OnboardingFormData
 	>({
 		mutationFn: USERS_API.UPDATE_USER_PROFILE,
 		onSuccess: (data) => {

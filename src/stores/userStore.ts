@@ -1,11 +1,10 @@
-import { User } from "@/api/http/v1/users/users.types";
-import { ColorType } from "@/pages/Auth/Onboarding/page";
+import type { ThemeType, User } from "@/api/http/v1/users/users.types";
 import { computed, effect, signal } from "@preact/signals";
 
 // User type (same as before)
 export interface UserSignal {
 	user: User | null;
-	theme: ColorType;
+	theme: ThemeType;
 	token?: string;
 }
 

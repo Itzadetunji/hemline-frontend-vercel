@@ -2,7 +2,7 @@ import type { AxiosResponse } from "axios";
 import $http from "../../xhr";
 import type {
 	GetUserProfileResponse,
-	OnboardingUserPayload,
+	OnboardingFormData,
 	OnboardingUserResponse,
 	RequestMagicLinkPayload,
 	VerifyMagicCodePayload,
@@ -46,7 +46,7 @@ export const USERS_API = {
 			.then((res) => res.data),
 
 	UPDATE_USER_PROFILE: async (
-		data: OnboardingUserPayload
+		data: OnboardingFormData
 	): Promise<OnboardingUserResponse> =>
 		await $http
 			.patch(USERS_ENDPOINTS.updateUserProfile, data)

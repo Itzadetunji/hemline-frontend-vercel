@@ -12,21 +12,19 @@ import {
 
 import { useUpdateUserProfile } from "@/api/http/v1/users/users.hooks";
 import {
-	OnboardingFormSchema,
 	type OnboardingFormData,
-	type OnboardingUserPayload,
+	OnboardingFormSchema,
 	Profession,
 	SkillChoices,
-	type SkillChoicesType,
 	ThemeChoices,
 	type ThemeType,
 } from "@/api/http/v1/users/users.types";
 import { Button } from "@/components/ui/button";
 import { CheckboxGroup } from "@/components/ui/checkbox-group";
 import { Label } from "@/components/ui/label";
+import { RadioGroup } from "@/components/ui/radio-group";
 import { Select } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { RadioGroup } from "@/components/ui/radio-group";
 
 export const Onboarding = () => {
 	const [step, setStep] = useState(1);
@@ -48,25 +46,12 @@ export const Onboarding = () => {
 		mode: "onChange",
 	});
 
-	const onSubmit = async (data: OnboardingFormData) => {
-		// Transform form data to API payload structure
-		const apiPayload: OnboardingUserPayload = {
-			user: {
-				first_name: data.first_name,
-				last_name: data.last_name,
-				profession: data.profession,
-				business_name: data.business_name as string,
-				business_address: data.business_address as string,
-				skills: data.skills,
-				has_onboarded: true,
-			},
-		};
-
-		await updateUserProfileMutation.mutateAsync(apiPayload, {
+	const onSubmit = async (payload: OnboardingFormData) => {
+		await updateUserProfileMutation.mutateAsync(payload, {
 			onSuccess: () => {
 				// Store theme preference locally or in user store
 				if (typeof window !== "undefined") {
-					localStorage.setItem("theme", data.theme);
+					localStorage.setItem("theme", payload.theme);
 				}
 				// Redirect to home after successful onboarding
 				location.route("/");
