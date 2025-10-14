@@ -1,22 +1,5 @@
 import packageInfo from "../../package.json";
 
-declare global {
-	interface ImportMeta {
-		env: {
-			readonly MODE: string;
-			readonly VITE_ENVIRONMENT: string;
-			readonly VITE_BASE_URL: string;
-			readonly VITE_APP_API_VERSION: string;
-			readonly VITE_CLIENT_URL: string;
-			readonly VITE_SENTRY_DSN: string;
-			readonly VITE_ORGANISATION_PROJECT: string;
-			readonly VITE_ORGANISATION: string;
-			readonly VITE_PUSHER_APP_KEY: string;
-			readonly VITE_PUSHER_APP_CLUSTER: string;
-		};
-	}
-}
-
 // How to use this:
 // ============================================================
 // This file is used to store all the environment variables and constants used in the application.
