@@ -3,8 +3,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Icon } from "@iconify/react";
 import type { JSX } from "preact";
 
-import { Button } from "@/components/button";
-import { Label } from "@/components/label";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import {
 	type RequestMagicLinkPayload,
 	RequestMagicLinkPayloadSchema,

@@ -5,9 +5,9 @@ import {
 	SkillChoices,
 	type SkillChoicesType,
 } from "@/api/http/v1/users/users.types";
-import { Button } from "@/components/button";
-import { CheckboxGroup } from "@/components/checkbox-group";
-import { Label } from "@/components/label";
+import { Button } from "@/components/ui/button";
+import { CheckboxGroup } from "@/components/ui/checkbox-group";
+import { Label } from "@/components/ui/label";
 import { cn } from "../../../lib/utils";
 
 export const Onboarding = () => {

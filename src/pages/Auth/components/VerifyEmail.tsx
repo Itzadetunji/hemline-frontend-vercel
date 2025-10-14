@@ -13,8 +13,8 @@ import {
 	type VerifyMagicCodePayload,
 	VerifyMagicCodeSchema,
 } from "@/api/http/v1/users/users.types";
-import { Button } from "@/components/button";
-import { Label } from "@/components/label";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { clearEmail, emailSignal, setEmail } from "@/stores/authStore";
 
 export const VerifyEmail = () => {

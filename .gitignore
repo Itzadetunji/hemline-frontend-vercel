@@ -24,4 +24,4 @@ dist-ssr
 *.sw?
 
 dev-dist
-lib
+/lib

@@ -1,6 +1,6 @@
 import type { JSX } from "preact";
 
-import { cn } from "../lib/utils";
+import { cn } from "../../lib/utils";
 
 function Label({ class: className, ...props }: JSX.IntrinsicElements["label"]) {
 	return (
