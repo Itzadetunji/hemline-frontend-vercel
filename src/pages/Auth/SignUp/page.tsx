@@ -6,7 +6,7 @@ import type { JSX } from "preact";
 import { Button } from "@/components/button";
 import { Label } from "@/components/label";
 import {
-	RequestMagicLinkPayload,
+	type RequestMagicLinkPayload,
 	RequestMagicLinkPayloadSchema,
 } from "@/api/http/v1/users/users.types";
 import { useGetMagicLink } from "@/api/http/v1/users/users.hooks";

@@ -1,7 +1,9 @@
 import type { AxiosResponse } from "axios";
 import $http from "../../xhr";
-import { RequestMagicLinkPayload, VerifyMagicCodePayload } from "./users.types";
-import { verify } from "crypto";
+import type {
+	RequestMagicLinkPayload,
+	VerifyMagicCodePayload,
+} from "./users.types";
 
 export const APIVersion1GetUserProfile = async (
 	data: unknown

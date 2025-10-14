@@ -1,16 +1,16 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { JSX } from "preact";
+import type { JSX } from "preact";
 import { useLocation } from "preact-iso";
 import { useEffect, useRef, useState } from "preact/hooks";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { Controller, type SubmitHandler, useForm } from "react-hook-form";
 
 import {
 	useGetMagicLink,
 	useVeriftMagicCode,
 } from "@/api/http/v1/users/users.hooks";
 import {
-	RequestMagicLinkPayload,
-	VerifyMagicCodePayload,
+	type RequestMagicLinkPayload,
+	type VerifyMagicCodePayload,
 	VerifyMagicCodeSchema,
 } from "@/api/http/v1/users/users.types";
 import { Button } from "@/components/button";

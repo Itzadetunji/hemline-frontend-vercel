@@ -1,7 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
 import { APIVersion1PatchUserProfile, USERS_API } from "./users.api";
 import { AxiosError } from "axios";
-import { RequestMagicLinkPayload, VerifyMagicCodePayload } from "./users.types";
+import type {
+	RequestMagicLinkPayload,
+	VerifyMagicCodePayload,
+} from "./users.types";
 
 export const useJoinWaitlist = () => {
 	return useMutation({
@@ -25,6 +28,6 @@ export const useVeriftMagicCode = () => {
 	});
 };
 
-const usersQuerykeys = {
-	all: ["user"] as const,
-} as const;
+// const usersQuerykeys = {
+// 	all: ["user"] as const,
+// } as const;

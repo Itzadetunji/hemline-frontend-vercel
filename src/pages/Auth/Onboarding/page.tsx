@@ -1,9 +1,9 @@
 import { Icon } from "@iconify/react";
-import { Dispatch, StateUpdater, useState } from "preact/hooks";
+import { type Dispatch, type StateUpdater, useState } from "preact/hooks";
 
 import {
 	SkillChoices,
-	SkillChoicesType,
+	type SkillChoicesType,
 } from "@/api/http/v1/users/users.types";
 import { Button } from "@/components/button";
 import { CheckboxGroup } from "@/components/checkbox-group";
