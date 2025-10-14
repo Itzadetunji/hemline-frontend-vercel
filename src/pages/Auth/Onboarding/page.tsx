@@ -180,7 +180,7 @@ const OnboardingStep2 = (props: OnboardingStepProps) => {
 	);
 };
 
-type ColorType = "light" | "dark" | "system";
+export type ColorType = "light" | "dark" | "system";
 
 const colors: ColorType[] = ["light", "dark", "system"];
 

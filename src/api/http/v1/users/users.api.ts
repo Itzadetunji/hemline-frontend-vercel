@@ -1,6 +1,7 @@
 import type { AxiosResponse } from "axios";
 import $http from "../../xhr";
 import type {
+	GetUserProfileResponse,
 	RequestMagicLinkPayload,
 	VerifyMagicCodePayload,
 } from "./users.types";
@@ -16,20 +17,25 @@ export const APIVersion1PatchUserProfile = async (
 	$http.patch("/auth/profile", data).then((res) => res.data);
 
 const USERS_ENDPOINTS = {
+	getUserProfile: "/auth/profile",
 	getMagicLink: "/auth/request_magic_link",
 	verifyMagicCode: "/auth/verify_code",
 } as const;
 
 export const USERS_API = {
+	GET_USER_PROFILE: async (): Promise<GetUserProfileResponse> =>
+		await $http.get(USERS_ENDPOINTS.getUserProfile).then((res) => res.data),
+
 	GET_MAGIC_LINK: async (
 		data: RequestMagicLinkPayload
 	): Promise<{ message: string }> =>
 		await $http
 			.post(USERS_ENDPOINTS.getMagicLink, data)
 			.then((res) => res.data),
+
 	VERIFY_MAGIC_CODE: async (
 		params: VerifyMagicCodePayload
-	): Promise<{ message: string }> =>
+	): Promise<GetUserProfileResponse> =>
 		await $http
 			.post(USERS_ENDPOINTS.verifyMagicCode, undefined, {
 				params,

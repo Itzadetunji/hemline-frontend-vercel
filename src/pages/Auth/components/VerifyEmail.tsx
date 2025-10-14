@@ -16,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { clearEmail, emailSignal, setEmail } from "@/stores/authStore";
+import { userStore } from "@/stores/userStore";
 
 export const VerifyEmail = () => {
 	const location = useLocation();
@@ -32,6 +33,11 @@ export const VerifyEmail = () => {
 				console.log(data);
 				location.route("/");
 				clearEmail();
+
+				userStore.updateUser({
+					token: data.data.token,
+					user: data.data.user,
+				});
 			},
 			onError: (error) => {
 				console.error("Error verifying code:", error);
@@ -57,7 +63,7 @@ export const VerifyEmail = () => {
 		<main class="flex flex-col h-[100dvh] px-4 py-4 gap-9.5 items-stretch">
 			<div class="flex flex-col gap-10">
 				<img
-					src="/assets/logo.svg"
+					src="/assets/brand/logo.svg"
 					class="size-9"
 					alt="Brand Logo"
 				/>

@@ -4,16 +4,25 @@ import { Onboarding } from "@/pages/Auth/Onboarding/page";
 import { SignIn } from "@/pages/Auth/SignIn/page";
 import { SignUp } from "@/pages/Auth/SignUp/page";
 import { Home } from "@/pages/Home/Home";
+import { ProtectedRoute } from "./ProtectedRoute";
 
 export const Routes = () => {
 	return (
 		<LocationProvider>
 			<ErrorBoundary>
 				<Router>
-					<Route
+					{/* Protected Routes - Require Authentication */}
+
+					<ProtectedRoute
 						path="/"
 						component={Home}
 					/>
+					<ProtectedRoute
+						path="/onboarding"
+						component={Onboarding}
+					/>
+
+					{/* Public Routes - Redirect if already authenticated */}
 					<Route
 						path="/sign-up"
 						component={SignUp}

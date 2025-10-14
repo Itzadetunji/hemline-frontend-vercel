@@ -39,7 +39,7 @@ export const SignUp = () => {
 		<main class="flex flex-col h-[100dvh] px-4 py-4 gap-6 items-stretch">
 			<div class="flex flex-col gap-10">
 				<img
-					src="/assets/logo.svg"
+					src="/assets/brand/logo.svg"
 					class="size-9"
 					alt="Brand Logo"
 				/>

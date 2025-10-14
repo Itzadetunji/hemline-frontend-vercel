@@ -32,14 +32,14 @@ export const SignIn = () => {
 		e.preventDefault();
 		formMethods.handleSubmit(onSubmit)(e as any);
 	};
-
+	console.log(formMethods.getValues());
 	if (emailSignal.value.length) return <VerifyEmail />;
 
 	return (
 		<main class="flex flex-col h-[100dvh] px-4 py-4 gap-6 items-stretch">
 			<div class="flex flex-col gap-10">
 				<img
-					src="/assets/logo.svg"
+					src="/assets/brand/logo.svg"
 					class="size-9"
 					alt="Brand Logo"
 				/>
@@ -57,6 +57,20 @@ export const SignIn = () => {
 				<Label class="flex flex-col gap-4 items-stretch">
 					<p class="text-sm font-medium leading-0">Email</p>
 					<div class="flex flex-col gap-1.5">
+						{/* <div class="flex items-center gap-3.5 border-line-700 border h-10.5 px-3">
+							<i className="size-4.5">
+								<Icon
+									icon="fluent:mail-16-regular"
+									fontSize="18"
+								/>
+							</i>
+							<input
+								{...formMethods.register("email")}
+								type="email"
+								placeholder="hello@hemline.app"
+								class="text-sm placeholder:text-grey-400 flex-1"
+							/>
+						</div> */}
 						<div class="flex items-center gap-3.5 border-line-700 border h-10.5 px-3">
 							<i className="size-4.5">
 								<Icon

@@ -53,6 +53,15 @@ export interface User {
 	custom_fields: CustomField[];
 }
 
+export interface GetUserProfileResponse {
+	message: string;
+	success: boolean;
+	data: {
+		user: User;
+		token: string;
+	};
+}
+
 export const Profession = [
 	"Tailors / Dressmakers",
 	"Fashion Designers",

@@ -1,80 +1,54 @@
+import { User } from "@/api/http/v1/users/users.types";
+import { ColorType } from "@/pages/Auth/Onboarding/page";
 import { computed, effect, signal } from "@preact/signals";
 
 // User type (same as before)
-export interface User {
-	id: string;
-	name: string;
-	email: string;
-	avatar?: string;
-	role?: string;
-	count: number;
-	preferences?: {
-		theme?: "light" | "dark";
-		language?: string;
-	};
+export interface UserSignal {
+	user: User | null;
+	theme: ColorType;
+	token?: string;
 }
 
+const getInitialState = (): UserSignal => {
+	try {
+		const stored = localStorage.getItem("user-storage");
+		if (stored) {
+			console.log(JSON.parse(stored));
+			return JSON.parse(stored);
+		}
+	} catch (error) {
+		console.error("Failed to parse user-storage:", error);
+	}
+
+	// Fallback to initial state
+	return {
+		user: null,
+		theme: window.matchMedia("(prefers-color-scheme: dark)").matches
+			? "dark"
+			: "light",
+		token: undefined,
+	};
+};
+
+const initialState = getInitialState();
+
 // Create signals for user state
-export const userSignal = signal<User | null>({
-	count: 0,
-} as User);
+export const userSignal = signal<UserSignal | null>(initialState);
 
 export const userThemeSignal = computed(
-	() => userSignal.value?.preferences?.theme || "light"
+	() => userSignal.value?.theme || "light"
 );
 
 // Actions
 export const userStore = {
-	setUser: (user: User) => {
-		userSignal.value = user;
-
-		// Persist to localStorage
-		localStorage.setItem(
-			"user-storage",
-			JSON.stringify({
-				user,
-				isAuthenticated: true,
-			})
-		);
-	},
-
-	increment: (newValue: number) => {
-		console.log(userSignal.value);
-		const currentUser = userSignal.value;
-		if (!currentUser) return;
-
-		const updatedUser = {
-			...userSignal.value,
-			count: newValue,
-		} as User;
-		userSignal.value = updatedUser;
-
-		// Persist to localStorage
-		localStorage.setItem(
-			"user-storage",
-			JSON.stringify({
-				user: {
-					...userSignal.value,
-					count: newValue,
-				},
-				isAuthenticated: true,
-			})
-		);
-	},
-
-	updateUser: (updates: Partial<User>) => {
+	updateUser: (updates: Partial<UserSignal>) => {
 		const currentUser = userSignal.value;
 		if (currentUser) {
 			const updatedUser = { ...currentUser, ...updates };
 			userSignal.value = updatedUser;
 
 			// Persist changes
-			localStorage.setItem(
-				"user-storage",
-				JSON.stringify({
-					user: updatedUser,
-				})
-			);
+			localStorage.setItem("user-storage", JSON.stringify(updatedUser));
 		}
 	},
 
@@ -84,34 +58,13 @@ export const userStore = {
 	},
 };
 
-// Initialize from localStorage
-const initializeStore = () => {
-	try {
-		const stored = localStorage.getItem("user-storage");
-		if (stored) {
-			const { user, isAuthenticated } = JSON.parse(stored);
-			if (user && isAuthenticated) {
-				userSignal.value = user;
-			}
-		}
-	} catch (error) {
-		console.warn("Failed to load user data from localStorage:", error);
-	}
-};
-
-// Initialize on module load
-if (typeof window !== "undefined") {
-	initializeStore();
-}
-
 // Auto-persist effect (optional)
 effect(() => {
-	if (userSignal.value) {
-		localStorage.setItem(
-			"user-storage",
-			JSON.stringify({
-				user: userSignal.value,
-			})
-		);
+	try {
+		if (userSignal.value) {
+			localStorage.setItem("user-storage", JSON.stringify(userSignal.value));
+		}
+	} catch (error) {
+		console.warn("Failed to persist user data to localStorage:", error);
 	}
 });

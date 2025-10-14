@@ -1,10 +1,13 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { APIVersion1PatchUserProfile, USERS_API } from "./users.api";
 import { AxiosError } from "axios";
 import type {
+	GetUserProfileResponse,
 	RequestMagicLinkPayload,
 	VerifyMagicCodePayload,
 } from "./users.types";
+import { useEffect } from "preact/hooks";
+import { userStore } from "@/stores/userStore";
 
 export const useJoinWaitlist = () => {
 	return useMutation({
@@ -18,9 +21,34 @@ export const useGetMagicLink = () => {
 	});
 };
 
+export const useGetUserProfile = () => {
+	const getUserProfileQuery = useQuery<GetUserProfileResponse, AxiosError>({
+		queryFn: USERS_API.GET_USER_PROFILE,
+		queryKey: usersQuerykeys.all,
+	});
+
+	useEffect(() => {
+		if (getUserProfileQuery.status === "error") {
+			console.error("Error fetching user profile:", getUserProfileQuery.error);
+		}
+		if (getUserProfileQuery.status === "success") {
+			console.log(
+				"User profile fetched successfully:",
+				getUserProfileQuery.data
+			);
+			userStore.updateUser({
+				token: getUserProfileQuery.data.data.token,
+				user: getUserProfileQuery.data.data.user,
+			});
+		}
+	}, [getUserProfileQuery.status, getUserProfileQuery.data]);
+
+	return getUserProfileQuery;
+};
+
 export const useVeriftMagicCode = () => {
 	return useMutation<
-		{ message: string },
+		GetUserProfileResponse,
 		AxiosError<{ error: string }>,
 		VerifyMagicCodePayload
 	>({
@@ -28,6 +56,6 @@ export const useVeriftMagicCode = () => {
 	});
 };
 
-// const usersQuerykeys = {
-// 	all: ["user"] as const,
-// } as const;
+const usersQuerykeys = {
+	all: ["user-profile"] as const,
+} as const;
