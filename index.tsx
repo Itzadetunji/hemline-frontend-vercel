@@ -7,7 +7,9 @@ import { Routes } from "./src/layout/Routes";
 
 const Document = () => {
 	return (
-		<QueryClientProvider client={queryClient}>{<Routes />}</QueryClientProvider>
+		<QueryClientProvider client={queryClient}>
+			{(<Routes />) as any}
+		</QueryClientProvider>
 	);
 };
 
