@@ -136,7 +136,7 @@ export const Select = ({
 			{isOpen && (
 				<div
 					ref={dropdownRef}
-					class="absolute z-50 w-full mt-1 bg-white dark:bg-dark border border-line-500 shadow-lg max-h-60 overflow-y-auto p-2"
+					class="absolute z-50 w-full mt-1 bg-white dark:bg-dark border border-line-500 shadow-sm max-h-60 overflow-y-auto p-2"
 					style={{ top: "calc(100% + 4px)" }}
 				>
 					{options.length === 0 ? (
