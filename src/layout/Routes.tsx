@@ -31,7 +31,7 @@ export const Routes = () => {
 						path="/sign-in"
 						component={SignIn}
 					/>
-					<Route
+					<ProtectedRoute
 						path="/onboarding"
 						component={Onboarding}
 					/>

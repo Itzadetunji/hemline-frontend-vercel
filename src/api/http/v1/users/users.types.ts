@@ -89,3 +89,50 @@ export const SkillChoices = [
 ] as const;
 
 export type SkillChoicesType = (typeof SkillChoices)[number];
+
+// Theme choices for step 3
+export const ThemeChoices = ["light", "dark", "system"] as const;
+export type ThemeType = (typeof ThemeChoices)[number];
+
+// Flattened form schema for react-hook-form (used across all steps)
+export const OnboardingFormSchema = z.object({
+	first_name: z.string().min(1, "First name is required"),
+	last_name: z.string().min(1, "Last name is required"),
+	profession: z.enum(Profession, {
+		error: "Please select a valid profession",
+	}),
+	business_name: z.string().optional(),
+	business_address: z.string().optional(),
+	has_onboarded: z.literal(true),
+	skills: z
+		.array(z.enum(SkillChoices))
+		.min(1, "At least one skill is required"),
+	theme: z.enum(ThemeChoices).default("system"),
+});
+
+export type OnboardingFormData = z.infer<typeof OnboardingFormSchema>;
+
+// API payload schema (nested structure for server)
+export const OnboardingUserSchema = z.object({
+	user: z.object({
+		first_name: z.string().min(1, "First name is required"),
+		last_name: z.string().min(1, "Last name is required"),
+		profession: z.enum(Profession).refine((val) => Profession.includes(val), {
+			message: "Please select a valid profession",
+		}),
+		business_name: z.string().min(1, "Business name is required"),
+		business_address: z.string().min(1, "Business address is required"),
+		has_onboarded: z.literal(true),
+		skills: z
+			.array(z.enum(SkillChoices))
+			.min(1, "At least one skill is required"),
+	}),
+});
+
+export type OnboardingUserPayload = z.infer<typeof OnboardingUserSchema>;
+
+export interface OnboardingUserResponse {
+	message: string;
+	success: boolean;
+	data: User;
+}

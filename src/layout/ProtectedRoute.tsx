@@ -6,12 +6,7 @@ import { useEffect } from "preact/hooks";
 import { Home } from "@/pages/Home/Home";
 import { SignIn } from "@/pages/Auth/SignIn/page";
 import { useGetUserProfile } from "@/api/http/v1/users/users.hooks";
-
-interface ProtectedRouteProps {
-	children: ComponentChildren;
-	requireAuth?: boolean;
-	redirectTo?: string;
-}
+import { get } from "http";
 
 /**
  * ProtectedRoute component that wraps routes requiring authentication
@@ -36,6 +31,17 @@ export const ProtectedRoute = (props: any) => {
 		);
 
 	if (!isUserAuthenticated) return <SignIn />;
+
+	if (!getUserProfile.data?.data.user?.has_onboarded) {
+		location.route("/onboarding", true);
+	}
+
+	if (
+		getUserProfile.data?.data.user?.has_onboarded &&
+		location.path === "/onboarding"
+	) {
+		location.route("/", true);
+	}
 
 	return <Route {...props} />;
 	// return <AuthLayout redirectTo={redirectTo}>{children}</AuthLayout>;

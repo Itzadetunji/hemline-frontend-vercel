@@ -2,6 +2,8 @@ import type { AxiosResponse } from "axios";
 import $http from "../../xhr";
 import type {
 	GetUserProfileResponse,
+	OnboardingUserPayload,
+	OnboardingUserResponse,
 	RequestMagicLinkPayload,
 	VerifyMagicCodePayload,
 } from "./users.types";
@@ -20,6 +22,7 @@ const USERS_ENDPOINTS = {
 	getUserProfile: "/auth/profile",
 	getMagicLink: "/auth/request_magic_link",
 	verifyMagicCode: "/auth/verify_code",
+	updateUserProfile: "/users/profile",
 } as const;
 
 export const USERS_API = {
@@ -40,5 +43,12 @@ export const USERS_API = {
 			.post(USERS_ENDPOINTS.verifyMagicCode, undefined, {
 				params,
 			})
+			.then((res) => res.data),
+
+	UPDATE_USER_PROFILE: async (
+		data: OnboardingUserPayload
+	): Promise<OnboardingUserResponse> =>
+		await $http
+			.patch(USERS_ENDPOINTS.updateUserProfile, data)
 			.then((res) => res.data),
 };
