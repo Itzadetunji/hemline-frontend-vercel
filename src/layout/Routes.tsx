@@ -5,6 +5,7 @@ import { SignIn } from "@/pages/Auth/SignIn/page";
 import { SignUp } from "@/pages/Auth/SignUp/page";
 import { Home } from "@/pages/Home/Home";
 import { ProtectedRoute } from "./ProtectedRoute";
+import { Gallery } from "@/pages/Gallery/page";
 
 export const Routes = () => {
 	return (
@@ -15,7 +16,7 @@ export const Routes = () => {
 
 					<ProtectedRoute
 						path="/"
-						component={Home}
+						component={Gallery}
 					/>
 					<ProtectedRoute
 						path="/onboarding"
@@ -34,6 +35,14 @@ export const Routes = () => {
 					<ProtectedRoute
 						path="/onboarding"
 						component={Onboarding}
+					/>
+					<ProtectedRoute
+						path="/gallery"
+						component={Gallery}
+					/>
+					<ProtectedRoute
+						path="/clients"
+						component={Gallery}
 					/>
 				</Router>
 			</ErrorBoundary>

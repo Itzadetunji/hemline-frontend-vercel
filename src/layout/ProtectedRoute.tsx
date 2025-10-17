@@ -7,6 +7,7 @@ import { Home } from "@/pages/Home/Home";
 import { SignIn } from "@/pages/Auth/SignIn/page";
 import { useGetUserProfile } from "@/api/http/v1/users/users.hooks";
 import { get } from "http";
+import { Header, NavBar } from "./Header";
 
 /**
  * ProtectedRoute component that wraps routes requiring authentication
@@ -43,6 +44,14 @@ export const ProtectedRoute = (props: any) => {
 		location.route("/", true);
 	}
 
-	return <Route {...props} />;
+	return (
+		<main class="flex min-h-screen flex-col items-stretch px-4">
+			<Header />
+			<div class="flex-1 flex flex-col">
+				<Route {...props} />
+			</div>
+			<NavBar />
+		</main>
+	);
 	// return <AuthLayout redirectTo={redirectTo}>{children}</AuthLayout>;
 };
