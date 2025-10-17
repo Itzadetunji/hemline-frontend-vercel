@@ -51,6 +51,8 @@ export interface User {
 	created_at: string;
 	updated_at: string;
 	custom_fields: CustomField[];
+	total_folders: number;
+	total_gallery_images: number;
 }
 
 export interface GetUserProfileResponse {

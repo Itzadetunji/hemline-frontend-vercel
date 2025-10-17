@@ -20,6 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Label } from "./ui/label";
 import { RadioGroup } from "./ui/radio-group";
+import { selectingImagesSignal } from "@/layout/Header";
 
 interface AddToNewFolderProps {
 	addToNewFolder: boolean;
@@ -71,6 +72,10 @@ export const AddToNewFolder = (props: AddToNewFolderProps) => {
 					},
 					icon: null,
 				});
+				selectingImagesSignal.value = {
+					isSelecting: false,
+					selectedItems: [],
+				};
 				reset();
 			},
 			onError: (error) => {

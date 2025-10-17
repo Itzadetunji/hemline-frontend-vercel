@@ -1,16 +1,3 @@
-import { useInfiniteGetGalleries } from "@/api/http/v1/gallery/gallery.hooks";
-import type { GalleryImage } from "@/api/http/v1/gallery/gallery.types";
-import { AddToFolder } from "@/components/AddToFolder";
-import { AddToNewFolder } from "@/components/AddToNewFolder";
-import { DeleteImages } from "@/components/DeleteImages";
-import { Button } from "@/components/ui/button";
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@/components/ui/popover";
-import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
 import { Icon } from "@iconify/react";
 import type { RefObject } from "preact";
 import {
@@ -20,7 +7,19 @@ import {
 	useRef,
 	useState,
 } from "preact/hooks";
-import toast from "react-hot-toast";
+
+import { useInfiniteGetGalleries } from "@/api/http/v1/gallery/gallery.hooks";
+import type { GalleryImage } from "@/api/http/v1/gallery/gallery.types";
+import { AddToFolder } from "@/components/AddToFolder";
+import { DeleteImages } from "@/components/DeleteImages";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
+import { selectingImagesSignal } from "@/layout/Header";
 
 export const Gallery = () => {
 	const [galleryLayout, setGalleryLayout] = useState<"fancy" | "grid">("fancy");
@@ -149,6 +148,25 @@ const GalleryImage = (props: {
 		setLoading(false); // Hide skeleton when image loads
 	};
 
+	const handleCheckboxChange = (e: Event) => {
+		const target = e.target as HTMLInputElement;
+		const currentSelected = selectingImagesSignal.value.selectedItems;
+
+		if (target.checked) {
+			// Add to selection
+			selectingImagesSignal.value = {
+				...selectingImagesSignal.value,
+				selectedItems: [...currentSelected, props.image.id],
+			};
+		} else {
+			// Remove from selection
+			selectingImagesSignal.value = {
+				...selectingImagesSignal.value,
+				selectedItems: currentSelected.filter((id) => id !== props.image.id),
+			};
+		}
+	};
+
 	return (
 		<div
 			ref={props.isLastItem ? props.observerRef : null}
@@ -156,74 +174,92 @@ const GalleryImage = (props: {
 				"col-span-2": isLandscape,
 			})}
 		>
-			<Popover>
-				<PopoverTrigger asChild>
-					<button class="absolute top-3 left-2">
+			{selectingImagesSignal.value.isSelecting ? (
+				<label class="absolute top-1.5 left-1.5 cursor-pointer group">
+					<input
+						type="checkbox"
+						onChange={handleCheckboxChange}
+						class="sr-only"
+					/>
+					<div class="border size-4.5 flex items-center justify-center transition-colors border-line-500 bg-white/40 group-has-[:checked]:border-primary group-has-[:checked]:bg-primary">
 						<Icon
-							icon="pepicons-pencil:dots-x"
-							className={iconColor}
+							icon="heroicons:check-20-solid"
+							className="text-white h-3.5 w-3.5 opacity-0 transition-opacity group-has-[:checked]:opacity-100"
 						/>
-					</button>
-				</PopoverTrigger>
-				<PopoverContent className="w-40 flex flex-col items-stretch border-line-400 drop-shadow-[0.6px_0.8px_9px_rgba(0,0,0,0,95)] backdrop-blur-lg bg-transparent rounded-sm">
-					<ul class="flex flex-col gap-3">
-						<button
-							onClick={() => {
-								props.setSelectedImages(() => [props.image.id]);
-								props.setAddToFolder(true);
-							}}
-							type="button"
-							class="flex items-center gap-2 hover:bg-secondary cursor-pointer justify-between"
-						>
-							<p class="font-medium text-sm">Add to Folder</p>
-							<div class="p-1 min-w-5">
-								<Icon
-									icon="bi:folder"
-									className="h-4 w-4 text-black"
-								/>
-							</div>
+					</div>
+				</label>
+			) : (
+				<Popover>
+					<PopoverTrigger asChild>
+						<button class="absolute top-3 left-2">
+							<Icon
+								icon="pepicons-pencil:dots-x"
+								className={iconColor}
+							/>
 						</button>
-						<button
-							type="button"
-							class="flex items-center gap-2 hover:bg-secondary cursor-pointer justify-between"
-						>
-							<p class="font-medium text-sm">Add Details</p>
-							<div class="p-1 min-w-5">
-								<Icon
-									icon="iconamoon:screen-full-light"
-									className="h-4 w-4 text-black"
-								/>
-							</div>
-						</button>
-						<button
-							onClick={() => {
-								props.setSelectedImages(() => [props.image.id]);
-								props.setDeleteImages(true);
-							}}
-							type="button"
-							class="flex items-center gap-2 hover:bg-secondary cursor-pointer justify-between"
-						>
-							<p class="text-destructive font-medium text-sm">Delete</p>
-							<div class="p-1 min-w-5">
-								<Icon
-									icon="material-symbols-light:delete-outline-sharp"
-									className="h-4 w-4 text-destructive"
-								/>
-							</div>
-						</button>
-						<li class="flex items-center gap-2 hover:bg-secondary cursor-pointer justify-between">
-							<p class="font-medium text-sm">Uploaded</p>
-							<span class="text-sm">
-								{new Intl.DateTimeFormat("en-GB", {
-									day: "2-digit",
-									month: "2-digit",
-									year: "2-digit",
-								}).format(new Date(props.image.created_at))}
-							</span>
-						</li>
-					</ul>
-				</PopoverContent>
-			</Popover>
+					</PopoverTrigger>
+					<PopoverContent className="w-40 flex flex-col items-stretch border-line-400 drop-shadow-[0.6px_0.8px_9px_rgba(0,0,0,0,95)] backdrop-blur-lg bg-white/70 rounded-sm">
+						<ul class="flex flex-col gap-3">
+							<button
+								onClick={() => {
+									props.setSelectedImages(() => [props.image.id]);
+									props.setAddToFolder(true);
+								}}
+								type="button"
+								class="flex items-center gap-2 hover:bg-secondary cursor-pointer justify-between"
+							>
+								<p class="font-medium text-sm">Add to Folder</p>
+								<div class="p-1 min-w-5">
+									<Icon
+										icon="bi:folder"
+										className="h-4 w-4 text-black"
+									/>
+								</div>
+							</button>
+
+							<button
+								type="button"
+								class="flex items-center gap-2 hover:bg-secondary cursor-pointer justify-between"
+							>
+								<p class="font-medium text-sm">Add Details</p>
+								<div class="p-1 min-w-5">
+									<Icon
+										icon="iconamoon:screen-full-light"
+										className="h-4 w-4 text-black"
+									/>
+								</div>
+							</button>
+							<button
+								onClick={() => {
+									props.setSelectedImages(() => [props.image.id]);
+									props.setDeleteImages(true);
+								}}
+								type="button"
+								class="flex items-center gap-2 hover:bg-secondary cursor-pointer justify-between"
+							>
+								<p class="text-destructive font-medium text-sm">Delete</p>
+								<div class="p-1 min-w-5">
+									<Icon
+										icon="material-symbols-light:delete-outline-sharp"
+										className="h-4 w-4 text-destructive"
+									/>
+								</div>
+							</button>
+							<li class="flex items-center gap-2 hover:bg-secondary cursor-pointer justify-between">
+								<p class="font-medium text-sm">Uploaded</p>
+								<span class="text-sm">
+									{new Intl.DateTimeFormat("en-GB", {
+										day: "2-digit",
+										month: "2-digit",
+										year: "2-digit",
+									}).format(new Date(props.image.created_at))}
+								</span>
+							</li>
+						</ul>
+					</PopoverContent>
+				</Popover>
+			)}
+
 			{loading && (
 				<Skeleton class="absolute inset-0 h-full w-full rounded-none" />
 			)}

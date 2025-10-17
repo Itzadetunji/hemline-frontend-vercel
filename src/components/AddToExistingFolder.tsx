@@ -12,6 +12,7 @@ import type { Folder } from "@/api/http/v1/gallery/folders.types";
 import { Button } from "./ui/button";
 import { CheckboxGroup } from "./ui/checkbox-group";
 import toast from "react-hot-toast";
+import { selectingImagesSignal } from "@/layout/Header";
 
 // Zod schema for form validation
 const AddToExistingFolderSchema = z.object({
@@ -75,6 +76,10 @@ export const AddToExistingFolder = (props: AddToExistingFolderProps) => {
 						},
 						icon: null,
 					});
+					selectingImagesSignal.value = {
+						isSelecting: false,
+						selectedItems: [],
+					};
 					props.setAddToExistingFolder(false);
 					props.setHasUploaded?.(false);
 					props.setProgressSuccess?.(false);

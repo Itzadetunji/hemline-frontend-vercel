@@ -7,6 +7,7 @@ import {
 	DialogFooter,
 	DialogHeader,
 } from "@/components/ui/dialog";
+import { selectingImagesSignal } from "@/layout/Header";
 import { Icon } from "@iconify/react";
 import { Dispatch, StateUpdater } from "preact/hooks";
 import toast from "react-hot-toast";
@@ -33,6 +34,10 @@ export const DeleteImages = (props: DeleteImagesProps) => {
 					toast.success(
 						data.message || `${data.count} image(s) deleted successfully`
 					);
+					selectingImagesSignal.value = {
+						isSelecting: false,
+						selectedItems: [],
+					};
 					props.setDeleteImages(false);
 				},
 				onError: (error) => {
