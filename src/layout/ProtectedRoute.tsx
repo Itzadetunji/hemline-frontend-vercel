@@ -26,6 +26,7 @@ export const ProtectedRoute = (props: any) => {
 			<div class="flex items-center justify-center min-h-screen">
 				<img
 					src="/assets/brand/logo.svg"
+					class="animate-pulse"
 					alt="Brand Logo"
 				/>
 			</div>
@@ -45,7 +46,7 @@ export const ProtectedRoute = (props: any) => {
 	}
 
 	return (
-		<main class="flex min-h-screen flex-col items-stretch px-4">
+		<main class="flex min-h-screen flex-col items-stretch">
 			<Header />
 			<div class="flex-1 flex flex-col">
 				<Route {...props} />

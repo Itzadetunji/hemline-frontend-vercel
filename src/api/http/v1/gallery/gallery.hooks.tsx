@@ -4,7 +4,8 @@ import {
 	useQuery,
 	useQueryClient,
 } from "@tanstack/react-query";
-import { AxiosError } from "axios";
+import { AxiosError, type AxiosProgressEvent } from "axios";
+import { useState } from "preact/hooks";
 import { GALLERY_API } from "./gallery.api";
 import type {
 	DeleteImagesPayload,
@@ -74,15 +75,27 @@ export const useGetGalleryImage = (id: string, enabled = true) => {
 // POST: Upload images
 export const useUploadImages = () => {
 	const queryClient = useQueryClient();
+	const [progress, setProgress] = useState(0);
 
-	return useMutation<
+	const mutation = useMutation<
 		UploadImagesResponse,
 		AxiosError<{ error: string; errors?: string[] }>,
 		FormData
 	>({
-		mutationFn: GALLERY_API.UPLOAD_IMAGES,
+		mutationFn: (formData: FormData) =>
+			GALLERY_API.UPLOAD_IMAGES(formData, {
+				onUploadProgress: (progressEvent: AxiosProgressEvent) => {
+					if (progressEvent.total) {
+						const percentCompleted = Math.round(
+							(progressEvent.loaded * 100) / progressEvent.total
+						);
+						setProgress(percentCompleted);
+					}
+				},
+			}),
 		onSuccess: (data) => {
 			console.log("Images uploaded successfully:", data);
+			setProgress(100);
 
 			// Invalidate all gallery lists to refetch with new images
 			queryClient.invalidateQueries({
@@ -99,11 +112,17 @@ export const useUploadImages = () => {
 					}
 				);
 			});
+
+			// Reset progress after a delay
+			setTimeout(() => setProgress(0), 2000);
 		},
 		onError: (error) => {
 			console.error("Error uploading images:", error);
+			setProgress(0);
 		},
 	});
+
+	return { ...mutation, progress };
 };
 
 // PATCH: Update a gallery image

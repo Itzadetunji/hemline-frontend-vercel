@@ -1,4 +1,5 @@
 import $http from "../../xhr";
+import type { AxiosProgressEvent, AxiosRequestConfig } from "axios";
 import type {
 	DeleteImagesPayload,
 	DeleteImagesResponse,
@@ -36,12 +37,16 @@ export const GALLERY_API = {
 			.get(GALLERY_ENDPOINTS.getGalleryImage(id))
 			.then((res) => res.data),
 
-	UPLOAD_IMAGES: async (formData: FormData): Promise<UploadImagesResponse> =>
+	UPLOAD_IMAGES: async (
+		formData: FormData,
+		config?: AxiosRequestConfig
+	): Promise<UploadImagesResponse> =>
 		await $http
 			.post(GALLERY_ENDPOINTS.uploadImages, formData, {
 				headers: {
 					"Content-Type": "multipart/form-data",
 				},
+				...config,
 			})
 			.then((res) => res.data),
 

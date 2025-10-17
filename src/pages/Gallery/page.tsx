@@ -52,7 +52,7 @@ export const Gallery = () => {
 	const allImages = data?.pages.flatMap((page) => page.data) ?? [];
 
 	return (
-		<div class="mt-3 flex flex-col flex-1 pb-8 -mx-4">
+		<div class="flex flex-col flex-1 pb-8">
 			<button class="flex items-center gap-2 px-4">
 				<Icon
 					icon="streamline-ultimate:layout"
@@ -131,13 +131,13 @@ const GalleryImage = ({
 	return (
 		<div
 			ref={isLastItem ? observerRef : null}
-			class={cn("h-40 relative overflow-visible", {
+			class={cn("h-40 relative", {
 				"col-span-2": isLandscape,
 			})}
 		>
 			<Popover>
 				<PopoverTrigger asChild>
-					<button class="absolute top-3 left-2 z-10">
+					<button class="absolute top-3 left-2">
 						<Icon
 							icon="pepicons-pencil:dots-x"
 							className={iconColor}
