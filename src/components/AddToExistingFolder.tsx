@@ -11,6 +11,7 @@ import {
 import type { Folder } from "@/api/http/v1/gallery/folders.types";
 import { Button } from "./ui/button";
 import { CheckboxGroup } from "./ui/checkbox-group";
+import toast from "react-hot-toast";
 
 // Zod schema for form validation
 const AddToExistingFolderSchema = z.object({
@@ -21,10 +22,10 @@ type AddToExistingFolderFormData = z.infer<typeof AddToExistingFolderSchema>;
 
 interface AddToExistingFolderProps {
 	image_ids?: string[];
-	setHasUploaded: Dispatch<StateUpdater<boolean>>;
+	setHasUploaded?: Dispatch<StateUpdater<boolean>>;
 	setAddToFolder: Dispatch<StateUpdater<boolean>>;
 	setAddToExistingFolder: Dispatch<StateUpdater<boolean>>;
-	setProgressSuccess: Dispatch<StateUpdater<boolean>>;
+	setProgressSuccess?: Dispatch<StateUpdater<boolean>>;
 }
 
 export const AddToExistingFolder = (props: AddToExistingFolderProps) => {
@@ -65,12 +66,34 @@ export const AddToExistingFolder = (props: AddToExistingFolderProps) => {
 			},
 			{
 				onSuccess: () => {
+					toast.success("Images added to folder", {
+						style: {
+							border: "1px solid var(--primary)",
+							padding: "4px 4px",
+							color: "var(--primary)",
+							borderRadius: "0px",
+						},
+						icon: null,
+					});
 					props.setAddToExistingFolder(false);
-					props.setHasUploaded(false);
-					props.setProgressSuccess(false);
+					props.setHasUploaded?.(false);
+					props.setProgressSuccess?.(false);
 					reset();
 				},
 				onError: (error) => {
+					toast.error(
+						error.response?.data.errors?.[0] ||
+							"Error adding images to folders",
+						{
+							style: {
+								border: "1px solid var(--primary)",
+								padding: "4px 4px",
+								color: "var(--primary)",
+								borderRadius: "0px",
+							},
+							icon: null,
+						}
+					);
 					setError("folder_ids", {
 						message:
 							error.response?.data.errors?.[0] ||

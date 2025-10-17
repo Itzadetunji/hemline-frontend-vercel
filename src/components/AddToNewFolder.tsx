@@ -1,32 +1,32 @@
+import { Icon } from "@iconify/react";
+import { Dispatch, StateUpdater } from "preact/hooks";
+import { Controller, useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
+
+import { useCreateFolder } from "@/api/http/v1/gallery/folders.hooks";
+import {
+	CreateFolderSchema,
+	type CreateFolderPayload,
+} from "@/api/http/v1/gallery/folders.types";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
-	DialogClose,
 	DialogContent,
 	DialogFooter,
 	DialogHeader,
 } from "@/components/ui/dialog";
-import { Icon } from "@iconify/react";
-import { Dispatch, StateUpdater, useLayoutEffect } from "preact/hooks";
-import { Label } from "./ui/label";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-	CreateFolderSchema,
-	type CreateFolderPayload,
-	type FolderColor,
-} from "@/api/http/v1/gallery/folders.types";
-import { RadioGroup } from "./ui/radio-group";
 import { cn } from "@/lib/utils";
-import { useCreateFolder } from "@/api/http/v1/gallery/folders.hooks";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import { Label } from "./ui/label";
+import { RadioGroup } from "./ui/radio-group";
 
 interface AddToNewFolderProps {
 	addToNewFolder: boolean;
 	image_ids?: string[];
-	setAddToFolder: Dispatch<StateUpdater<boolean>>;
-	setHasUploaded: Dispatch<StateUpdater<boolean>>;
+	onSuccess: () => void;
+	setAddToFolder?: Dispatch<StateUpdater<boolean>>;
 	setAddToNewFolder: Dispatch<StateUpdater<boolean>>;
-	setProgressSuccess: Dispatch<StateUpdater<boolean>>;
 }
 
 export const AddToNewFolder = (props: AddToNewFolderProps) => {
@@ -49,10 +49,6 @@ export const AddToNewFolder = (props: AddToNewFolderProps) => {
 	});
 
 	const onSubmit = async (formData: CreateFolderPayload) => {
-		// Store the color preference locally if needed
-		// For now, we'll just submit the folder name and description
-		// The color can be stored in description or handled separately
-
 		const payload = {
 			...formData,
 			folder: {
@@ -65,12 +61,31 @@ export const AddToNewFolder = (props: AddToNewFolderProps) => {
 		console.log(payload);
 		await createFolderMutation.mutateAsync(payload, {
 			onSuccess: () => {
-				props.setAddToNewFolder(false);
-				props.setHasUploaded(false);
-				props.setProgressSuccess(false);
+				props.onSuccess();
+				toast.success("Images added to new folder", {
+					style: {
+						border: "1px solid var(--primary)",
+						padding: "4px 4px",
+						color: "var(--primary)",
+						borderRadius: "0px",
+					},
+					icon: null,
+				});
 				reset();
 			},
 			onError: (error) => {
+				toast.error(
+					error.response?.data.errors?.[0] || "Error adding images to folders",
+					{
+						style: {
+							border: "1px solid var(--primary)",
+							padding: "4px 4px",
+							color: "var(--primary)",
+							borderRadius: "0px",
+						},
+						icon: null,
+					}
+				);
 				console.error("Error creating folder:", error);
 			},
 		});
@@ -95,7 +110,7 @@ export const AddToNewFolder = (props: AddToNewFolderProps) => {
 							type="button"
 							onClick={() => {
 								props.setAddToNewFolder(false);
-								props.setAddToFolder(true);
+								props.setAddToFolder?.(true);
 							}}
 						>
 							<Icon

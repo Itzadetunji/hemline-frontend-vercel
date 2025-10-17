@@ -21,7 +21,7 @@ const FOLDERS_ENDPOINTS = {
 	getFolder: (id: string) => `/gallery/folders/${id}`,
 	createFolder: "/gallery/folders",
 	updateFolder: (id: string) => `/gallery/folders/${id}`,
-	addImagesToFolder: (id: string) => `/gallery/folders/${id}/add_images`,
+	addImagesToFolder: (id: string) => `/gallery/folders/${id}/add_image`,
 	setCoverImage: (id: string) => `/gallery/folders/${id}/set_cover_image`,
 	removeImagesFromFolder: (id: string) =>
 		`/gallery/folders/${id}/remove_images`,
@@ -62,7 +62,7 @@ export const FOLDERS_API = {
 		data: AddImagesToFolderPayload
 	): Promise<AddImagesToFolderResponse> =>
 		await $http
-			.patch(FOLDERS_ENDPOINTS.addImagesToFolder(id), data)
+			.post(FOLDERS_ENDPOINTS.addImagesToFolder(id), data)
 			.then((res) => res.data),
 
 	SET_FOLDER_COVER_IMAGE: async (

@@ -18,6 +18,7 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+import { AddToFolder } from "@/components/AddToFolder";
 
 // Signal for header content that can be accessed anywhere
 export const headerContentSignal = signal<ComponentChildren>("Gallery");
@@ -32,7 +33,7 @@ export const Header = () => {
 				<li>
 					<button
 						onClick={() => {}}
-						class="p-1"
+						class="p-1 min-w-5"
 					>
 						<SelectIcon class="h-4 w-4 fill-black" />
 					</button>
@@ -41,12 +42,15 @@ export const Header = () => {
 				<li>
 					<button
 						onClick={() => {}}
-						class="p-1"
+						class="p-1 relative min-w-5 min-h-5"
 					>
 						<Icon
 							icon="bi:folder"
 							className="h-4 w-4 text-black"
 						/>
+						<p class="text-white -top-0.5 -right-0.5 leading-0 text-[0.625rem] absolute size-3.5 bg-primary rounded-full grid place-content-center">
+							1
+						</p>
 					</button>
 				</li>
 				<a href="/profile">
@@ -65,11 +69,9 @@ export const Header = () => {
 const UploadImages = () => {
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const [totalFiles, setTotalFiles] = useState(0);
-	const [hasUploaded, setHasUploaded] = useState(true);
-	const [showProgressSuccess, setProgressSuccess] = useState(true);
+	const [hasUploaded, setHasUploaded] = useState(false);
 	const [addToFolder, setAddToFolder] = useState(false);
-	const [addToNewFolder, setAddToNewFolder] = useState(false);
-	const [addToExistingFolder, setAddToExistingFolder] = useState(true);
+	const [showProgressSuccess, setProgressSuccess] = useState(false);
 
 	const uploadImagesMutation = useUploadImages();
 
@@ -116,7 +118,7 @@ const UploadImages = () => {
 			<li>
 				<button
 					onClick={handleButtonClick}
-					class="p-1"
+					class="p-1 min-w-5"
 					disabled={uploadImagesMutation.isPending}
 				>
 					<Icon
@@ -183,94 +185,21 @@ const UploadImages = () => {
 									<p class="text-grey-500 text-sm">+{totalFiles} Uploaded</p>
 								</div>
 
-								<Dialog
-									open={addToFolder}
-									onOpenChange={setAddToFolder}
-								>
-									<DialogTrigger asChild>
-										<button class="flex items-center gap-1.5 bg-secondary-500 py-1.5 px-3">
-											<p class="leading-09">Add To Folder</p>
-											<Icon icon="si:add-duotone" />
-										</button>
-									</DialogTrigger>
-									<DialogContent
-										showClose={false}
-										class="flex flex-col gap-8"
-									>
-										<DialogHeader class="p-0">
-											<div class="flex items-center gap-2">
-												<DialogClose>
-													<Icon
-														icon="ix:cancel"
-														fontSize={16}
-													/>
-												</DialogClose>
-												<p class="text-sm font-medium">Add to folder</p>
-											</div>
-										</DialogHeader>
-										<div class="flex flex-col gap-6">
-											<div class="flex flex-col gap-4">
-												<p class="!font-primary text-2xl leading-0">
-													Create Collection
-												</p>
-												<p class="font-medium text-sm">
-													Keep your works organized by adding them to folders
-												</p>
-											</div>
-											<DialogFooter class="flex flex-col gap-3 items-stretch">
-												<Button
-													variant="outline"
-													class="text-sm font-medium py-3.5"
-													type="button"
-													onClick={() => {
-														setAddToFolder(false);
-														setAddToExistingFolder(true);
-													}}
-												>
-													Add To Exisiting Folder
-												</Button>
-
-												<Button
-													class="text-sm font-medium py-3.5"
-													type="button"
-													onClick={() => {
-														setAddToFolder(false);
-														setAddToNewFolder(true);
-													}}
-												>
-													Create New Folder
-												</Button>
-											</DialogFooter>
-										</div>
-									</DialogContent>
-								</Dialog>
-
-								{addToNewFolder && (
-									<AddToNewFolder
-										image_ids={uploadImagesMutation.data?.data.map(
-											(item) => item.id
-										)}
-										setHasUploaded={setHasUploaded}
-										setAddToFolder={setAddToFolder}
-										addToNewFolder={addToNewFolder}
-										setAddToNewFolder={setAddToNewFolder}
-										setProgressSuccess={setProgressSuccess}
-									/>
-								)}
+								<AddToFolder
+									image_ids={
+										uploadImagesMutation.data?.data.map((img) => img.id) || []
+									}
+									addToFolder={addToFolder}
+									setHasUploaded={setHasUploaded}
+									setProgressSuccess={setProgressSuccess}
+									setAddToFolder={setAddToFolder}
+									showAddFolderButton
+								/>
 							</>
 						)}
 					</div>
 				)}
 			</div>
-			{addToExistingFolder && (
-				<AddToExistingFolder
-					image_ids={uploadImagesMutation.data?.data.map((item) => item.id)}
-					setAddToExistingFolder={setAddToExistingFolder}
-					setHasUploaded={setHasUploaded}
-					setAddToFolder={setAddToFolder}
-					setProgressSuccess={setProgressSuccess}
-				/>
-			)}
 		</>
 	);
 };

@@ -1,14 +1,18 @@
-import { render } from "preact";
-import { Router, Route, LocationProvider, ErrorBoundary } from "preact-iso";
 import { QueryClientProvider } from "@tanstack/react-query";
+import { render } from "preact";
+import { Toaster } from "react-hot-toast";
 
-import { queryClient } from "./src/lib/queryClient";
 import { Routes } from "./src/layout/Routes";
+import { queryClient } from "./src/lib/queryClient";
 
 const Document = () => {
 	return (
 		<QueryClientProvider client={queryClient}>
 			{(<Routes />) as any}
+			<Toaster
+				position="bottom-center"
+				reverseOrder={false}
+			/>
 		</QueryClientProvider>
 	);
 };

@@ -1,5 +1,8 @@
 import { useInfiniteGetGalleries } from "@/api/http/v1/gallery/gallery.hooks";
 import type { GalleryImage } from "@/api/http/v1/gallery/gallery.types";
+import { AddToFolder } from "@/components/AddToFolder";
+import { AddToNewFolder } from "@/components/AddToNewFolder";
+import { DeleteImages } from "@/components/DeleteImages";
 import { Button } from "@/components/ui/button";
 import {
 	Popover,
@@ -17,9 +20,13 @@ import {
 	useRef,
 	useState,
 } from "preact/hooks";
+import toast from "react-hot-toast";
 
 export const Gallery = () => {
 	const [galleryLayout, setGalleryLayout] = useState<"fancy" | "grid">("fancy");
+	const [selectedImages, setSelectedImages] = useState<string[]>([]);
+	const [addToFolder, setAddToFolder] = useState<boolean>(false);
+	const [deleteImages, setDeleteImages] = useState<boolean>(false);
 	const observerTarget = useRef<HTMLDivElement>(null);
 
 	const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
@@ -84,6 +91,9 @@ export const Gallery = () => {
 							observerRef={
 								idx === allImages.length - 1 ? observerTarget : undefined
 							}
+							setSelectedImages={setSelectedImages}
+							setAddToFolder={setAddToFolder}
+							setDeleteImages={setDeleteImages}
 						/>
 					))}
 				</div>
@@ -99,19 +109,30 @@ export const Gallery = () => {
 					))}
 				</div>
 			)}
+
+			<AddToFolder
+				image_ids={selectedImages}
+				addToFolder={addToFolder}
+				setAddToFolder={setAddToFolder}
+			/>
+
+			<DeleteImages
+				image_ids={selectedImages}
+				deleteImages={deleteImages}
+				setDeleteImages={setDeleteImages}
+			/>
 		</div>
 	);
 };
 
-const GalleryImage = ({
-	image,
-	isLastItem,
-	observerRef,
-}: {
+const GalleryImage = (props: {
 	image: GalleryImage;
 	nextImage?: GalleryImage;
 	isLastItem?: boolean;
 	observerRef?: RefObject<HTMLDivElement>;
+	setSelectedImages: Dispatch<StateUpdater<string[]>>;
+	setAddToFolder: Dispatch<StateUpdater<boolean>>;
+	setDeleteImages: Dispatch<StateUpdater<boolean>>;
 }) => {
 	const [isLandscape, setIsLandscape] = useState(false);
 	const [iconColor, setIconColor] = useState("text-white");
@@ -130,7 +151,7 @@ const GalleryImage = ({
 
 	return (
 		<div
-			ref={isLastItem ? observerRef : null}
+			ref={props.isLastItem ? props.observerRef : null}
 			class={cn("h-40 relative", {
 				"col-span-2": isLandscape,
 			})}
@@ -146,42 +167,50 @@ const GalleryImage = ({
 				</PopoverTrigger>
 				<PopoverContent className="w-40 flex flex-col items-stretch border-line-400 drop-shadow-[0.6px_0.8px_9px_rgba(0,0,0,0,95)] backdrop-blur-lg bg-transparent rounded-sm">
 					<ul class="flex flex-col gap-3">
-						<li class="flex items-center gap-2 hover:bg-secondary cursor-pointer justify-between">
+						<button
+							onClick={() => {
+								props.setSelectedImages(() => [props.image.id]);
+								props.setAddToFolder(true);
+							}}
+							type="button"
+							class="flex items-center gap-2 hover:bg-secondary cursor-pointer justify-between"
+						>
 							<p class="font-medium text-sm">Add to Folder</p>
-							<button
-								onClick={() => {}}
-								class="p-1 min-w-5"
-							>
+							<div class="p-1 min-w-5">
 								<Icon
 									icon="bi:folder"
 									className="h-4 w-4 text-black"
 								/>
-							</button>
-						</li>
-						<li class="flex items-center gap-2 hover:bg-secondary cursor-pointer justify-between">
+							</div>
+						</button>
+						<button
+							type="button"
+							class="flex items-center gap-2 hover:bg-secondary cursor-pointer justify-between"
+						>
 							<p class="font-medium text-sm">Add Details</p>
-							<button
-								onClick={() => {}}
-								class="p-1 min-w-5"
-							>
+							<div class="p-1 min-w-5">
 								<Icon
 									icon="iconamoon:screen-full-light"
 									className="h-4 w-4 text-black"
 								/>
-							</button>
-						</li>
-						<li class="flex items-center gap-2 hover:bg-secondary cursor-pointer justify-between">
+							</div>
+						</button>
+						<button
+							onClick={() => {
+								props.setSelectedImages(() => [props.image.id]);
+								props.setDeleteImages(true);
+							}}
+							type="button"
+							class="flex items-center gap-2 hover:bg-secondary cursor-pointer justify-between"
+						>
 							<p class="text-destructive font-medium text-sm">Delete</p>
-							<button
-								onClick={() => {}}
-								class="p-1 min-w-5"
-							>
+							<div class="p-1 min-w-5">
 								<Icon
 									icon="material-symbols-light:delete-outline-sharp"
 									className="h-4 w-4 text-destructive"
 								/>
-							</button>
-						</li>
+							</div>
+						</button>
 						<li class="flex items-center gap-2 hover:bg-secondary cursor-pointer justify-between">
 							<p class="font-medium text-sm">Uploaded</p>
 							<span class="text-sm">
@@ -189,7 +218,7 @@ const GalleryImage = ({
 									day: "2-digit",
 									month: "2-digit",
 									year: "2-digit",
-								}).format(new Date(image.created_at))}
+								}).format(new Date(props.image.created_at))}
 							</span>
 						</li>
 					</ul>
@@ -200,8 +229,8 @@ const GalleryImage = ({
 			)}
 
 			<img
-				src={image.url}
-				alt={image.file_name}
+				src={props.image.url}
+				alt={props.image.file_name}
 				onLoad={handleImageLoad}
 				class={cn(
 					"w-full h-full object-cover transition-opacity duration-300",
