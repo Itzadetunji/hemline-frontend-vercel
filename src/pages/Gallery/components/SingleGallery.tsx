@@ -1,4 +1,4 @@
-import type { GalleryImage } from "@/api/http/v1/gallery/gallery.types";
+import type { GalleryImageType } from "@/api/http/v1/gallery/gallery.types";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Drawer } from "@/components/ui/drawer";
 import { Icon } from "@iconify/react";
@@ -9,8 +9,8 @@ import { useUpdateGalleryImage } from "@/api/http/v1/gallery/gallery.hooks";
 import { useImageCache } from "@/hooks/useImageCache";
 
 interface SingleGalleryProps {
-  currentSelectedImage?: GalleryImage;
-  setCurrentSelectedImage: Dispatch<StateUpdater<GalleryImage | undefined>>;
+  currentSelectedImage?: GalleryImageType;
+  setCurrentSelectedImage: Dispatch<StateUpdater<GalleryImageType | undefined>>;
   setSelectedImages: Dispatch<StateUpdater<string[]>>;
   setAddToFolder: Dispatch<StateUpdater<boolean>>;
   setDeleteImages: Dispatch<StateUpdater<boolean>>;
@@ -83,7 +83,7 @@ export const SingleGallery = (props: SingleGalleryProps) => {
 
           <Popover>
             <PopoverTrigger asChild>
-              <button class="">
+              <button type="button">
                 <Icon icon="pepicons-pencil:dots-x" className="size-6 text-black" />
               </button>
             </PopoverTrigger>

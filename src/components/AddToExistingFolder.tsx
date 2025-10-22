@@ -10,7 +10,7 @@ import { Button } from "./ui/button";
 import { CheckboxGroup } from "./ui/checkbox-group";
 import { Drawer } from "./ui/drawer";
 import toast from "react-hot-toast";
-import { selectingImagesSignal } from "@/layout/Header";
+import { selectingSignal } from "@/layout/Header";
 
 // Zod schema for form validation
 const AddToExistingFolderSchema = z.object({
@@ -75,7 +75,7 @@ export const AddToExistingFolder = (props: AddToExistingFolderProps) => {
             },
             icon: null,
           });
-          selectingImagesSignal.value = {
+          selectingSignal.value = {
             isSelecting: false,
             selectedItems: [],
           };

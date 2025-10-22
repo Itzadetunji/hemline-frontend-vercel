@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 // Gallery Image interface
-export interface GalleryImage {
+export interface GalleryImageType {
   id: string;
   file_name: string;
   description: string;
@@ -20,7 +20,7 @@ export interface PaginationParams {
 // Get Images In Galleries - Response
 export interface GetGalleriesResponse {
   message: string;
-  data: GalleryImage[];
+  data: GalleryImageType[];
   pagination?: {
     current_page: number;
     per_page: number;
@@ -32,7 +32,7 @@ export interface GetGalleriesResponse {
 // Get Single Image - Response
 export interface GetGalleryImageResponse {
   message: string;
-  data: GalleryImage;
+  data: GalleryImageType;
 }
 
 // Upload Image - Request (FormData handled separately)
@@ -43,7 +43,7 @@ export interface UploadImagesPayload {
 // Upload Image - Response
 export interface UploadImagesResponse {
   message: string;
-  data: GalleryImage[];
+  data: GalleryImageType[];
   count: number;
 }
 
@@ -60,7 +60,7 @@ export type UpdateGalleryImagePayload = z.infer<typeof UpdateGalleryImageSchema>
 // Update Gallery Image - Response
 export interface UpdateGalleryImageResponse {
   message: string;
-  data: GalleryImage;
+  data: GalleryImageType;
 }
 
 // Delete Images - Request

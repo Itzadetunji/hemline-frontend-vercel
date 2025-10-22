@@ -1,6 +1,6 @@
 // Export all types
 export type {
-  GalleryImage,
+  GalleryImageType as GalleryImage,
   PaginationParams,
   GetGalleriesResponse,
   GetGalleryImageResponse,

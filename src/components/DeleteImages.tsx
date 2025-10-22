@@ -1,7 +1,7 @@
 import { useDeleteImages } from "@/api/http/v1/gallery/gallery.hooks";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader } from "@/components/ui/dialog";
-import { selectingImagesSignal } from "@/layout/Header";
+import { selectingSignal } from "@/layout/Header";
 import { Icon } from "@iconify/react";
 import type { Dispatch, StateUpdater } from "preact/hooks";
 import toast from "react-hot-toast";
@@ -26,7 +26,7 @@ export const DeleteImages = (props: DeleteImagesProps) => {
       {
         onSuccess: (data) => {
           toast.success(data.message || `${data.count} image(s) deleted successfully`);
-          selectingImagesSignal.value = {
+          selectingSignal.value = {
             isSelecting: false,
             selectedItems: [],
           };
@@ -50,7 +50,7 @@ export const DeleteImages = (props: DeleteImagesProps) => {
         props.setDeleteImages(open);
       }}
     >
-      <DialogContent showClose={false} class="flex flex-col gap-8">
+      <DialogContent showClose={false} class="flex flex-col gap-8 rounded-none">
         <DialogHeader class="p-0">
           <div class="flex items-center gap-2">
             <DialogClose>

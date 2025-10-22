@@ -1,15 +1,8 @@
-import { Icon } from "@iconify/react";
 import { signal } from "@preact/signals";
-import { useRef, useState } from "preact/hooks";
 
-import { useUploadImages } from "@/api/http/v1/gallery/gallery.hooks";
-import { AddToFolder } from "@/components/AddToFolder";
-import { DeleteImages } from "@/components/DeleteImages";
-import { Button } from "@/components/ui/button";
-import { cn, getInitials } from "@/lib/utils";
-import toast from "react-hot-toast";
 import { useGetUserProfile } from "@/api/http/v1/users/users.hooks";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { cn, getInitials } from "@/lib/utils";
 
 // Signal for header content that can be accessed anywhere
 interface headerContentSignalType {
@@ -23,7 +16,7 @@ export const headerContentSignal = signal<headerContentSignalType>({
   title: "Gallery",
   tab: "gallery",
 });
-export const selectingImagesSignal = signal<{
+export const selectingSignal = signal<{
   isSelecting: boolean;
   selectedItems: string[];
 }>({
@@ -36,11 +29,13 @@ export const Header = () => {
 
   if (!headerContentSignal.value.showHeader) return null;
 
+  const headerContent = typeof headerContentSignal.value.headerContent === "function" ? headerContentSignal.value.headerContent() : headerContentSignal.value.headerContent;
+
   return (
     <header class="sticky top-0 z-50 flex items-center justify-between gap-2 bg-white px-4 pt-4 pb-3">
       <h1 class="text-3xl text-[2rem] text-black">{headerContentSignal.value.title}</h1>
       <ul class="flex flex-1 items-center justify-end gap-3">
-        {headerContentSignal.value.headerContent}
+        {headerContent}
         <a href="/profile">
           <li class="-9 size-9 w-9 overflow-hidden rounded-full">
             <img src={getUserProfile.data?.data.user.business_image} alt="" />
@@ -61,7 +56,7 @@ type Tab = (typeof Tabs)[number];
 export const NavBar = () => {
   if (!headerContentSignal.value.showHeader) return null;
 
-  if (selectingImagesSignal.value.isSelecting) return <AddToFolderBar />;
+  if (selectingSignal.value.isSelecting) return null;
 
   return (
     <ul class="-translate-x-1/2 fixed bottom-6 left-1/2 flex items-center border border-line-500 bg-white p-0.5">
@@ -83,65 +78,5 @@ const NavbarCard = (props: { tab: Tab }) => {
         {props.tab}
       </li>
     </a>
-  );
-};
-
-export const AddToFolderBar = () => {
-  const [addToFolder, setAddToFolder] = useState(false);
-  const [deleteImages, setDeleteImages] = useState(false);
-
-  const handleAddToFolder = () => {
-    if (selectingImagesSignal.value.selectedItems.length === 0) {
-      toast("Please select at least one image", {
-        style: {
-          border: "1px solid var(--primary)",
-          padding: "4px 4px",
-          color: "var(--primary)",
-          borderRadius: "0px",
-        },
-        icon: null,
-      });
-      return;
-    }
-    setAddToFolder(true);
-  };
-
-  const handleDeleteImages = () => {
-    if (selectingImagesSignal.value.selectedItems.length === 0) {
-      toast("Please select at least one image to delete", {
-        style: {
-          border: "1px solid var(--primary)",
-          padding: "4px 4px",
-          color: "var(--primary)",
-          borderRadius: "0px",
-        },
-        icon: null,
-      });
-      return;
-    }
-    setDeleteImages(true);
-  };
-
-  return (
-    <>
-      <ul class="-translate-x-1/2 fixed bottom-6 left-1/2 flex items-center gap-0 border border-line-500">
-        <Button class="gap-1 px-4 py-2.5 text-black capitalize" variant="secondary" onClick={handleAddToFolder}>
-          <div class="min-w-4.5">
-            <Icon icon="si:add-duotone" className="size-4.5" />
-          </div>
-          <p class="leading-0">Add To Folder</p>
-        </Button>
-        <Button class="-ml-0.5 gap-1.5 bg-white px-4 py-2.5 text-destructive capitalize hover:bg-white/80" onClick={handleDeleteImages}>
-          <div class="min-w-4.5">
-            <Icon icon="material-symbols-light:delete-outline-sharp" className="h-4.5 w-4.5" />
-          </div>
-          <p class="leading-0">Delete</p>
-        </Button>
-      </ul>
-
-      <AddToFolder image_ids={selectingImagesSignal.value.selectedItems} addToFolder={addToFolder} setAddToFolder={setAddToFolder} />
-
-      <DeleteImages image_ids={selectingImagesSignal.value.selectedItems} deleteImages={deleteImages} setDeleteImages={setDeleteImages} />
-    </>
   );
 };
