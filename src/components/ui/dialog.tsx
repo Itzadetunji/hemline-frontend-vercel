@@ -1,10 +1,12 @@
 import type { JSX } from "preact";
-import { useEffect, useRef } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import { cn } from "@/lib/utils";
+import { zIndexManager } from "@/lib/z-index-manager";
 
 interface DialogContextValue {
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
+	zIndex: number;
 }
 
 let dialogContext: DialogContextValue | null = null;
@@ -16,7 +18,30 @@ interface DialogProps {
 }
 
 export function Dialog({ open = false, onOpenChange, children }: DialogProps) {
-	dialogContext = { open, onOpenChange: onOpenChange || (() => {}) };
+	const [zIndex, setZIndex] = useState(60);
+	const cleanupRef = useRef<(() => void) | null>(null);
+
+	useEffect(() => {
+		if (open) {
+			const { zIndex: newZIndex, cleanup } = zIndexManager.register("DIALOG");
+			setZIndex(newZIndex);
+			cleanupRef.current = cleanup;
+		} else {
+			if (cleanupRef.current) {
+				cleanupRef.current();
+				cleanupRef.current = null;
+			}
+		}
+
+		return () => {
+			if (cleanupRef.current) {
+				cleanupRef.current();
+				cleanupRef.current = null;
+			}
+		};
+	}, [open]);
+
+	dialogContext = { open, onOpenChange: onOpenChange || (() => {}), zIndex };
 
 	return <>{children}</>;
 }
@@ -88,14 +113,17 @@ export function DialogOverlay({ className, ...props }: DialogOverlayProps) {
 		}
 	};
 
+	if (!dialogContext) return null;
+
 	return (
 		<div
 			className={cn(
-				"fixed inset-0 z-50 bg-black/50 backdrop-blur-sm",
+				"fixed inset-0 bg-black/50 backdrop-blur-sm",
 				"data-[state=open]:animate-in data-[state=closed]:animate-out",
 				"data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
 				className
 			)}
+			style={{ zIndex: dialogContext.zIndex }}
 			data-state={dialogContext?.open ? "open" : "closed"}
 			onClick={handleClick}
 			{...props}
@@ -159,44 +187,49 @@ export function DialogContent({
 	if (!dialogContext?.open) return null;
 
 	return (
-		<div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+		<>
 			<DialogOverlay />
 			<div
-				ref={contentRef}
-				className={cn(
-					"relative z-50 grid w-full max-w-lg gap-4 border border-line-500 bg-white p-4 shadow-lg",
-					"duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out",
-					"data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
-					"data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
-					"data-[state=closed]:slide-out-to-top-1/2",
-					"data-[state=open]:slide-in-from-top-1/2",
-					"sm:rounded-lg",
-					className
-				)}
-				data-state={dialogContext?.open ? "open" : "closed"}
-				{...props}
+				className="fixed inset-0 flex items-center justify-center p-4"
+				style={{ zIndex: dialogContext.zIndex }}
 			>
-				{children}
-				{showClose && (
-					<DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="16"
-							height="16"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							strokeWidth="2"
-							strokeLinecap="round"
-							strokeLinejoin="round"
-						>
-							<path d="M18 6l-12 12M6 6l12 12" />
-						</svg>
-						<span className="sr-only">Close</span>
-					</DialogClose>
-				)}
+				<div
+					ref={contentRef}
+					className={cn(
+						"relative grid w-full max-w-lg gap-4 border border-line-500 bg-white p-4 shadow-lg z-10",
+						"duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out",
+						"data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+						"data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
+						"data-[state=closed]:slide-out-to-top-1/2",
+						"data-[state=open]:slide-in-from-top-1/2",
+						"sm:rounded-lg",
+						className
+					)}
+					data-state={dialogContext?.open ? "open" : "closed"}
+					{...props}
+				>
+					{children}
+					{showClose && (
+						<DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="16"
+								height="16"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="2"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+							>
+								<path d="M18 6l-12 12M6 6l12 12" />
+							</svg>
+							<span className="sr-only">Close</span>
+						</DialogClose>
+					)}
+				</div>
 			</div>
-		</div>
+		</>
 	);
 }
 

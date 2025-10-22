@@ -20,9 +20,13 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { selectingImagesSignal } from "@/layout/Header";
+import { SingleGallery } from "./components/SingleGallery";
 
 export const Gallery = () => {
-	const [galleryLayout, setGalleryLayout] = useState<"fancy" | "grid">("fancy");
+	// const [galleryLayout, setGalleryLayout] = useState<"fancy" | "grid">("fancy");
+	const [currentSelectedImage, setCurrentSelectedImage] = useState<
+		GalleryImage | undefined
+	>(undefined);
 	const [selectedImages, setSelectedImages] = useState<string[]>([]);
 	const [addToFolder, setAddToFolder] = useState<boolean>(false);
 	const [deleteImages, setDeleteImages] = useState<boolean>(false);
@@ -93,6 +97,7 @@ export const Gallery = () => {
 							setSelectedImages={setSelectedImages}
 							setAddToFolder={setAddToFolder}
 							setDeleteImages={setDeleteImages}
+							setCurrentSelectedImage={setCurrentSelectedImage}
 						/>
 					))}
 				</div>
@@ -120,6 +125,14 @@ export const Gallery = () => {
 				deleteImages={deleteImages}
 				setDeleteImages={setDeleteImages}
 			/>
+
+			<SingleGallery
+				currentSelectedImage={currentSelectedImage}
+				setCurrentSelectedImage={setCurrentSelectedImage}
+				setSelectedImages={setSelectedImages}
+				setAddToFolder={setAddToFolder}
+				setDeleteImages={setDeleteImages}
+			/>
 		</div>
 	);
 };
@@ -132,10 +145,12 @@ const GalleryImage = (props: {
 	setSelectedImages: Dispatch<StateUpdater<string[]>>;
 	setAddToFolder: Dispatch<StateUpdater<boolean>>;
 	setDeleteImages: Dispatch<StateUpdater<boolean>>;
+	setCurrentSelectedImage: Dispatch<StateUpdater<GalleryImage | undefined>>;
 }) => {
 	const [isLandscape, setIsLandscape] = useState(false);
 	const [iconColor, setIconColor] = useState("text-white");
 	const [loading, setLoading] = useState(true); // Loading state for image
+	const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
 	const handleImageLoad = (e: Event) => {
 		const img = e.target as HTMLImageElement;
@@ -189,7 +204,10 @@ const GalleryImage = (props: {
 					</div>
 				</label>
 			) : (
-				<Popover>
+				<Popover
+					open={isPopoverOpen}
+					onOpenChange={setIsPopoverOpen}
+				>
 					<PopoverTrigger asChild>
 						<button class="absolute top-3 left-2">
 							<Icon
@@ -220,6 +238,10 @@ const GalleryImage = (props: {
 							<button
 								type="button"
 								class="flex items-center gap-2 hover:bg-secondary cursor-pointer justify-between"
+								onClick={() => {
+									setIsPopoverOpen(false);
+									props.setCurrentSelectedImage(props.image);
+								}}
 							>
 								<p class="font-medium text-sm">Add Details</p>
 								<div class="p-1 min-w-5">

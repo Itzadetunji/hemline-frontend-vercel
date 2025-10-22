@@ -53,6 +53,7 @@ export interface User {
 	custom_fields: CustomField[];
 	total_folders: number;
 	total_gallery_images: number;
+	business_image: string;
 }
 
 export interface GetUserProfileResponse {

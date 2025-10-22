@@ -46,12 +46,15 @@ export const AddToFolder = (props: AddToFolderProps) => {
 				>
 					<DialogHeader class="p-0">
 						<div class="flex items-center gap-2">
-							<DialogClose>
+							<button
+								type="button"
+								onClick={() => props.setAddToFolder(false)}
+							>
 								<Icon
 									icon="ix:cancel"
 									fontSize={16}
 								/>
-							</DialogClose>
+							</button>
 							<p class="text-sm font-medium">Add to folder</p>
 						</div>
 					</DialogHeader>
@@ -79,7 +82,6 @@ export const AddToFolder = (props: AddToFolderProps) => {
 								class="text-sm font-medium py-3.5"
 								type="button"
 								onClick={() => {
-									props.setAddToFolder(false);
 									setAddToNewFolder(true);
 								}}
 							>
@@ -104,15 +106,14 @@ export const AddToFolder = (props: AddToFolderProps) => {
 				/>
 			)}
 
-			{addToExistingFolder && (
-				<AddToExistingFolder
-					image_ids={props.image_ids}
-					setAddToExistingFolder={setAddToExistingFolder}
-					setHasUploaded={props.setHasUploaded}
-					setAddToFolder={props.setAddToFolder}
-					setProgressSuccess={props.setProgressSuccess}
-				/>
-			)}
+			<AddToExistingFolder
+				image_ids={props.image_ids}
+				addToExistingFolder={addToExistingFolder}
+				setAddToExistingFolder={setAddToExistingFolder}
+				setHasUploaded={props.setHasUploaded}
+				setAddToFolder={props.setAddToFolder}
+				setProgressSuccess={props.setProgressSuccess}
+			/>
 		</>
 	);
 };

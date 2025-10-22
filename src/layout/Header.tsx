@@ -6,9 +6,11 @@ import { useUploadImages } from "@/api/http/v1/gallery/gallery.hooks";
 import { AddToFolder } from "@/components/AddToFolder";
 import { DeleteImages } from "@/components/DeleteImages";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn, getInitials } from "@/lib/utils";
 import toast from "react-hot-toast";
 import { useGetUserProfile } from "@/api/http/v1/users/users.hooks";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { get } from "http";
 
 // Signal for header content that can be accessed anywhere
 export const headerContentSignal = signal<string>("Gallery");
@@ -69,9 +71,23 @@ export const Header = () => {
 				<a href="/profile">
 					<li class="rounded-full size-9 -9 w-9 overflow-hidden">
 						<img
-							src="https://placehold.co/36x36"
+							src={getUserProfile.data?.data.user.business_image}
 							alt=""
 						/>
+						<Avatar>
+							{
+								(
+									<AvatarImage
+										src={getUserProfile.data?.data.user.business_image}
+									/>
+								) as any
+							}
+							<AvatarFallback>
+								{getUserProfile.data?.data.user.full_name
+									? getInitials(getUserProfile.data?.data.user.full_name, true)
+									: getInitials(getUserProfile.data?.data.user.email as string)}
+							</AvatarFallback>
+						</Avatar>
 					</li>
 				</a>
 			</ul>

@@ -11,6 +11,7 @@ import {
 import type { Folder } from "@/api/http/v1/gallery/folders.types";
 import { Button } from "./ui/button";
 import { CheckboxGroup } from "./ui/checkbox-group";
+import { Drawer } from "./ui/drawer";
 import toast from "react-hot-toast";
 import { selectingImagesSignal } from "@/layout/Header";
 
@@ -23,6 +24,7 @@ type AddToExistingFolderFormData = z.infer<typeof AddToExistingFolderSchema>;
 
 interface AddToExistingFolderProps {
 	image_ids?: string[];
+	addToExistingFolder: boolean;
 	setHasUploaded?: Dispatch<StateUpdater<boolean>>;
 	setAddToFolder: Dispatch<StateUpdater<boolean>>;
 	setAddToExistingFolder: Dispatch<StateUpdater<boolean>>;
@@ -116,10 +118,14 @@ export const AddToExistingFolder = (props: AddToExistingFolderProps) => {
 	};
 
 	return (
-		<div class="fixed flex flex-col z-50 w-screen -translate-x-1/2 left-1/2 h-[100dvh] justify-end items-center inset-0 mx-0 px-0 bg-black/50">
+		<Drawer
+			isOpen={props.addToExistingFolder}
+			onClose={() => props.setAddToExistingFolder(false)}
+			className="flex flex-col gap-8 px-4 py-6 overflow-y-auto flex-1"
+		>
 			<form
 				onSubmit={handleFormSubmit}
-				class="flex flex-col border-t border-t-line-500 rounded-t-2xl bg-white z-50 top-24 py-6 px-4 flex-1 gap-8 mt-24 w-full"
+				class="flex flex-col flex-1 gap-8"
 			>
 				<div class="relative flex items-center justify-center">
 					<button
@@ -218,7 +224,7 @@ export const AddToExistingFolder = (props: AddToExistingFolderProps) => {
 					</Button>
 				</div>
 			</form>
-		</div>
+		</Drawer>
 	);
 };
 

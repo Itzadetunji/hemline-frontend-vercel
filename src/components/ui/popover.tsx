@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { zIndexManager } from "@/lib/z-index-manager";
 import type { ComponentChildren, JSX, RefObject } from "preact";
 import { createContext } from "preact";
 import {
@@ -15,6 +16,7 @@ interface PopoverContextValue {
 	setOpen: (value: boolean) => void;
 	triggerRef: RefObject<HTMLButtonElement>;
 	contentRef: RefObject<HTMLDivElement>;
+	zIndex: number;
 }
 
 const PopoverContext = createContext<PopoverContextValue | undefined>(
@@ -46,6 +48,8 @@ export function Popover({
 	const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
 	const triggerRef = useRef<HTMLButtonElement>(null);
 	const contentRef = useRef<HTMLDivElement>(null);
+	const [zIndex, setZIndex] = useState(50);
+	const cleanupRef = useRef<(() => void) | null>(null);
 
 	const isControlled = controlledOpen !== undefined;
 	const open = isControlled ? controlledOpen : uncontrolledOpen;
@@ -57,6 +61,27 @@ export function Popover({
 
 		onOpenChange?.(value);
 	};
+
+	// Manage z-index
+	useEffect(() => {
+		if (open) {
+			const { zIndex: newZIndex, cleanup } = zIndexManager.register("POPOVER");
+			setZIndex(newZIndex);
+			cleanupRef.current = cleanup;
+		} else {
+			if (cleanupRef.current) {
+				cleanupRef.current();
+				cleanupRef.current = null;
+			}
+		}
+
+		return () => {
+			if (cleanupRef.current) {
+				cleanupRef.current();
+				cleanupRef.current = null;
+			}
+		};
+	}, [open]);
 
 	// Close on outside click
 	useEffect(() => {
@@ -116,7 +141,9 @@ export function Popover({
 	}, [open]);
 
 	return (
-		<PopoverContext.Provider value={{ open, setOpen, triggerRef, contentRef }}>
+		<PopoverContext.Provider
+			value={{ open, setOpen, triggerRef, contentRef, zIndex }}
+		>
 			{children}
 		</PopoverContext.Provider>
 	);
@@ -193,7 +220,7 @@ export function PopoverContent({
 	alignOffset = 0,
 	...props
 }: PopoverContentProps) {
-	const { open, contentRef, triggerRef } = usePopoverContext();
+	const { open, contentRef, triggerRef, zIndex } = usePopoverContext();
 	const [position, setPosition] = useState({ top: 0, left: 0 });
 
 	// Calculate position
@@ -278,7 +305,7 @@ export function PopoverContent({
 			role="dialog"
 			aria-modal="false"
 			className={cn(
-				"fixed z-50 rounded-md border bg-popover p-2 text-popover-foreground shadow-md outline-none",
+				"fixed rounded-md border bg-popover p-2 text-popover-foreground shadow-md outline-none",
 				"data-[state=open]:animate-in data-[state=closed]:animate-out",
 				"data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
 				"data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
@@ -293,6 +320,7 @@ export function PopoverContent({
 			style={{
 				top: `${position.top}px`,
 				left: `${position.left}px`,
+				zIndex,
 			}}
 			data-state={open ? "open" : "closed"}
 			data-side={side}

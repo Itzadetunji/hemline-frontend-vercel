@@ -143,11 +143,6 @@ export const useUpdateGalleryImage = () => {
 				galleryQueryKeys.detail(variables.id),
 				response
 			);
-
-			// Invalidate lists to reflect the update
-			queryClient.invalidateQueries({
-				queryKey: galleryQueryKeys.lists(),
-			});
 		},
 		onError: (error) => {
 			console.error("Error updating gallery image:", error);

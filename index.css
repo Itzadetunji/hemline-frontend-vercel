@@ -217,6 +217,12 @@
 
 	--font-primary: "Grenze Gotisch", serif;
 	--font-secondary: "Manrope", sans-serif;
+
+	/* Z-index layers */
+	--z-popover: 50;
+	--z-dialog: 60;
+	--z-toast: 70;
+	--z-tooltip: 80;
 }
 
 .dark {
