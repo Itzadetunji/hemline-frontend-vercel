@@ -41,6 +41,10 @@ export const Routes = () => {
 						component={Gallery}
 					/>
 					<ProtectedRoute
+						path="/folders"
+						component={Gallery}
+					/>
+					<ProtectedRoute
 						path="/clients"
 						component={Gallery}
 					/>

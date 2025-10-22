@@ -54,20 +54,22 @@ export const Header = () => {
 					)}
 				</button>
 				<UploadImages />
-				<li>
-					<button
-						onClick={() => {}}
-						class="p-1 relative min-w-5 min-h-5"
-					>
-						<Icon
-							icon="bi:folder"
-							className="h-4 w-4 text-black"
-						/>
-						<p class="text-white -top-0.5 -right-0.5 leading-0 text-[0.625rem] absolute min-w-3.5 min-h-3.5 bg-primary rounded-full grid place-content-center">
-							{getUserProfile.data?.data.user.total_folders || 0}
-						</p>
-					</button>
-				</li>
+				<a href="/folders">
+					<li>
+						<button
+							onClick={() => {}}
+							class="p-1 relative min-w-5 min-h-5"
+						>
+							<Icon
+								icon="bi:folder"
+								className="h-4 w-4 text-black"
+							/>
+							<p class="text-white -top-0.5 -right-0.5 leading-0 text-[0.625rem] absolute min-w-3.5 min-h-3.5 bg-primary rounded-full grid place-content-center">
+								{getUserProfile.data?.data.user.total_folders || 0}
+							</p>
+						</button>
+					</li>
+				</a>
 				<a href="/profile">
 					<li class="rounded-full size-9 -9 w-9 overflow-hidden">
 						<img
