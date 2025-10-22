@@ -42,13 +42,17 @@ export const FOLDERS_API = {
 
   CREATE_FOLDER: async (data: CreateFolderPayload): Promise<CreateFolderResponse> => await $http.post(FOLDERS_ENDPOINTS.createFolder, data).then((res) => res.data),
 
-  UPDATE_FOLDER: async (id: string, data: UpdateFolderPayload): Promise<UpdateFolderResponse> => await $http.patch(FOLDERS_ENDPOINTS.updateFolder(id), data).then((res) => res.data),
+  UPDATE_FOLDER: async (id: string, data: UpdateFolderPayload): Promise<UpdateFolderResponse> =>
+    await $http.patch(FOLDERS_ENDPOINTS.updateFolder(id), data).then((res) => res.data),
 
-  ADD_IMAGES_TO_FOLDER: async (id: string, data: AddImagesToFolderPayload): Promise<AddImagesToFolderResponse> => await $http.post(FOLDERS_ENDPOINTS.addImagesToFolder(id), data).then((res) => res.data),
+  ADD_IMAGES_TO_FOLDER: async (id: string, data: AddImagesToFolderPayload): Promise<AddImagesToFolderResponse> =>
+    await $http.post(FOLDERS_ENDPOINTS.addImagesToFolder(id), data).then((res) => res.data),
 
-  SET_FOLDER_COVER_IMAGE: async (id: string, data: SetFolderCoverImagePayload): Promise<SetFolderCoverImageResponse> => await $http.patch(FOLDERS_ENDPOINTS.setCoverImage(id), data).then((res) => res.data),
+  SET_FOLDER_COVER_IMAGE: async (id: string, data: SetFolderCoverImagePayload): Promise<SetFolderCoverImageResponse> =>
+    await $http.patch(FOLDERS_ENDPOINTS.setCoverImage(id), data).then((res) => res.data),
 
-  REMOVE_IMAGES_FROM_FOLDER: async (id: string, data: RemoveImagesFromFolderPayload): Promise<RemoveImagesFromFolderResponse> => await $http.delete(FOLDERS_ENDPOINTS.removeImagesFromFolder(id), { data }).then((res) => res.data),
+  REMOVE_IMAGES_FROM_FOLDER: async (id: string, data: RemoveImagesFromFolderPayload): Promise<RemoveImagesFromFolderResponse> =>
+    await $http.delete(FOLDERS_ENDPOINTS.removeImagesFromFolder(id), { data }).then((res) => res.data),
 
   DELETE_FOLDER: async (id: string): Promise<DeleteFolderResponse> => await $http.delete(FOLDERS_ENDPOINTS.deleteFolder(id)).then((res) => res.data),
 };

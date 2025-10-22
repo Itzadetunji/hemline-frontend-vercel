@@ -4,6 +4,7 @@ import { cn } from "../../lib/utils";
 
 function Label({ class: className, ...props }: JSX.IntrinsicElements["label"]) {
   return (
+    // biome-ignore lint/a11y/noLabelWithoutControl: This is a generic label component, the control will be passed as a child
     <label
       data-slot="label"
       className={cn(

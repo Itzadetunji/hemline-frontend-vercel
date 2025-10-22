@@ -30,7 +30,6 @@ export const AddToNewFolder = (props: AddToNewFolderProps) => {
     handleSubmit,
     formState: { errors },
     reset,
-    getValues,
   } = useForm<CreateFolderPayload>({
     resolver: zodResolver(CreateFolderSchema) as any,
     defaultValues: {

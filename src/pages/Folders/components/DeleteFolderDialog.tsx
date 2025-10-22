@@ -16,7 +16,12 @@ export const DeleteFolderDialog = (props: DeleteFolderDialogProps) => {
   const deleteFolder = useDeleteFolder();
 
   const handleDelete = async () => {
-    const foldersToDelete = selectingSignal.value.isSelecting && selectingSignal.value.selectedItems.length > 0 ? selectingSignal.value.selectedItems : props.selectedFolder ? [props.selectedFolder.id] : [];
+    const foldersToDelete =
+      selectingSignal.value.isSelecting && selectingSignal.value.selectedItems.length > 0
+        ? selectingSignal.value.selectedItems
+        : props.selectedFolder
+          ? [props.selectedFolder.id]
+          : [];
 
     if (foldersToDelete.length === 0) {
       toast.error("No folders selected");

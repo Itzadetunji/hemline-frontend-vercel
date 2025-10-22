@@ -22,7 +22,9 @@ export function ZIndexDemo() {
     <div class="space-y-4 p-8">
       <h1 class="mb-4 font-bold text-3xl">Z-Index Management Demo</h1>
 
-      <p class="mb-8 text-grey-600">This demo shows how the dynamic z-index management system works. Try opening multiple dialogs, drawers, and popovers to see how they stack properly.</p>
+      <p class="mb-8 text-grey-600">
+        This demo shows how the dynamic z-index management system works. Try opening multiple dialogs, drawers, and popovers to see how they stack properly.
+      </p>
 
       <div class="space-y-4">
         {/* Dialog Examples */}

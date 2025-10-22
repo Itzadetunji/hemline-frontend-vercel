@@ -18,7 +18,7 @@ export const Folders = () => {
   const [showRenameDialog, setShowRenameDialog] = useState(false);
   const [selectedFolder, setSelectedFolder] = useState<Folder | null>(null);
   const getUserProfile = useGetUserProfile();
-  console.log(selectingSignal.value);
+
   useLayoutEffect(() => {
     selectingSignal.value = {
       isSelecting: false,
@@ -58,11 +58,12 @@ export const Folders = () => {
               <Icon icon="material-symbols-light:delete-outline-sharp" className="h-5 w-5 text-destructive" />
             </button>
           )}
-          {/* <UploadImages /> */}
           <a href="/folders">
             <li class="relative min-h-5 min-w-5 p-1">
               <Icon icon="bi:folder" className="h-4 w-4 text-black" />
-              <p class="-top-0.5 -right-0.5 absolute grid min-h-3.5 min-w-3.5 place-content-center rounded-full bg-primary text-[0.625rem] text-white leading-0">{getUserProfile.data?.data.user.total_folders || 0}</p>
+              <p class="-top-0.5 -right-0.5 absolute grid min-h-3.5 min-w-3.5 place-content-center rounded-full bg-primary text-[0.625rem] text-white leading-0">
+                {getUserProfile.data?.data.user.total_folders || 0}
+              </p>
             </li>
           </a>
         </>
@@ -77,7 +78,9 @@ export const Folders = () => {
         <p class="font-medium text-sm">What is a folder?</p>
       </button>
       {userSignal.value?.user?.total_folders === 0 && <NoFolders step={step} setStep={setStep} />}
-      {Boolean(userSignal.value?.user?.total_folders) && <AllFolders step={step} setStep={setStep} setShowDeleteDialog={setShowDeleteDialog} setShowRenameDialog={setShowRenameDialog} setSelectedFolder={setSelectedFolder} />}
+      {Boolean(userSignal.value?.user?.total_folders) && (
+        <AllFolders step={step} setStep={setStep} setShowDeleteDialog={setShowDeleteDialog} setShowRenameDialog={setShowRenameDialog} setSelectedFolder={setSelectedFolder} />
+      )}
 
       {/* Delete Dialog */}
       {showDeleteDialog && <DeleteFolderDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog} selectedFolder={selectedFolder} />}
@@ -178,11 +181,20 @@ const AllFolders = (props: Mainprops) => {
     return (
       getFoldersQuery.data &&
       getFoldersQuery.data.data.length > 0 && (
-        <div class="grid grid-cols-3 gap-8">
-          {getFoldersQuery.data.data.map((folder) => (
-            <FolderCard key={folder.id} folder={folder} setShowDeleteDialog={props.setShowDeleteDialog} setShowRenameDialog={props.setShowRenameDialog} setSelectedFolder={props.setSelectedFolder} />
-          ))}
-        </div>
+        <>
+          {selectingSignal.value.isSelecting && <DeleteManyBar setSelectedFolder={props.setSelectedFolder} setShowDeleteDialog={props.setShowDeleteDialog} />}
+          <div class="grid grid-cols-3 gap-8">
+            {getFoldersQuery.data.data.map((folder) => (
+              <FolderCard
+                key={folder.id}
+                folder={folder}
+                setShowDeleteDialog={props.setShowDeleteDialog}
+                setShowRenameDialog={props.setShowRenameDialog}
+                setSelectedFolder={props.setSelectedFolder}
+              />
+            ))}
+          </div>
+        </>
       )
     );
 };
@@ -293,5 +305,24 @@ const FolderCard = (props: FolderCardProps) => {
         </div>
       </figcaption>
     </figure>
+  );
+};
+
+const DeleteManyBar = (props: { setSelectedFolder?: Dispatch<StateUpdater<Folder | null>>; setShowDeleteDialog?: Dispatch<StateUpdater<boolean>> }) => {
+  return (
+    <ul class="-translate-x-1/2 fixed bottom-6 left-1/2 flex items-center gap-0 border border-line-500">
+      <Button
+        class="-ml-0.5 gap-1.5 bg-white px-4 py-2.5 text-destructive capitalize hover:bg-white/80"
+        onClick={() => {
+          props.setSelectedFolder?.(null);
+          props.setShowDeleteDialog?.(true);
+        }}
+      >
+        <div class="min-w-4.5">
+          <Icon icon="material-symbols-light:delete-outline-sharp" className="h-4.5 w-4.5" />
+        </div>
+        <p class="leading-0">Delete</p>
+      </Button>
+    </ul>
   );
 };

@@ -14,15 +14,15 @@ interface RenameFolderDialogProps {
 
 export const RenameFolderDialog = (props: RenameFolderDialogProps) => {
   const [folderName, setFolderName] = useState(props.folder.name);
-  const updateFolder = useUpdateFolder();
+  const updateFolderMutation = useUpdateFolder();
 
   const handleRename = () => {
     if (!folderName.trim()) return;
 
-    updateFolder.mutate(
+    updateFolderMutation.mutate(
       {
         id: props.folder.id,
-        data: { name: folderName },
+        data: { name: folderName.trim() },
       },
       {
         onSuccess: () => {
@@ -36,7 +36,7 @@ export const RenameFolderDialog = (props: RenameFolderDialogProps) => {
     <Dialog
       open={props.open}
       onOpenChange={(open) => {
-        if (updateFolder.isPending) return;
+        if (updateFolderMutation.isPending) return;
         props.onOpenChange(open);
       }}
     >
@@ -59,13 +59,20 @@ export const RenameFolderDialog = (props: RenameFolderDialogProps) => {
               <i className="size-4.5">
                 <Icon icon="bi:folder" fontSize={18} />
               </i>
-              <input id="folder-name" type="text" value={folderName} onInput={(e) => setFolderName((e.target as HTMLInputElement).value)} class="flex-1 text-sm placeholder:text-grey-400" placeholder="Enter folder name" />
+              <input
+                id="folder-name"
+                type="text"
+                value={folderName}
+                onInput={(e) => setFolderName((e.target as HTMLInputElement).value)}
+                class="flex-1 text-sm placeholder:text-grey-400"
+                placeholder="Enter folder name"
+              />
             </div>
           </div>
 
           <DialogFooter class="p-0">
-            <Button onClick={handleRename} class="w-full bg-primary hover:bg-primary/90" disabled={updateFolder.isPending || !folderName.trim()}>
-              {updateFolder.isPending ? "Saving..." : "Save"}
+            <Button onClick={handleRename} class="w-full bg-primary hover:bg-primary/90" disabled={updateFolderMutation.isPending || !folderName.trim()}>
+              {updateFolderMutation.isPending ? "Saving..." : "Save"}
             </Button>
           </DialogFooter>
         </div>

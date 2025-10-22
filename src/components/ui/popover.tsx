@@ -144,7 +144,17 @@ export function PopoverTrigger({ asChild, children, className, ...props }: Popov
   if (asChild && typeof children === "object" && children !== null) {
     const child = Array.isArray(children) ? children[0] : children;
     if (child && typeof child === "object" && "props" in child) {
-      return <child.type {...child.props} {...props} ref={triggerRef} onClick={handleClick} aria-expanded={open} aria-haspopup="dialog" className={cn(child.props.className, className)} />;
+      return (
+        <child.type
+          {...child.props}
+          {...props}
+          ref={triggerRef}
+          onClick={handleClick}
+          aria-expanded={open}
+          aria-haspopup="dialog"
+          className={cn(child.props.className, className)}
+        />
+      );
     }
   }
 

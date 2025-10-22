@@ -89,7 +89,7 @@ export const zIndexManager = new ZIndexManager();
  * Hook-like function to use z-index management in components
  * Call this when the overlay opens and call the cleanup function when it closes
  */
-export function useZIndex(type: keyof typeof Z_INDEX_BASE, isOpen: boolean): number {
+export function useZIndex(type: keyof typeof Z_INDEX_BASE): number {
   // This will be enhanced in the component implementations
   // For now, return base z-index
   return Z_INDEX_BASE[type];

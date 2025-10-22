@@ -36,7 +36,14 @@ export function RadioGroup<T extends string | number>({
         const isSelected = value === option;
 
         return (
-          <label key={option} class={cn("flex h-8 cursor-pointer items-center gap-3 border border-line-700 px-2 text-sm transition-colors", optionClassName, isSelected ? selectedClassName : unselectedClassName)}>
+          <label
+            key={option}
+            class={cn(
+              "flex h-8 cursor-pointer items-center gap-3 border border-line-700 px-2 text-sm transition-colors",
+              optionClassName,
+              isSelected ? selectedClassName : unselectedClassName
+            )}
+          >
             <input type="radio" class="hidden" name={name} checked={isSelected} onChange={() => handleSelect(option)} />
             {renderOption ? renderOption(option, isSelected) : <p>{option}</p>}
           </label>

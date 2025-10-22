@@ -1,3 +1,5 @@
+/** biome-ignore-all lint/style/useFilenamingConvention: This is just an authstore */
+
 import { computed, signal } from "@preact/signals";
 import { type UserSignal, userSignal } from "./userStore";
 

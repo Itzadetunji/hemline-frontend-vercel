@@ -2,7 +2,16 @@ import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tansta
 import type { AxiosError, AxiosProgressEvent } from "axios";
 import { useState } from "preact/hooks";
 import { GALLERY_API } from "./gallery.api";
-import type { DeleteImagesPayload, DeleteImagesResponse, GetGalleriesResponse, GetGalleryImageResponse, PaginationParams, UpdateGalleryImagePayload, UpdateGalleryImageResponse, UploadImagesResponse } from "./gallery.types";
+import type {
+  DeleteImagesPayload,
+  DeleteImagesResponse,
+  GetGalleriesResponse,
+  GetGalleryImageResponse,
+  PaginationParams,
+  UpdateGalleryImagePayload,
+  UpdateGalleryImageResponse,
+  UploadImagesResponse,
+} from "./gallery.types";
 
 // Query keys factory
 const galleryQueryKeys = {

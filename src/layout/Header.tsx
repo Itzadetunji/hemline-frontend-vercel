@@ -41,7 +41,11 @@ export const Header = () => {
             <img src={getUserProfile.data?.data.user.business_image} alt="" />
             <Avatar>
               {(<AvatarImage src={getUserProfile.data?.data.user.business_image} />) as any}
-              <AvatarFallback>{getUserProfile.data?.data.user.full_name ? getInitials(getUserProfile.data?.data.user.full_name, true) : getInitials(getUserProfile.data?.data.user.email as string)}</AvatarFallback>
+              <AvatarFallback>
+                {getUserProfile.data?.data.user.full_name
+                  ? getInitials(getUserProfile.data?.data.user.full_name, true)
+                  : getInitials(getUserProfile.data?.data.user.email as string)}
+              </AvatarFallback>
             </Avatar>
           </li>
         </a>

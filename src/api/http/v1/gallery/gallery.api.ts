@@ -1,6 +1,15 @@
 import type { AxiosRequestConfig } from "axios";
 import $http from "../../xhr";
-import type { DeleteImagesPayload, DeleteImagesResponse, GetGalleriesResponse, GetGalleryImageResponse, PaginationParams, UpdateGalleryImagePayload, UpdateGalleryImageResponse, UploadImagesResponse } from "./gallery.types";
+import type {
+  DeleteImagesPayload,
+  DeleteImagesResponse,
+  GetGalleriesResponse,
+  GetGalleryImageResponse,
+  PaginationParams,
+  UpdateGalleryImagePayload,
+  UpdateGalleryImageResponse,
+  UploadImagesResponse,
+} from "./gallery.types";
 
 const GALLERY_ENDPOINTS = {
   getGalleries: "/gallery/galleries",
@@ -33,7 +42,8 @@ export const GALLERY_API = {
       })
       .then((res) => res.data),
 
-  UPDATE_GALLERY_IMAGE: async (id: string, data: UpdateGalleryImagePayload): Promise<UpdateGalleryImageResponse> => await $http.patch(GALLERY_ENDPOINTS.updateGalleryImage(id), data).then((res) => res.data),
+  UPDATE_GALLERY_IMAGE: async (id: string, data: UpdateGalleryImagePayload): Promise<UpdateGalleryImageResponse> =>
+    await $http.patch(GALLERY_ENDPOINTS.updateGalleryImage(id), data).then((res) => res.data),
 
   DELETE_IMAGES: async (data: DeleteImagesPayload): Promise<DeleteImagesResponse> => await $http.delete(GALLERY_ENDPOINTS.deleteImages, { data }).then((res) => res.data),
 };

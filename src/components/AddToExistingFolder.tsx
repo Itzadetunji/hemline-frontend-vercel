@@ -163,7 +163,13 @@ export const AddToExistingFolder = (props: AddToExistingFolderProps) => {
             />
           )}
 
-          <Button class="w-full gap-3" type="submit" disabled={isSubmitting || addImagesToFolderMutation.isPending || getFoldersQuery.isLoading || !getFoldersQuery.data || getFoldersQuery.data.data.length === 0 || !isValid}>
+          <Button
+            class="w-full gap-3"
+            type="submit"
+            disabled={
+              isSubmitting || addImagesToFolderMutation.isPending || getFoldersQuery.isLoading || !getFoldersQuery.data || getFoldersQuery.data.data.length === 0 || !isValid
+            }
+          >
             {isSubmitting || addImagesToFolderMutation.isPending ? "Adding..." : "Add to Folders"}
           </Button>
         </div>

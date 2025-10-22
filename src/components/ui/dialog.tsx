@@ -111,7 +111,12 @@ export function DialogOverlay({ className, ...props }: DialogOverlayProps) {
 
   return (
     <div
-      className={cn("fixed inset-0 bg-black/50 backdrop-blur-sm", "data-[state=closed]:animate-out data-[state=open]:animate-in", "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0", className)}
+      className={cn(
+        "fixed inset-0 bg-black/50 backdrop-blur-sm",
+        "data-[state=closed]:animate-out data-[state=open]:animate-in",
+        "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+        className
+      )}
       style={{ zIndex: dialogContext.zIndex }}
       data-state={dialogContext?.open ? "open" : "closed"}
       onClick={handleClick}
@@ -196,7 +201,17 @@ export function DialogContent({ class: className, children, showClose = true, on
           {children}
           {showClose && (
             <DialogClose className="absolute top-4 right-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <path d="M18 6l-12 12M6 6l12 12" />
               </svg>
               <span className="sr-only">Close</span>

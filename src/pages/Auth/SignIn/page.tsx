@@ -63,7 +63,11 @@ export const SignIn = () => {
               <i className="size-4.5">
                 <Icon icon="fluent:mail-16-regular" fontSize="18" />
               </i>
-              <Controller name="email" control={formMethods.control} render={({ field }) => (<input {...field} type="email" placeholder="hello@hemline.app" class="flex-1 text-sm placeholder:text-grey-400" />) as any} />
+              <Controller
+                name="email"
+                control={formMethods.control}
+                render={({ field }) => (<input {...field} type="email" placeholder="hello@hemline.app" class="flex-1 text-sm placeholder:text-grey-400" />) as any}
+              />
             </div>
             {formMethods.formState.errors.email && <p class="text-red-500 text-xs">{formMethods.formState.errors.email.message}</p>}
           </div>

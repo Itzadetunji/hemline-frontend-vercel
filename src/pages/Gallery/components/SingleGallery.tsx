@@ -135,7 +135,13 @@ export const SingleGallery = (props: SingleGalleryProps) => {
         <div class="flex flex-1 flex-col justify-between gap-6">
           <div class="relative flex-1">
             {loading && <Skeleton class="absolute inset-0 h-full w-full rounded-none" />}
-            <img src={cachedUrl} alt={props.currentSelectedImage?.file_name} onLoad={handleImageLoad} class="h-full w-full flex-1 object-contain" style={{ display: loading ? "none" : "block" }} />
+            <img
+              src={cachedUrl}
+              alt={props.currentSelectedImage?.file_name}
+              onLoad={handleImageLoad}
+              class="h-full w-full flex-1 object-contain"
+              style={{ display: loading ? "none" : "block" }}
+            />
           </div>
           <div class="flex flex-1 flex-col justify-end gap-4 px-4">
             <ul class="flex items-center justify-between gap-4">

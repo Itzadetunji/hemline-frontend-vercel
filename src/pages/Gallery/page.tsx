@@ -14,7 +14,7 @@ import { SingleGallery } from "./components/SingleGallery";
 import { useImageCache, preloadImages } from "@/hooks/useImageCache";
 import { UploadImages } from "./components/UploadImages";
 import { useGetUserProfile } from "@/api/http/v1/users/users.hooks";
-import { AddToFolderBar } from "./components/AddToFolder";
+import { AddToFolderBar } from "./components/AddToFolderBar";
 
 export const Gallery = () => {
   // const [galleryLayout, setGalleryLayout] = useState<"fancy" | "grid">("fancy");
@@ -93,7 +93,9 @@ export const Gallery = () => {
           <a href="/folders">
             <li class="relative min-h-5 min-w-5 p-1">
               <Icon icon="bi:folder" className="h-4 w-4 text-black" />
-              <p class="-top-0.5 -right-0.5 absolute grid min-h-3.5 min-w-3.5 place-content-center rounded-full bg-primary text-[0.625rem] text-white leading-0">{getUserProfile.data?.data.user.total_folders || 0}</p>
+              <p class="-top-0.5 -right-0.5 absolute grid min-h-3.5 min-w-3.5 place-content-center rounded-full bg-primary text-[0.625rem] text-white leading-0">
+                {getUserProfile.data?.data.user.total_folders || 0}
+              </p>
             </li>
           </a>
         </>
@@ -147,7 +149,13 @@ export const Gallery = () => {
 
       <DeleteImages image_ids={selectedImages} deleteImages={deleteImages} setDeleteImages={setDeleteImages} />
 
-      <SingleGallery currentSelectedImage={currentSelectedImage} setCurrentSelectedImage={setCurrentSelectedImage} setSelectedImages={setSelectedImages} setAddToFolder={setAddToFolder} setDeleteImages={setDeleteImages} />
+      <SingleGallery
+        currentSelectedImage={currentSelectedImage}
+        setCurrentSelectedImage={setCurrentSelectedImage}
+        setSelectedImages={setSelectedImages}
+        setAddToFolder={setAddToFolder}
+        setDeleteImages={setDeleteImages}
+      />
     </div>
   );
 };
@@ -282,7 +290,13 @@ const GalleryImage = (props: {
 
         {loading && <Skeleton class="absolute inset-0 h-full w-full rounded-none" />}
 
-        <img src={cachedUrl} alt={props.image.file_name} onLoad={handleImageLoad} class={cn("h-full w-full object-cover transition-opacity duration-300", loading ? "opacity-0" : "opacity-100")} crossOrigin="anonymous" />
+        <img
+          src={cachedUrl}
+          alt={props.image.file_name}
+          onLoad={handleImageLoad}
+          class={cn("h-full w-full object-cover transition-opacity duration-300", loading ? "opacity-0" : "opacity-100")}
+          crossOrigin="anonymous"
+        />
       </div>
     </>
   );
