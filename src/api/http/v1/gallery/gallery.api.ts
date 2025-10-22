@@ -1,5 +1,5 @@
+import type { AxiosRequestConfig } from "axios";
 import $http from "../../xhr";
-import type { AxiosProgressEvent, AxiosRequestConfig } from "axios";
 import type {
 	DeleteImagesPayload,
 	DeleteImagesResponse,

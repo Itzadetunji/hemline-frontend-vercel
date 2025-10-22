@@ -20,16 +20,16 @@ const NODE_ENV = import.meta.env.MODE || "development";
 // const NODE_ENV = "production";
 
 const GLOBAL_CONSTANTS = {
-	// System Constants
-	// ============================================================
-	APP_NAME: packageInfo.name,
-	ENVIRONMENT: import.meta.env.VITE_ENVIRONMENT,
+  // System Constants
+  // ============================================================
+  APP_NAME: packageInfo.name,
+  ENVIRONMENT: import.meta.env.VITE_ENVIRONMENT,
 
-	URL: {
-		API_BASE_URL: import.meta.env.VITE_BASE_URL,
-		API_VERSION: import.meta.env.VITE_APP_API_VERSION,
-		CLIENT_URL: import.meta.env.VITE_CLIENT_URL,
-	},
+  URL: {
+    API_BASE_URL: import.meta.env.VITE_BASE_URL,
+    API_VERSION: import.meta.env.VITE_APP_API_VERSION,
+    CLIENT_URL: import.meta.env.VITE_CLIENT_URL,
+  },
 };
 
 const CONFIGS = GLOBAL_CONSTANTS;

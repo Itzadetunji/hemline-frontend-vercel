@@ -2,28 +2,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Icon } from "@iconify/react";
 import type { JSX } from "preact";
 import { useLocation } from "preact-iso";
-import {
-  type Dispatch,
-  type StateUpdater,
-  useLayoutEffect,
-  useState,
-} from "preact/hooks";
-import {
-  Controller,
-  FormProvider,
-  useForm,
-  useFormContext,
-} from "react-hook-form";
+import { type Dispatch, type StateUpdater, useLayoutEffect, useState } from "preact/hooks";
+import { Controller, FormProvider, useForm, useFormContext } from "react-hook-form";
 
 import { useUpdateUserProfile } from "@/api/http/v1/users/users.hooks";
-import {
-  type OnboardingFormData,
-  OnboardingFormSchema,
-  Profession,
-  SkillChoices,
-  ThemeChoices,
-  type ThemeType,
-} from "@/api/http/v1/users/users.types";
+import { type OnboardingFormData, OnboardingFormSchema, Profession, SkillChoices, ThemeChoices, type ThemeType } from "@/api/http/v1/users/users.types";
 import { Button } from "@/components/ui/button";
 import { CheckboxGroup } from "@/components/ui/checkbox-group";
 import { Label } from "@/components/ui/label";
@@ -85,15 +68,15 @@ export const Onboarding = () => {
       {
         (
           <form onSubmit={handleSubmit}>
-            <main class="flex flex-col h-[100dvh] px-4 py-4 gap-8 items-stretch">
-              <div class="flex justify-between items-center gap-4">
+            <main class="flex h-[100dvh] flex-col items-stretch gap-8 px-4 py-4">
+              <div class="flex items-center justify-between gap-4">
                 {step > 1 && (
                   <button type="button" onClick={() => setStep(step - 1)}>
                     <Icon icon="solar:arrow-left-linear" fontSize={24} />
                   </button>
                 )}
 
-                <div class="flex-1 bg-secondary flex h-1.5">
+                <div class="flex h-1.5 flex-1 bg-secondary">
                   <div
                     class="bg-primary duration-200 ease-in-out"
                     style={{
@@ -108,13 +91,7 @@ export const Onboarding = () => {
               </div>
               {step === 1 && <OnboardingStep1 step={step} setStep={setStep} />}
               {step === 2 && <OnboardingStep2 step={step} setStep={setStep} />}
-              {step === 3 && (
-                <OnboardingStep3
-                  step={step}
-                  setStep={setStep}
-                  isSubmitting={updateUserProfileMutation.isPending}
-                />
-              )}
+              {step === 3 && <OnboardingStep3 step={step} setStep={setStep} isSubmitting={updateUserProfileMutation.isPending} />}
             </main>
           </form>
         ) as any
@@ -138,87 +115,54 @@ const OnboardingStep1 = (props: OnboardingStepProps) => {
 
   const handleNext = async () => {
     // Validate only step 1 fields
-    const isValid = await trigger([
-      "first_name",
-      "last_name",
-      "profession",
-      "business_name",
-      "business_address",
-    ]);
+    const isValid = await trigger(["first_name", "last_name", "profession", "business_name", "business_address"]);
     if (isValid) {
       props.setStep(2);
     }
   };
 
   return (
-    <div class="flex flex-col flex-1 gap-10">
-      <div class="flex flex-col gap-10 items-stretch">
+    <div class="flex flex-1 flex-col gap-10">
+      <div class="flex flex-col items-stretch gap-10">
         <div class="flex flex-col gap-6">
           <h1 class="text-5xl leading-10.5">Set up your profile</h1>
-          <p class="text-grey-400 text-sm">
-            Welcome to Tailor, complete your profile creation by answering these
-            few questions.
-          </p>
+          <p class="text-grey-400 text-sm">Welcome to Tailor, complete your profile creation by answering these few questions.</p>
         </div>
       </div>
-      <div class="flex flex-col gap-6 flex-1 w-full">
+      <div class="flex w-full flex-1 flex-col gap-6">
         {/* Full Name - Split into first and last */}
-        <div class="flex items-start justify-between gap-4 w-full">
-          <Label class="flex flex-col gap-4 items-stretch flex-1 min-w-0">
-            <p class="text-sm font-medium leading-0">First name</p>
+        <div class="flex w-full items-start justify-between gap-4">
+          <Label class="flex min-w-0 flex-1 flex-col items-stretch gap-4">
+            <p class="font-medium text-sm leading-0">First name</p>
             <Controller
               name="first_name"
               control={control}
               render={({ field }) =>
                 (
                   <div class="flex flex-col gap-2">
-                    <div class="flex items-center gap-2 border-line-700 border h-10.5 px-3">
-                      <Icon
-                        icon="hugeicons:user-02"
-                        fontSize="18"
-                        className="flex-shrink-0"
-                      />
-                      <input
-                        {...field}
-                        placeholder="John"
-                        class="text-sm placeholder:text-grey-400 flex-1 min-w-0"
-                      />
+                    <div class="flex h-10.5 items-center gap-2 border border-line-700 px-3">
+                      <Icon icon="hugeicons:user-02" fontSize="18" className="flex-shrink-0" />
+                      <input {...field} placeholder="John" class="min-w-0 flex-1 text-sm placeholder:text-grey-400" />
                     </div>
-                    {errors.first_name && (
-                      <p class="text-xs text-red-500">
-                        {errors.first_name.message}
-                      </p>
-                    )}
+                    {errors.first_name && <p class="text-red-500 text-xs">{errors.first_name.message}</p>}
                   </div>
                 ) as any
               }
             />
           </Label>
-          <Label class="flex flex-col gap-4 items-stretch flex-1 min-w-0">
-            <p class="text-sm font-medium leading-0">Last name</p>
+          <Label class="flex min-w-0 flex-1 flex-col items-stretch gap-4">
+            <p class="font-medium text-sm leading-0">Last name</p>
             <Controller
               name="last_name"
               control={control}
               render={({ field }) =>
                 (
                   <div class="flex flex-col gap-2">
-                    <div class="flex items-center gap-2 border-line-700 border h-10.5 px-3">
-                      <Icon
-                        icon="hugeicons:user-02"
-                        fontSize="18"
-                        className="flex-shrink-0"
-                      />
-                      <input
-                        {...field}
-                        placeholder="Doe"
-                        class="text-sm placeholder:text-grey-400 flex-1 min-w-0"
-                      />
+                    <div class="flex h-10.5 items-center gap-2 border border-line-700 px-3">
+                      <Icon icon="hugeicons:user-02" fontSize="18" className="flex-shrink-0" />
+                      <input {...field} placeholder="Doe" class="min-w-0 flex-1 text-sm placeholder:text-grey-400" />
                     </div>
-                    {errors.last_name && (
-                      <p class="text-xs text-red-500">
-                        {errors.last_name.message}
-                      </p>
-                    )}
+                    {errors.last_name && <p class="text-red-500 text-xs">{errors.last_name.message}</p>}
                   </div>
                 ) as any
               }
@@ -227,8 +171,8 @@ const OnboardingStep1 = (props: OnboardingStepProps) => {
         </div>
 
         {/* Profession */}
-        <Label class="flex flex-col gap-4 items-stretch">
-          <p class="text-sm font-medium leading-0">Profession</p>
+        <Label class="flex flex-col items-stretch gap-4">
+          <p class="font-medium text-sm leading-0">Profession</p>
           <Controller
             name="profession"
             control={control}
@@ -246,11 +190,7 @@ const OnboardingStep1 = (props: OnboardingStepProps) => {
                     icon="material-symbols-light:work-outline"
                     maxItems={1}
                   />
-                  {errors.profession && (
-                    <p class="text-xs text-red-500">
-                      {errors.profession.message}
-                    </p>
-                  )}
+                  {errors.profession && <p class="text-red-500 text-xs">{errors.profession.message}</p>}
                 </div>
               ) as any
             }
@@ -258,30 +198,19 @@ const OnboardingStep1 = (props: OnboardingStepProps) => {
         </Label>
 
         {/* Business Name */}
-        <Label class="flex flex-col gap-4 items-stretch">
-          <p class="text-sm font-medium leading-0">Business name</p>
+        <Label class="flex flex-col items-stretch gap-4">
+          <p class="font-medium text-sm leading-0">Business name</p>
           <Controller
             name="business_name"
             control={control}
             render={({ field }) =>
               (
                 <div class="flex flex-col gap-2">
-                  <div class="flex items-center gap-2 border-line-700 border h-10.5 px-3">
-                    <Icon
-                      icon="material-symbols-light:add-business-outline-rounded"
-                      fontSize="18"
-                    />
-                    <input
-                      {...field}
-                      placeholder="John's Tailoring"
-                      class="text-sm placeholder:text-grey-400 flex-1"
-                    />
+                  <div class="flex h-10.5 items-center gap-2 border border-line-700 px-3">
+                    <Icon icon="material-symbols-light:add-business-outline-rounded" fontSize="18" />
+                    <input {...field} placeholder="John's Tailoring" class="flex-1 text-sm placeholder:text-grey-400" />
                   </div>
-                  {errors.business_name && (
-                    <p class="text-xs text-red-500">
-                      {errors.business_name.message}
-                    </p>
-                  )}
+                  {errors.business_name && <p class="text-red-500 text-xs">{errors.business_name.message}</p>}
                 </div>
               ) as any
             }
@@ -289,27 +218,19 @@ const OnboardingStep1 = (props: OnboardingStepProps) => {
         </Label>
 
         {/* Business Address */}
-        <Label class="flex flex-col gap-4 items-stretch">
-          <p class="text-sm font-medium leading-0">Business address</p>
+        <Label class="flex flex-col items-stretch gap-4">
+          <p class="font-medium text-sm leading-0">Business address</p>
           <Controller
             name="business_address"
             control={control}
             render={({ field }) =>
               (
                 <div class="flex flex-col gap-2">
-                  <div class="flex items-center gap-2 border-line-700 border h-10.5 px-3">
+                  <div class="flex h-10.5 items-center gap-2 border border-line-700 px-3">
                     <Icon icon="hugeicons:maps-location-02" fontSize="18" />
-                    <input
-                      {...field}
-                      placeholder="123 Main St, City, State"
-                      class="text-sm placeholder:text-grey-400 flex-1"
-                    />
+                    <input {...field} placeholder="123 Main St, City, State" class="flex-1 text-sm placeholder:text-grey-400" />
                   </div>
-                  {errors.business_address && (
-                    <p class="text-xs text-red-500">
-                      {errors.business_address.message}
-                    </p>
-                  )}
+                  {errors.business_address && <p class="text-red-500 text-xs">{errors.business_address.message}</p>}
                 </div>
               ) as any
             }
@@ -339,13 +260,11 @@ const OnboardingStep2 = (props: OnboardingStepProps) => {
   };
 
   return (
-    <div class="flex flex-col flex-1 gap-10">
-      <div class="flex flex-col gap-10 items-stretch">
+    <div class="flex flex-1 flex-col gap-10">
+      <div class="flex flex-col items-stretch gap-10">
         <div class="flex flex-col gap-6">
           <h1 class="text-5xl leading-10.5">What are your skills</h1>
-          <p class="text-grey-400 text-sm">
-            Select as many that relates to you.
-          </p>
+          <p class="text-grey-400 text-sm">Select as many that relates to you.</p>
         </div>
       </div>
       <div class="flex-1">
@@ -355,14 +274,8 @@ const OnboardingStep2 = (props: OnboardingStepProps) => {
           render={({ field }) =>
             (
               <div class="flex flex-col gap-4">
-                <CheckboxGroup
-                  options={SkillChoices as any}
-                  value={field.value}
-                  onChange={field.onChange}
-                />
-                {errors.skills && (
-                  <p class="text-xs text-red-500">{errors.skills.message}</p>
-                )}
+                <CheckboxGroup options={SkillChoices as any} value={field.value} onChange={field.onChange} />
+                {errors.skills && <p class="text-red-500 text-xs">{errors.skills.message}</p>}
               </div>
             ) as any
           }
@@ -383,13 +296,11 @@ const OnboardingStep3 = (props: OnboardingStepProps) => {
   } = useFormContext<OnboardingFormData>();
   console.log(getValues());
   return (
-    <div class="flex flex-col flex-1 gap-10">
-      <div class="flex flex-col gap-10 items-stretch">
+    <div class="flex flex-1 flex-col gap-10">
+      <div class="flex flex-col items-stretch gap-10">
         <div class="flex flex-col gap-6">
           <h1 class="text-5xl leading-10.5">Select your default appearance</h1>
-          <p class="text-grey-400 text-sm">
-            Choose your preferred look to get started.
-          </p>
+          <p class="text-grey-400 text-sm">Choose your preferred look to get started.</p>
         </div>
       </div>
       <div class="flex-1">
@@ -411,16 +322,15 @@ const OnboardingStep3 = (props: OnboardingStepProps) => {
                   renderOption={(color: ThemeType, isSelected) => (
                     <>
                       <figure
-                        class={cn("size-22 transition-all cursor-pointer", {
+                        class={cn("size-22 cursor-pointer transition-all", {
                           "border border-line-500 bg-white": color === "light",
                           "bg-dark": color === "dark",
                           "bg-secondary-500": color === "system",
                           "ring-2 ring-primary ring-offset-2": isSelected,
                         })}
                       />
-                      <p class="capitalize text-sm text-center text-grey-400 font-medium">
-                        {color === "system" ? "Automatic" : color}{" "}
-                        {color !== "system" && "mode"}
+                      <p class="text-center font-medium text-grey-400 text-sm capitalize">
+                        {color === "system" ? "Automatic" : color} {color !== "system" && "mode"}
                       </p>
                     </>
                   )}
@@ -429,9 +339,7 @@ const OnboardingStep3 = (props: OnboardingStepProps) => {
             ) as any
           }
         />
-        {errors.theme && (
-          <p class="text-xs text-red-500 mt-2">{errors.theme.message}</p>
-        )}
+        {errors.theme && <p class="mt-2 text-red-500 text-xs">{errors.theme.message}</p>}
       </div>
       <Button class="w-full gap-3" type="submit" disabled={props.isSubmitting}>
         {props.isSubmitting ? "Submitting..." : "Complete Setup"}

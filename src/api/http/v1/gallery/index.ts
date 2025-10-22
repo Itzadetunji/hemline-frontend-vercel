@@ -1,15 +1,15 @@
 // Export all types
 export type {
-	GalleryImage,
-	PaginationParams,
-	GetGalleriesResponse,
-	GetGalleryImageResponse,
-	UploadImagesPayload,
-	UploadImagesResponse,
-	UpdateGalleryImagePayload,
-	UpdateGalleryImageResponse,
-	DeleteImagesPayload,
-	DeleteImagesResponse,
+  GalleryImage,
+  PaginationParams,
+  GetGalleriesResponse,
+  GetGalleryImageResponse,
+  UploadImagesPayload,
+  UploadImagesResponse,
+  UpdateGalleryImagePayload,
+  UpdateGalleryImageResponse,
+  DeleteImagesPayload,
+  DeleteImagesResponse,
 } from "./gallery.types";
 
 // Export schemas
@@ -20,9 +20,9 @@ export { GALLERY_API } from "./gallery.api";
 
 // Export hooks
 export {
-	useGetGalleries,
-	useGetGalleryImage,
-	useUploadImages,
-	useUpdateGalleryImage,
-	useDeleteImages,
+  useGetGalleries,
+  useGetGalleryImage,
+  useUploadImages,
+  useUpdateGalleryImage,
+  useDeleteImages,
 } from "./gallery.hooks";

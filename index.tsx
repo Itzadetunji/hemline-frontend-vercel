@@ -6,18 +6,15 @@ import { Routes } from "./src/layout/Routes";
 import { queryClient } from "./src/lib/queryClient";
 
 const Document = () => {
-	return (
-		<QueryClientProvider client={queryClient}>
-			{(<Routes />) as any}
-			<Toaster
-				position="bottom-center"
-				reverseOrder={false}
-			/>
-		</QueryClientProvider>
-	);
+  return (
+    <QueryClientProvider client={queryClient}>
+      {(<Routes />) as any}
+      <Toaster position="bottom-center" reverseOrder={false} />
+    </QueryClientProvider>
+  );
 };
 
 const appElement = document.getElementById("app");
 if (appElement) {
-	render(<Document />, appElement);
+  render(<Document />, appElement);
 }

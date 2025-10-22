@@ -3,10 +3,9 @@ import { ErrorBoundary, LocationProvider, Route, Router } from "preact-iso";
 import { Onboarding } from "@/pages/Auth/Onboarding/page";
 import { SignIn } from "@/pages/Auth/SignIn/page";
 import { SignUp } from "@/pages/Auth/SignUp/page";
-import { Home } from "@/pages/Home/Home";
-import { ProtectedRoute } from "./ProtectedRoute";
-import { Gallery } from "@/pages/Gallery/page";
 import { Folders } from "@/pages/Folders/page";
+import { Gallery } from "@/pages/Gallery/page";
+import { ProtectedRoute } from "./ProtectedRoute";
 
 export const Routes = () => {
   return (

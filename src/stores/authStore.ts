@@ -1,5 +1,5 @@
 import { computed, signal } from "@preact/signals";
-import { UserSignal, userSignal } from "./userStore";
+import { type UserSignal, userSignal } from "./userStore";
 
 // Initialize email signal with value from localStorage
 const getStoredEmail = () => {
@@ -27,7 +27,7 @@ export const isAuthenticated = computed(() => {
 			const stored = localStorage.getItem("user-storage");
 			if (stored) {
 				const { user: storedUser } = JSON.parse(stored) as UserSignal;
-				return !!(storedUser && storedUser.id);
+				return !!storedUser?.id;
 			}
 		} catch (error) {
 			console.warn("Failed to parse stored auth data:", error);
