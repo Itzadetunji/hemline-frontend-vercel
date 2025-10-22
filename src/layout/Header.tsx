@@ -125,7 +125,9 @@ const UploadImages = () => {
 			try {
 				setProgressSuccess(true);
 
-				await uploadImagesMutation.mutateAsync(formData);
+				await uploadImagesMutation.mutateAsync(formData, {
+					onError: () => setProgressSuccess(false),
+				});
 
 				setHasUploaded(true);
 			} catch (error) {

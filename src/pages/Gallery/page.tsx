@@ -21,6 +21,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { selectingImagesSignal } from "@/layout/Header";
 import { SingleGallery } from "./components/SingleGallery";
+import { useImageCache, preloadImages } from "@/hooks/useImageCache";
 
 export const Gallery = () => {
 	// const [galleryLayout, setGalleryLayout] = useState<"fancy" | "grid">("fancy");
@@ -60,6 +61,14 @@ export const Gallery = () => {
 
 	// Flatten all pages into a single array of images
 	const allImages = data?.pages.flatMap((page) => page.data) ?? [];
+
+	// Preload images when they are fetched
+	useEffect(() => {
+		if (allImages.length > 0) {
+			const urls = allImages.map((img) => img.url);
+			preloadImages(urls);
+		}
+	}, [allImages.length]);
 
 	return (
 		<div class="flex flex-col flex-1 pb-8">
@@ -149,8 +158,13 @@ const GalleryImage = (props: {
 }) => {
 	const [isLandscape, setIsLandscape] = useState(false);
 	const [iconColor, setIconColor] = useState("text-white");
-	const [loading, setLoading] = useState(true); // Loading state for image
 	const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+
+	// Use image cache hook with preloading for next image
+	const { cachedUrl, isLoading: loading } = useImageCache(props.image.url, {
+		preloadNext: !!props.nextImage,
+		nextImageUrl: props.nextImage?.url,
+	});
 
 	const handleImageLoad = (e: Event) => {
 		const img = e.target as HTMLImageElement;
@@ -159,8 +173,6 @@ const GalleryImage = (props: {
 
 		// Detect background color at icon position
 		detectBackgroundColor(img, setIconColor);
-
-		setLoading(false); // Hide skeleton when image loads
 	};
 
 	const handleCheckboxChange = (e: Event) => {
@@ -287,7 +299,7 @@ const GalleryImage = (props: {
 			)}
 
 			<img
-				src={props.image.url}
+				src={cachedUrl}
 				alt={props.image.file_name}
 				onLoad={handleImageLoad}
 				class={cn(

@@ -10,6 +10,7 @@ import { Dispatch, StateUpdater, useState, useEffect } from "preact/hooks";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUpdateGalleryImage } from "@/api/http/v1/gallery/gallery.hooks";
+import { useImageCache } from "@/hooks/useImageCache";
 
 interface SingleGalleryProps {
 	currentSelectedImage?: GalleryImage;
@@ -21,14 +22,18 @@ interface SingleGalleryProps {
 
 export const SingleGallery = (props: SingleGalleryProps) => {
 	const isOpen = !!props.currentSelectedImage;
-	const [loading, setLoading] = useState(true);
 	const [isEditing, setIsEditing] = useState(false);
 	const [description, setDescription] = useState("");
 
 	const updateMutation = useUpdateGalleryImage();
 
+	// Use the image cache hook
+	const { cachedUrl, isLoading: loading } = useImageCache(
+		props.currentSelectedImage?.url
+	);
+
 	const handleImageLoad = () => {
-		setLoading(false);
+		// Image load handler for additional processing if needed
 	};
 
 	const handleEdit = () => {
@@ -64,7 +69,6 @@ export const SingleGallery = (props: SingleGalleryProps) => {
 		if (props.currentSelectedImage) {
 			setDescription(props.currentSelectedImage.description || "");
 			setIsEditing(false);
-			setLoading(true);
 		}
 	}, [props.currentSelectedImage?.id]);
 
@@ -165,7 +169,7 @@ export const SingleGallery = (props: SingleGalleryProps) => {
 							<Skeleton class="absolute inset-0 h-full w-full rounded-none" />
 						)}
 						<img
-							src={props.currentSelectedImage?.url}
+							src={cachedUrl}
 							alt={props.currentSelectedImage?.file_name}
 							onLoad={handleImageLoad}
 							class="flex-1 w-full h-full object-contain"
