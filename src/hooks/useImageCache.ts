@@ -125,7 +125,9 @@ export const useImageCache = (
 
 				// Preload next image if specified
 				if (options.preloadNext && options.nextImageUrl) {
-					imageCacheManager.loadImage(options.nextImageUrl).catch(console.error);
+					imageCacheManager
+						.loadImage(options.nextImageUrl)
+						.catch(console.error);
 				}
 			} catch (err) {
 				if (isMounted) {
