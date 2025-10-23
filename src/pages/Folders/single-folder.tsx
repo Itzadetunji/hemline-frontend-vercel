@@ -7,6 +7,7 @@ import { useInfiniteGetFolder } from "@/api/http/v1/gallery/folders.hooks";
 import type { GalleryImageType } from "@/api/http/v1/gallery/gallery.types";
 import { useGetUserProfile } from "@/api/http/v1/users/users.hooks";
 import { AddToFolder } from "@/components/AddToFolder";
+import { AddImagesToFolder } from "@/components/AddImagesToFolder";
 import { DeleteImages } from "@/components/DeleteImages";
 import { RemoveFromFolder } from "@/components/RemoveFromFolder";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -28,6 +29,7 @@ export const SingleFolderGallery = () => {
   const [addToFolder, setAddToFolder] = useState<boolean>(false);
   const [deleteImages, setDeleteImages] = useState<boolean>(false);
   const [removeFromFolder, setRemoveFromFolder] = useState<boolean>(false);
+  const [showAddImagesDrawer, setShowAddImagesDrawer] = useState<boolean>(false);
   const observerTarget = useRef<HTMLDivElement>(null);
 
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } = useInfiniteGetFolder(folderId, 20, !!folderId);
@@ -106,6 +108,9 @@ export const SingleFolderGallery = () => {
             </div>
             {selectingSignal.value.isSelecting && <p class="flex-shrink-0 font-medium text-sm">Deselect ({selectingSignal.value.selectedItems.length})</p>}
           </button>
+          <button class="min-h-5 min-w-5 p-1" type="button" onClick={() => setShowAddImagesDrawer(true)}>
+            <Icon icon="iconoir:upload" className="h-4 w-4 text-black" />
+          </button>
           <a href="/folders">
             <li class="relative min-h-5 min-w-5 p-1">
               <Icon icon="bi:folder" className="h-4 w-4 text-black" />
@@ -176,6 +181,13 @@ export const SingleFolderGallery = () => {
 
       {selectingSignal.value.isSelecting && <RemoveFromFolderBar folderId={folderId} folderName={folderInfo?.name} />}
 
+      <AddImagesToFolder
+        isOpen={showAddImagesDrawer}
+        onClose={() => setShowAddImagesDrawer(false)}
+        folder={data?.pages[0]?.data?.folder}
+        excludeImageIds={allImages.map((img) => img.id)}
+      />
+
       <SingleGallery
         currentSelectedImage={currentSelectedImage}
         setCurrentSelectedImage={setCurrentSelectedImage}
@@ -235,95 +247,93 @@ const FolderGalleryImage = (props: {
   };
 
   return (
-    <>
-      <div
-        ref={props.isLastItem ? props.observerRef : null}
-        class={cn("relative h-40", {
-          "col-span-2": isLandscape,
-        })}
-      >
-        {selectingSignal.value.isSelecting ? (
-          <label class="group absolute top-1.5 left-1.5 cursor-pointer">
-            <input type="checkbox" onChange={handleCheckboxChange} class="sr-only" />
-            <div class="flex size-4.5 items-center justify-center border border-line-500 bg-white/40 transition-colors group-has-[:checked]:border-primary group-has-[:checked]:bg-primary">
-              <Icon icon="heroicons:check-20-solid" className="h-3.5 w-3.5 text-white opacity-0 transition-opacity group-has-[:checked]:opacity-100" />
-            </div>
-          </label>
-        ) : (
-          <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
-            <PopoverTrigger asChild>
-              <button class="absolute top-3 left-2" type="button">
-                <Icon icon="pepicons-pencil:dots-x" className={iconColor} />
+    <div
+      ref={props.isLastItem ? props.observerRef : null}
+      class={cn("relative h-40", {
+        "col-span-2": isLandscape,
+      })}
+    >
+      {selectingSignal.value.isSelecting ? (
+        <label class="group absolute top-1.5 left-1.5 cursor-pointer">
+          <input type="checkbox" onChange={handleCheckboxChange} class="sr-only" />
+          <div class="flex size-4.5 items-center justify-center border border-line-500 bg-white/40 transition-colors group-has-[:checked]:border-primary group-has-[:checked]:bg-primary">
+            <Icon icon="heroicons:check-20-solid" className="h-3.5 w-3.5 text-white opacity-0 transition-opacity group-has-[:checked]:opacity-100" />
+          </div>
+        </label>
+      ) : (
+        <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+          <PopoverTrigger asChild>
+            <button class="absolute top-3 left-2" type="button">
+              <Icon icon="pepicons-pencil:dots-x" className={iconColor} />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="flex w-40 flex-col items-stretch rounded-sm border-line-400 bg-white/70 drop-shadow-[0.6px_0.8px_9px_rgba(0,0,0,0,95)] backdrop-blur-lg">
+            <ul class="flex flex-col gap-3">
+              <button
+                onClick={() => {
+                  props.setSelectedImages(() => [props.image.id]);
+                  props.setRemoveFromFolder(true);
+                }}
+                type="button"
+                class="flex cursor-pointer items-center justify-between gap-2"
+              >
+                <p class="font-medium text-sm">Remove</p>
+                <div class="min-w-5 p-1">
+                  <Icon icon="material-symbols:remove-rounded" className="h-4 w-4 text-black" />
+                </div>
               </button>
-            </PopoverTrigger>
-            <PopoverContent className="flex w-40 flex-col items-stretch rounded-sm border-line-400 bg-white/70 drop-shadow-[0.6px_0.8px_9px_rgba(0,0,0,0,95)] backdrop-blur-lg">
-              <ul class="flex flex-col gap-3">
-                <button
-                  onClick={() => {
-                    props.setSelectedImages(() => [props.image.id]);
-                    props.setRemoveFromFolder(true);
-                  }}
-                  type="button"
-                  class="flex cursor-pointer items-center justify-between gap-2"
-                >
-                  <p class="font-medium text-sm">Remove</p>
-                  <div class="min-w-5 p-1">
-                    <Icon icon="material-symbols:remove-rounded" className="h-4 w-4 text-black" />
-                  </div>
-                </button>
 
-                <button
-                  type="button"
-                  class="flex cursor-pointer items-center justify-between gap-2"
-                  onClick={() => {
-                    setIsPopoverOpen(false);
-                    props.setCurrentSelectedImage(props.image);
-                  }}
-                >
-                  <p class="font-medium text-sm">Add Details</p>
-                  <div class="min-w-5 p-1">
-                    <Icon icon="iconamoon:screen-full-light" className="h-4 w-4 text-black" />
-                  </div>
-                </button>
-                <button
-                  onClick={() => {
-                    props.setSelectedImages(() => [props.image.id]);
-                    props.setDeleteImages(true);
-                  }}
-                  type="button"
-                  class="flex cursor-pointer items-center justify-between gap-2"
-                >
-                  <p class="font-medium text-destructive text-sm">Delete</p>
-                  <div class="min-w-5 p-1">
-                    <Icon icon="material-symbols-light:delete-outline-sharp" className="h-4 w-4 text-destructive" />
-                  </div>
-                </button>
-                <li class="flex cursor-pointer items-center justify-between gap-2">
-                  <p class="font-medium text-sm">Uploaded</p>
-                  <span class="text-sm">
-                    {new Intl.DateTimeFormat("en-GB", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "2-digit",
-                    }).format(new Date(props.image.created_at))}
-                  </span>
-                </li>
-              </ul>
-            </PopoverContent>
-          </Popover>
-        )}
+              <button
+                type="button"
+                class="flex cursor-pointer items-center justify-between gap-2"
+                onClick={() => {
+                  setIsPopoverOpen(false);
+                  props.setCurrentSelectedImage(props.image);
+                }}
+              >
+                <p class="font-medium text-sm">Add Details</p>
+                <div class="min-w-5 p-1">
+                  <Icon icon="iconamoon:screen-full-light" className="h-4 w-4 text-black" />
+                </div>
+              </button>
+              <button
+                onClick={() => {
+                  props.setSelectedImages(() => [props.image.id]);
+                  props.setDeleteImages(true);
+                }}
+                type="button"
+                class="flex cursor-pointer items-center justify-between gap-2"
+              >
+                <p class="font-medium text-destructive text-sm">Delete</p>
+                <div class="min-w-5 p-1">
+                  <Icon icon="material-symbols-light:delete-outline-sharp" className="h-4 w-4 text-destructive" />
+                </div>
+              </button>
+              <li class="flex cursor-pointer items-center justify-between gap-2">
+                <p class="font-medium text-sm">Uploaded</p>
+                <span class="text-sm">
+                  {new Intl.DateTimeFormat("en-GB", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "2-digit",
+                  }).format(new Date(props.image.created_at))}
+                </span>
+              </li>
+            </ul>
+          </PopoverContent>
+        </Popover>
+      )}
 
-        {loading && <Skeleton class="absolute inset-0 h-full w-full rounded-none" />}
+      {loading && <Skeleton class="absolute inset-0 h-full w-full rounded-none" />}
 
-        <img
-          src={cachedUrl}
-          alt={props.image.file_name}
-          onLoad={handleImageLoad}
-          class={cn("h-full w-full object-cover transition-opacity duration-300", loading ? "opacity-0" : "opacity-100")}
-          crossOrigin="anonymous"
-        />
-      </div>
-    </>
+      <img
+        src={cachedUrl}
+        alt={props.image.file_name}
+        onLoad={handleImageLoad}
+        class={cn("h-full w-full object-cover transition-opacity duration-300", loading ? "opacity-0" : "opacity-100")}
+        crossOrigin="anonymous"
+      />
+    </div>
   );
 };
 

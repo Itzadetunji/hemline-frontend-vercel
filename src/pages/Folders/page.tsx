@@ -10,12 +10,14 @@ import { useGetUserProfile } from "@/api/http/v1/users/users.hooks";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { DeleteFolderDialog } from "./components/DeleteFolderDialog";
 import { EditFolderDialog } from "./components/EditFolderDialog";
+import { SelectFolderType } from "./components/SelectFolderType";
 import { cn } from "@/lib/utils";
 
 export const Folders = () => {
   const [step, setStep] = useState(2);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showRenameDialog, setShowRenameDialog] = useState(false);
+  const [showSelectFolder, setShowSelectFolder] = useState(false);
   const [selectedFolder, setSelectedFolder] = useState<Folder | null>(null);
   const getUserProfile = useGetUserProfile();
 
@@ -58,6 +60,9 @@ export const Folders = () => {
               <Icon icon="material-symbols-light:delete-outline-sharp" className="h-5 w-5 text-destructive" />
             </button>
           )}
+          <button class="min-h-5 min-w-5 p-1" type="button" onClick={() => setShowSelectFolder(true)}>
+            <Icon icon="iconoir:upload" className="h-4 w-4 text-black" />
+          </button>
           <a href="/folders">
             <li class="relative min-h-5 min-w-5 p-1">
               <Icon icon="bi:folder" className="h-4 w-4 text-black" />
@@ -87,6 +92,9 @@ export const Folders = () => {
 
       {/* Rename Dialog */}
       {showRenameDialog && selectedFolder && <EditFolderDialog open={showRenameDialog} onOpenChange={setShowRenameDialog} folder={selectedFolder} />}
+
+      {/* Select Folder Type Dialog */}
+      <SelectFolderType isOpen={showSelectFolder} onClose={() => setShowSelectFolder(false)} />
     </div>
   );
 };

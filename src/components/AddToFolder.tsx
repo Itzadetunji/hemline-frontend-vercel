@@ -9,9 +9,11 @@ interface AddToFolderProps {
   image_ids?: string[];
   addToFolder: boolean;
   showAddFolderButton?: boolean;
+  disableAddToFolder?: boolean;
   setAddToFolder: Dispatch<StateUpdater<boolean>>;
   setHasUploaded?: Dispatch<StateUpdater<boolean>>;
   setProgressSuccess?: Dispatch<StateUpdater<boolean>>;
+  onClose?: () => void;
 }
 
 export const AddToFolder = (props: AddToFolderProps) => {
@@ -20,7 +22,13 @@ export const AddToFolder = (props: AddToFolderProps) => {
 
   return (
     <>
-      <Dialog open={props.addToFolder} onOpenChange={props.setAddToFolder}>
+      <Dialog
+        open={props.addToFolder}
+        onOpenChange={(newValue) => {
+          props.onClose?.();
+          props.setAddToFolder(newValue);
+        }}
+      >
         {props.showAddFolderButton &&
           ((
             <DialogTrigger asChild>
@@ -33,7 +41,13 @@ export const AddToFolder = (props: AddToFolderProps) => {
         <DialogContent showClose={false} class="flex flex-col gap-8">
           <DialogHeader class="p-0">
             <div class="flex items-center gap-2">
-              <button type="button" onClick={() => props.setAddToFolder(false)}>
+              <button
+                type="button"
+                onClick={() => {
+                  props.onClose?.();
+                  props.setAddToFolder(false);
+                }}
+              >
                 <Icon icon="ix:cancel" fontSize={16} />
               </button>
               <p class="font-medium text-sm">Add to folder</p>
@@ -81,6 +95,7 @@ export const AddToFolder = (props: AddToFolderProps) => {
           setAddToNewFolder(false);
           props.setHasUploaded?.(false);
           props.setProgressSuccess?.(false);
+          props.onClose?.();
         }}
       />
 
@@ -91,6 +106,9 @@ export const AddToFolder = (props: AddToFolderProps) => {
         setHasUploaded={props.setHasUploaded}
         setAddToFolder={props.setAddToFolder}
         setProgressSuccess={props.setProgressSuccess}
+        onSuccess={() => {
+          props.onClose?.();
+        }}
       />
     </>
   );

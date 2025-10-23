@@ -26,6 +26,7 @@ interface AddToExistingFolderProps {
   setAddToFolder: Dispatch<StateUpdater<boolean>>;
   setAddToExistingFolder: Dispatch<StateUpdater<boolean>>;
   setProgressSuccess?: Dispatch<StateUpdater<boolean>>;
+  onSuccess?: () => void;
 }
 
 export const AddToExistingFolder = (props: AddToExistingFolderProps) => {
@@ -66,15 +67,7 @@ export const AddToExistingFolder = (props: AddToExistingFolderProps) => {
       },
       {
         onSuccess: () => {
-          toast.success("Images added to folder", {
-            style: {
-              border: "1px solid var(--primary)",
-              padding: "4px 4px",
-              color: "var(--primary)",
-              borderRadius: "0px",
-            },
-            icon: null,
-          });
+          toast.success("Images added to folder");
           selectingSignal.value = {
             isSelecting: false,
             selectedItems: [],
@@ -82,18 +75,11 @@ export const AddToExistingFolder = (props: AddToExistingFolderProps) => {
           props.setAddToExistingFolder(false);
           props.setHasUploaded?.(false);
           props.setProgressSuccess?.(false);
+          props.onSuccess?.();
           reset();
         },
         onError: (error) => {
-          toast.error(error.response?.data.errors?.[0] || "Error adding images to folders", {
-            style: {
-              border: "1px solid var(--primary)",
-              padding: "4px 4px",
-              color: "var(--primary)",
-              borderRadius: "0px",
-            },
-            icon: null,
-          });
+          toast.error(error.response?.data.errors?.[0] || "Error adding images to folders");
           setError("folder_ids", {
             message: error.response?.data.errors?.[0] || "Error adding images to folders",
           });
