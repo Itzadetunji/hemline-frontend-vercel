@@ -9,7 +9,19 @@ const Document = () => {
   return (
     <QueryClientProvider client={queryClient}>
       {(<Routes />) as any}
-      <Toaster position="bottom-center" reverseOrder={false} />
+      <Toaster
+        position="bottom-center"
+        reverseOrder={false}
+        toastOptions={{
+          style: {
+            border: "1px solid var(--primary)",
+            padding: "4px 4px",
+            color: "var(--primary)",
+            borderRadius: "0px",
+          },
+          icon: null,
+        }}
+      />
     </QueryClientProvider>
   );
 };

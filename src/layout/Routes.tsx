@@ -6,6 +6,7 @@ import { SignUp } from "@/pages/Auth/SignUp/page";
 import { Folders } from "@/pages/Folders/page";
 import { Gallery } from "@/pages/Gallery/page";
 import { ProtectedRoute } from "./ProtectedRoute";
+import { SingleFolderGallery } from "@/pages/Folders/single-folder";
 
 export const Routes = () => {
   return (
@@ -23,6 +24,7 @@ export const Routes = () => {
           <ProtectedRoute path="/onboarding" component={Onboarding} />
           <ProtectedRoute path="/gallery" component={Gallery} />
           <ProtectedRoute path="/folders" component={Folders} />
+          <ProtectedRoute path="/folders/:id" component={SingleFolderGallery} />
           <ProtectedRoute path="/clients" component={Gallery} />
         </Router>
       </ErrorBoundary>

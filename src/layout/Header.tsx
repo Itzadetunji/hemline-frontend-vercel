@@ -6,7 +6,7 @@ import { cn, getInitials } from "@/lib/utils";
 
 // Signal for header content that can be accessed anywhere
 interface headerContentSignalType {
-  title: string;
+  title: any;
   showHeader: boolean;
   headerContent?: any;
   tab: Tab;
@@ -30,11 +30,12 @@ export const Header = () => {
   if (!headerContentSignal.value.showHeader) return null;
 
   const headerContent = typeof headerContentSignal.value.headerContent === "function" ? headerContentSignal.value.headerContent() : headerContentSignal.value.headerContent;
+  const headerTitleContent = typeof headerContentSignal.value.title === "function" ? headerContentSignal.value.title() : headerContentSignal.value.title;
 
   return (
     <header class="sticky top-0 z-50 flex items-center justify-between gap-2 bg-white px-4 pt-4 pb-3">
-      <h1 class="text-3xl text-[2rem] text-black">{headerContentSignal.value.title}</h1>
-      <ul class="flex flex-1 items-center justify-end gap-3">
+      {headerTitleContent}
+      <ul class="flex items-center justify-end gap-3">
         {headerContent}
         <a href="/profile">
           <li class="-9 size-9 w-9 overflow-hidden rounded-full">

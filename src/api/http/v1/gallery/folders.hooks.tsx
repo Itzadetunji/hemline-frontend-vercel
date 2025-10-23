@@ -27,6 +27,7 @@ const foldersQueryKeys = {
   details: () => [...foldersQueryKeys.all, "detail"] as const,
   detail: (id: string) => [...foldersQueryKeys.details(), id] as const,
   infinite: (perPage?: number) => [...foldersQueryKeys.lists(), "infinite", perPage] as const,
+  infiniteFolder: (id: string, perPage?: number) => [...foldersQueryKeys.detail(id), "infinite", perPage] as const,
 } as const;
 
 // GET: Fetch all folders with pagination
@@ -71,6 +72,32 @@ export const useGetFolder = (id: string, enabled = true) => {
   });
 };
 
+// GET: Fetch a single folder with infinite scroll for images
+export const useInfiniteGetFolder = (id: string, perPage = 20, enabled = true) => {
+  return useInfiniteQuery<GetFolderResponse, AxiosError>({
+    queryKey: foldersQueryKeys.infiniteFolder(id, perPage),
+    queryFn: ({ pageParam = 1 }) =>
+      FOLDERS_API.GET_FOLDER(id, {
+        per_page: perPage,
+        page: pageParam as number,
+      }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      if (!lastPage.pagination) return undefined;
+
+      const { current_page, total_pages } = lastPage.pagination;
+      return current_page < total_pages ? current_page + 1 : undefined;
+    },
+    getPreviousPageParam: (firstPage) => {
+      if (!firstPage.pagination) return undefined;
+
+      const { current_page } = firstPage.pagination;
+      return current_page > 1 ? current_page - 1 : undefined;
+    },
+    enabled: enabled && !!id,
+  });
+};
+
 // POST: Create a new folder
 export const useCreateFolder = () => {
   const queryClient = useQueryClient();
@@ -85,10 +112,9 @@ export const useCreateFolder = () => {
         queryKey: foldersQueryKeys.lists(),
       });
 
-      // Set the created folder in cache for detail queries
-      queryClient.setQueryData<GetFolderResponse>(foldersQueryKeys.detail(data.data.id), {
-        message: "Folder retrieved successfully",
-        data: data.data,
+      // Invalidate the detail query to refetch with correct structure
+      queryClient.invalidateQueries({
+        queryKey: foldersQueryKeys.detail(data.data.id),
       });
     },
     onError: (error) => {
@@ -106,8 +132,10 @@ export const useUpdateFolder = () => {
     onSuccess: (response, variables) => {
       console.log("Folder updated successfully:", response);
 
-      // Update the specific folder in cache
-      queryClient.setQueryData<GetFolderResponse>(foldersQueryKeys.detail(variables.id), response);
+      // Invalidate the specific folder to refetch
+      queryClient.invalidateQueries({
+        queryKey: foldersQueryKeys.detail(variables.id),
+      });
 
       // Invalidate lists to reflect the update
       queryClient.invalidateQueries({
@@ -129,8 +157,10 @@ export const useAddImagesToFolder = () => {
     onSuccess: (response, variables) => {
       console.log("Images added to folder successfully:", response);
 
-      // Update the specific folder in cache
-      queryClient.setQueryData<GetFolderResponse>(foldersQueryKeys.detail(variables.id), response);
+      // Invalidate the specific folder to refetch
+      queryClient.invalidateQueries({
+        queryKey: foldersQueryKeys.detail(variables.id),
+      });
 
       // Invalidate lists to reflect the update
       queryClient.invalidateQueries({
@@ -157,8 +187,10 @@ export const useSetFolderCoverImage = () => {
     onSuccess: (response, variables) => {
       console.log("Folder cover image set successfully:", response);
 
-      // Update the specific folder in cache
-      queryClient.setQueryData<GetFolderResponse>(foldersQueryKeys.detail(variables.id), response);
+      // Invalidate the specific folder to refetch
+      queryClient.invalidateQueries({
+        queryKey: foldersQueryKeys.detail(variables.id),
+      });
 
       // Invalidate lists to reflect the update
       queryClient.invalidateQueries({
@@ -183,6 +215,11 @@ export const useRemoveImagesFromFolder = () => {
       // Invalidate the specific folder to refetch its updated state
       queryClient.invalidateQueries({
         queryKey: foldersQueryKeys.detail(variables.id),
+      });
+
+      // Invalidate the infinite folder query to refetch with updated images
+      queryClient.invalidateQueries({
+        queryKey: foldersQueryKeys.infiniteFolder(variables.id),
       });
 
       // Invalidate lists to reflect the update

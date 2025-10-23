@@ -1,31 +1,36 @@
 import { Icon } from "@iconify/react";
 import type { RefObject } from "preact";
 import { type Dispatch, type StateUpdater, useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
+import { useLocation } from "preact-iso";
 
-import { useInfiniteGetGalleries } from "@/api/http/v1/gallery/gallery.hooks";
+import { useInfiniteGetFolder } from "@/api/http/v1/gallery/folders.hooks";
 import type { GalleryImageType } from "@/api/http/v1/gallery/gallery.types";
 import { useGetUserProfile } from "@/api/http/v1/users/users.hooks";
 import { AddToFolder } from "@/components/AddToFolder";
 import { DeleteImages } from "@/components/DeleteImages";
+import { RemoveFromFolder } from "@/components/RemoveFromFolder";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Skeleton } from "@/components/ui/skeleton";
 import { preloadImages, useImageCache } from "@/hooks/useImageCache";
 import { headerContentSignal, selectingSignal } from "@/layout/Header";
 import { cn } from "@/lib/utils";
-import { AddToFolderBar } from "./components/AddToFolderBar";
-import { SingleGallery } from "./components/SingleGallery";
-import { UploadImages } from "./components/UploadImages";
+import { RemoveFromFolderBar } from "./components/RemoveFromFolderBar";
+import { SingleGallery } from "../Gallery/components/SingleGallery";
 
-export const Gallery = () => {
-  // const [galleryLayout, setGalleryLayout] = useState<"fancy" | "grid">("fancy");
+export const SingleFolderGallery = () => {
+  // Get folder ID from route params
+  const location = useLocation();
+  const folderId = location.path.split("/folders/")[1];
+
   const getUserProfile = useGetUserProfile();
   const [currentSelectedImage, setCurrentSelectedImage] = useState<GalleryImageType | undefined>(undefined);
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [addToFolder, setAddToFolder] = useState<boolean>(false);
   const [deleteImages, setDeleteImages] = useState<boolean>(false);
+  const [removeFromFolder, setRemoveFromFolder] = useState<boolean>(false);
   const observerTarget = useRef<HTMLDivElement>(null);
 
-  const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } = useInfiniteGetGalleries(20);
+  const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } = useInfiniteGetFolder(folderId, 20, !!folderId);
 
   // Intersection Observer for infinite scroll
   useEffect(() => {
@@ -50,8 +55,11 @@ export const Gallery = () => {
     };
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
+  // Get folder info from first page
+  const folderInfo = data?.pages[0]?.data?.folder;
+
   // Flatten all pages into a single array of images
-  const allImages = data?.pages.flatMap((page) => page.data) ?? [];
+  const allImages = data?.pages.flatMap((page) => page.data.images) ?? [];
 
   // Preload images when they are fetched
   useEffect(() => {
@@ -60,7 +68,9 @@ export const Gallery = () => {
       preloadImages(urls);
     }
   }, [allImages.length]);
+
   console.log(selectingSignal.value);
+
   useLayoutEffect(() => {
     selectingSignal.value = {
       isSelecting: false,
@@ -70,8 +80,15 @@ export const Gallery = () => {
     headerContentSignal.value = {
       ...headerContentSignal.value,
       showHeader: true,
-      title: () => <h1 class="truncate text-3xl text-black">Gallery</h1>,
-      tab: "gallery",
+      title: () => (
+        <div class="-ml-2 flex items-center">
+          <a href="/folders">
+            <Icon icon="fluent:chevron-left-24-regular" fontSize={24} />
+          </a>
+          <h1 class="max-w-[10ch] truncate pr-1 text-3xl text-black">{folderInfo?.name || "Folder"}</h1>
+        </div>
+      ),
+      tab: "folders",
       headerContent: () => (
         <>
           <button
@@ -87,9 +104,8 @@ export const Gallery = () => {
             <div class="min-h-5 min-w-5 p-1">
               <Icon icon="gala:select" className="h-4 w-4 text-black" />
             </div>
-            {selectingSignal.value.isSelecting && <p class="font-medium text-sm">Deselect ({selectingSignal.value.selectedItems.length})</p>}
+            {selectingSignal.value.isSelecting && <p class="flex-shrink-0 font-medium text-sm">Deselect ({selectingSignal.value.selectedItems.length})</p>}
           </button>
-          <UploadImages />
           <a href="/folders">
             <li class="relative min-h-5 min-w-5 p-1">
               <Icon icon="bi:folder" className="h-4 w-4 text-black" />
@@ -101,7 +117,7 @@ export const Gallery = () => {
         </>
       ),
     };
-  }, []);
+  }, [folderInfo?.name]);
 
   return (
     <div class="flex flex-1 flex-col pb-8">
@@ -117,12 +133,12 @@ export const Gallery = () => {
         </ul>
       )}
 
-      {!isLoading && allImages.length === 0 && <EmptyGallery />}
+      {!isLoading && allImages.length === 0 && <EmptyGallery folderName={folderInfo?.name} />}
 
       {allImages.length > 0 && (
         <div class="mt-4 grid auto-rows-fr grid-cols-3 gap-1">
           {allImages.map((img, idx) => (
-            <GalleryImage
+            <FolderGalleryImage
               key={img.id}
               image={img}
               nextImage={allImages[idx + 1] ?? undefined}
@@ -131,6 +147,7 @@ export const Gallery = () => {
               setSelectedImages={setSelectedImages}
               setAddToFolder={setAddToFolder}
               setDeleteImages={setDeleteImages}
+              setRemoveFromFolder={setRemoveFromFolder}
               setCurrentSelectedImage={setCurrentSelectedImage}
             />
           ))}
@@ -149,6 +166,16 @@ export const Gallery = () => {
 
       <DeleteImages image_ids={selectedImages} deleteImages={deleteImages} setDeleteImages={setDeleteImages} />
 
+      <RemoveFromFolder
+        folderId={folderId}
+        folderName={folderInfo?.name}
+        image_ids={selectedImages}
+        removeFromFolder={removeFromFolder}
+        setRemoveFromFolder={setRemoveFromFolder}
+      />
+
+      {selectingSignal.value.isSelecting && <RemoveFromFolderBar folderId={folderId} folderName={folderInfo?.name} />}
+
       <SingleGallery
         currentSelectedImage={currentSelectedImage}
         setCurrentSelectedImage={setCurrentSelectedImage}
@@ -160,7 +187,7 @@ export const Gallery = () => {
   );
 };
 
-const GalleryImage = (props: {
+const FolderGalleryImage = (props: {
   image: GalleryImageType;
   nextImage?: GalleryImageType;
   isLastItem?: boolean;
@@ -168,6 +195,7 @@ const GalleryImage = (props: {
   setSelectedImages: Dispatch<StateUpdater<string[]>>;
   setAddToFolder: Dispatch<StateUpdater<boolean>>;
   setDeleteImages: Dispatch<StateUpdater<boolean>>;
+  setRemoveFromFolder: Dispatch<StateUpdater<boolean>>;
   setCurrentSelectedImage: Dispatch<StateUpdater<GalleryImageType | undefined>>;
 }) => {
   const isLandscape = (props.image.meta?.width ?? 0) / (props.image.meta?.height ?? 0) > 1;
@@ -208,7 +236,6 @@ const GalleryImage = (props: {
 
   return (
     <>
-      {selectingSignal.value.isSelecting && <AddToFolderBar />}
       <div
         ref={props.isLastItem ? props.observerRef : null}
         class={cn("relative h-40", {
@@ -234,14 +261,14 @@ const GalleryImage = (props: {
                 <button
                   onClick={() => {
                     props.setSelectedImages(() => [props.image.id]);
-                    props.setAddToFolder(true);
+                    props.setRemoveFromFolder(true);
                   }}
                   type="button"
                   class="flex cursor-pointer items-center justify-between gap-2"
                 >
-                  <p class="font-medium text-sm">Add to Folder</p>
+                  <p class="font-medium text-sm">Remove</p>
                   <div class="min-w-5 p-1">
-                    <Icon icon="bi:folder" className="h-4 w-4 text-black" />
+                    <Icon icon="material-symbols:remove-rounded" className="h-4 w-4 text-black" />
                   </div>
                 </button>
 
@@ -300,16 +327,16 @@ const GalleryImage = (props: {
   );
 };
 
-const EmptyGallery = () => (
+const EmptyGallery = ({ folderName }: { folderName?: string }) => (
   <div class="flex flex-1 flex-col items-center justify-center gap-4">
     <div class="flex flex-col items-center gap-4">
-      <h2 class="text-2xl leading-0">No works to show.</h2>
-      <p class="font-medium text-grey-500 text-sm">Upload your best works from your gallery</p>
+      <h2 class="text-2xl leading-0">No images in this folder.</h2>
+      <p class="font-medium text-grey-500 text-sm">Add images to {folderName || "this folder"} from your gallery</p>
     </div>
-    <button class="flex items-center gap-2 py-2" type="button">
-      <p class="font-medium text-sm">Upload</p>
-      <Icon icon="iconoir:upload" className="h-5 w-5 text-black" />
-    </button>
+    <a href="/gallery" class="flex items-center gap-2 py-2">
+      <p class="font-medium text-sm">Go to Gallery</p>
+      <Icon icon="iconoir:arrow-right" className="h-5 w-5 text-black" />
+    </a>
   </div>
 );
 

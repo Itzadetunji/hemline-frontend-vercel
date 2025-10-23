@@ -27,7 +27,7 @@ export const Folders = () => {
     headerContentSignal.value = {
       ...headerContentSignal.value,
       showHeader: true,
-      title: "Folders",
+      title: () => <h1 class="text-3xl text-black">Folders</h1>,
       tab: "folders",
       headerContent: () => (
         <>
@@ -225,86 +225,98 @@ const FolderCard = (props: FolderCardProps) => {
   };
 
   return (
-    <figure class="flex flex-col items-center gap-1 overflow-hidden" onClick={handleSelect}>
-      <div class="relative cursor-pointer overflow-hidden">
-        <img src={`/assets/folder-icons/folder-${folderIconNumber}.png`} alt={props.folder.name} class="h-15.5 w-17.25" />
-        {props.folder.cover_image && <img src={props.folder.cover_image} alt={props.folder.name} class="-translate-x-1/2 absolute top-6 left-1/2 h-8 w-11 bg-[red] object-cover" />}
-      </div>
-      <figcaption class="flex w-full flex-col items-center text-center">
-        <p class="max-w-[10ch] truncate text-center font-medium text-sm">{props.folder.name}</p>
-        <div class="flex items-center justify-center gap-3">
-          <p class="text-grey-500 text-xs leading-4">
-            {itemCount} {itemCount === 1 ? "item" : "items"}
-          </p>
-          <div class="grid size-4.5 place-content-center rounded-full border border-line-500">
-            {selectingSignal.value.isSelecting ? (
-              <button
-                type="button"
-                class={cn("flex size-4 items-center justify-center rounded-full", isSelected && "bg-primary")}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleSelect();
-                }}
-              >
-                {isSelected && <Icon icon="charm:tick" className="size-3 text-white" />}
-              </button>
-            ) : (
-              <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
-                <PopoverTrigger asChild>
-                  <button type="button" onClick={(e) => e.stopPropagation()}>
-                    <Icon icon="pepicons-pencil:dots-x" />
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent className="flex w-40 flex-col items-stretch rounded-sm border-line-400 bg-white/70 drop-shadow-[0.6px_0.8px_9px_rgba(0,0,0,0,95)] backdrop-blur-lg">
-                  <ul class="flex flex-col gap-3">
-                    <button
-                      type="button"
-                      class="flex cursor-pointer items-center justify-between gap-2"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setIsPopoverOpen(false);
-                        props.setSelectedFolder?.(props.folder);
-                        props.setShowRenameDialog?.(true);
-                      }}
-                    >
-                      <p class="font-medium text-sm">Edit</p>
-                      <div class="min-w-5 p-1">
-                        <Icon icon="iconoir:edit" className="h-4 w-4 text-black" />
-                      </div>
-                    </button>
-                    <button
-                      type="button"
-                      class="flex cursor-pointer items-center justify-between gap-2"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setIsPopoverOpen(false);
-                        props.setSelectedFolder?.(props.folder);
-                        props.setShowDeleteDialog?.(true);
-                      }}
-                    >
-                      <p class="font-medium text-destructive text-sm">Delete</p>
-                      <div class="min-w-5 p-1">
-                        <Icon icon="material-symbols-light:delete-outline-sharp" className="h-4 w-4 text-destructive" />
-                      </div>
-                    </button>
-                    <li class="flex cursor-pointer items-center justify-between gap-2">
-                      <p class="font-medium text-sm">Created</p>
-                      <span class="text-sm">
-                        {new Intl.DateTimeFormat("en-GB", {
-                          day: "2-digit",
-                          month: "2-digit",
-                          year: "2-digit",
-                        }).format(new Date(props.folder.created_at))}
-                      </span>
-                    </li>
-                  </ul>
-                </PopoverContent>
-              </Popover>
-            )}
-          </div>
+    <a
+      href={selectingSignal.value.isSelecting ? undefined : `/folders/${props.folder.id}`}
+      onClick={(e) => {
+        if (selectingSignal.value.isSelecting) {
+          e.preventDefault();
+          handleSelect();
+        }
+      }}
+    >
+      <figure class="flex flex-col items-center gap-1 overflow-hidden">
+        <div class="relative cursor-pointer overflow-hidden">
+          <img src={`/assets/folder-icons/folder-${folderIconNumber}.png`} alt={props.folder.name} class="h-15.5 w-17.25" />
+          {props.folder.cover_image && (
+            <img src={props.folder.cover_image} alt={props.folder.name} class="-translate-x-1/2 absolute top-6 left-1/2 h-8 w-11 bg-[red] object-cover" />
+          )}
         </div>
-      </figcaption>
-    </figure>
+        <figcaption class="flex w-full flex-col items-center text-center">
+          <p class="max-w-[10ch] truncate text-center font-medium text-sm">{props.folder.name}</p>
+          <div class="flex items-center justify-center gap-3">
+            <p class="text-grey-500 text-xs leading-4">
+              {itemCount} {itemCount === 1 ? "item" : "items"}
+            </p>
+            <div class="grid size-4.5 place-content-center rounded-full border border-line-500">
+              {selectingSignal.value.isSelecting ? (
+                <button
+                  type="button"
+                  class={cn("flex size-4 items-center justify-center rounded-full", isSelected && "bg-primary")}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleSelect();
+                  }}
+                >
+                  {isSelected && <Icon icon="charm:tick" className="size-3 text-white" />}
+                </button>
+              ) : (
+                <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+                  <PopoverTrigger asChild>
+                    <button type="button" onClick={(e) => e.stopPropagation()}>
+                      <Icon icon="pepicons-pencil:dots-x" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="flex w-40 flex-col items-stretch rounded-sm border-line-400 bg-white/70 drop-shadow-[0.6px_0.8px_9px_rgba(0,0,0,0,95)] backdrop-blur-lg">
+                    <ul class="flex flex-col gap-3">
+                      <button
+                        type="button"
+                        class="flex cursor-pointer items-center justify-between gap-2"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIsPopoverOpen(false);
+                          props.setSelectedFolder?.(props.folder);
+                          props.setShowRenameDialog?.(true);
+                        }}
+                      >
+                        <p class="font-medium text-sm">Edit</p>
+                        <div class="min-w-5 p-1">
+                          <Icon icon="iconoir:edit" className="h-4 w-4 text-black" />
+                        </div>
+                      </button>
+                      <button
+                        type="button"
+                        class="flex cursor-pointer items-center justify-between gap-2"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIsPopoverOpen(false);
+                          props.setSelectedFolder?.(props.folder);
+                          props.setShowDeleteDialog?.(true);
+                        }}
+                      >
+                        <p class="font-medium text-destructive text-sm">Delete</p>
+                        <div class="min-w-5 p-1">
+                          <Icon icon="material-symbols-light:delete-outline-sharp" className="h-4 w-4 text-destructive" />
+                        </div>
+                      </button>
+                      <li class="flex cursor-pointer items-center justify-between gap-2">
+                        <p class="font-medium text-sm">Created</p>
+                        <span class="text-sm">
+                          {new Intl.DateTimeFormat("en-GB", {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "2-digit",
+                          }).format(new Date(props.folder.created_at))}
+                        </span>
+                      </li>
+                    </ul>
+                  </PopoverContent>
+                </Popover>
+              )}
+            </div>
+          </div>
+        </figcaption>
+      </figure>
+    </a>
   );
 };
 
@@ -312,7 +324,7 @@ const DeleteManyBar = (props: { setSelectedFolder?: Dispatch<StateUpdater<Folder
   return (
     <ul class="-translate-x-1/2 fixed bottom-6 left-1/2 flex items-center gap-0 border border-line-500">
       <Button
-        class="-ml-0.5 gap-1.5 bg-white px-4 py-2.5 text-destructive capitalize hover:bg-white/80"
+        class="gap-1.5 bg-white px-4 py-2.5 text-destructive capitalize hover:bg-white/80"
         onClick={() => {
           props.setSelectedFolder?.(null);
           props.setShowDeleteDialog?.(true);

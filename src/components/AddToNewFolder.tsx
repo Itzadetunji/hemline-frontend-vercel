@@ -54,15 +54,7 @@ export const AddToNewFolder = (props: AddToNewFolderProps) => {
     await createFolderMutation.mutateAsync(payload, {
       onSuccess: () => {
         props.onSuccess();
-        toast.success("Images added to new folder", {
-          style: {
-            border: "1px solid var(--primary)",
-            padding: "4px 4px",
-            color: "var(--primary)",
-            borderRadius: "0px",
-          },
-          icon: null,
-        });
+        toast.success("Images added to new folder", {});
         selectingSignal.value = {
           isSelecting: false,
           selectedItems: [],
@@ -70,15 +62,7 @@ export const AddToNewFolder = (props: AddToNewFolderProps) => {
         reset();
       },
       onError: (error) => {
-        toast.error(error.response?.data.errors?.[0] || "Error adding images to folders", {
-          style: {
-            border: "1px solid var(--primary)",
-            padding: "4px 4px",
-            color: "var(--primary)",
-            borderRadius: "0px",
-          },
-          icon: null,
-        });
+        toast.error(error.response?.data.errors?.[0] || "Error adding images to folders", {});
         console.error("Error creating folder:", error);
       },
     });

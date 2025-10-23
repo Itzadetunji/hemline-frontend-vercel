@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { GalleryImageType } from "./gallery.types";
 
 // Folder Color Type
 export type FolderColor = {
@@ -23,22 +24,31 @@ export interface PaginationParams {
 	page?: number;
 }
 
+// Pagination response
+export interface PaginationReponse {
+	current_page: number;
+	per_page: number;
+	total: number;
+	total_pages: number;
+}
+
 // Get Folders - Response
 export interface GetFoldersResponse {
 	message: string;
 	data: Folder[];
-	pagination?: {
-		current_page: number;
-		per_page: number;
-		total: number;
-		total_pages: number;
-	};
+	pagination?: PaginationReponse;
 }
 
 // Get Single Folder - Response
 export interface GetFolderResponse {
 	message: string;
-	data: Folder;
+	data: { folder: Folder; images: GalleryImageType[] };
+	pagination: PaginationReponse;
+}
+
+// Get Single Folder with Pagination Parameters
+export interface GetFolderParams extends PaginationParams {
+	id: string;
 }
 
 // Create Folder - Request

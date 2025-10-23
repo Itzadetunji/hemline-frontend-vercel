@@ -16,7 +16,6 @@ export interface GalleryImageType {
 		camera_model: string;
 		shutter_speed: string;
 		iso: number;
-		orientation: "portrait" | "landscape";
 	}>;
 }
 
