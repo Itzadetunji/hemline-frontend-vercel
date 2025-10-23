@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "preact/hooks";
 
 import { useInfiniteGetGalleries } from "@/api/http/v1/gallery/gallery.hooks";
 import type { GalleryImageType } from "@/api/http/v1/gallery/gallery.types";
-import { useAddImagesToFolder } from "@/api/http/v1/gallery/folders.hooks";
+import { useAddImagesToFolder } from "@/api/http/v1/gallery/folders/folders.hooks";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Drawer } from "@/components/ui/drawer";
@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 import { preloadImages, useImageCache } from "@/hooks/useImageCache";
 import toast from "react-hot-toast";
 import { userSignal } from "@/stores/userStore";
-import { Folder } from "@/api/http/v1/gallery/folders.types";
+import { Folder } from "@/api/http/v1/gallery/folders/folders.types";
 
 interface AddImagesToFolderProps {
   isOpen: boolean;
@@ -158,12 +158,25 @@ export const AddImagesToFolder = (props: AddImagesToFolderProps) => {
           )}
 
           {!isLoading && availableImages.length === 0 && (
-            <div class="flex flex-1 flex-col items-center justify-center gap-4 py-16">
-              <Icon icon="solar:gallery-linear" fontSize={48} className="text-grey-400" />
-              <p class="text-center text-grey-500">
-                {props.excludeImageIds && props.excludeImageIds.length > 0 ? "All images are already in this folder" : "No images in gallery"}
-              </p>
-            </div>
+            <>
+              {" "}
+              {/* <div class="flex flex-1 flex-col items-center justify-center gap-4 py-16">
+                <Icon icon="solar:gallery-linear" fontSize={48} className="text-grey-400" />{" "}
+                <p class="text-center text-grey-500">
+                  {props.excludeImageIds && props.excludeImageIds.length > 0 ? "All images are already in this folder" : "No images in gallery"}{" "}
+                </p>{" "}
+              </div> */}
+              <div class="flex flex-1 flex-col items-center justify-center gap-4">
+                <div class="flex flex-col items-center gap-4">
+                  <h2 class="text-2xl leading-0">No works to show.</h2>
+                  <p class="font-medium text-grey-500 text-sm">Upload your best works from your gallery</p>
+                </div>
+                <a class="flex items-center gap-2 py-2" href="/gallery">
+                  <p class="font-medium text-sm">Upload</p>
+                  <Icon icon="si:add-duotone" className="h-5 w-5 text-black" />
+                </a>
+              </div>
+            </>
           )}
 
           {availableImages.length > 0 && (

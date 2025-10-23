@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { GalleryImageType } from "./gallery.types";
+import type { GalleryImageType } from "../gallery.types";
 
 // Folder Color Type
 export type FolderColor = {

@@ -14,7 +14,7 @@ import { headerContentSignal, selectingSignal } from "@/layout/Header";
 import { cn } from "@/lib/utils";
 import { AddToFolderBar } from "./components/AddToFolderBar";
 import { SingleGallery } from "./components/SingleGallery";
-import { UploadImages } from "./components/UploadImages";
+import { UploadImages, type UploadImagesHandle } from "./components/UploadImages";
 
 export const Gallery = () => {
   // const [galleryLayout, setGalleryLayout] = useState<"fancy" | "grid">("fancy");
@@ -24,6 +24,7 @@ export const Gallery = () => {
   const [addToFolder, setAddToFolder] = useState<boolean>(false);
   const [deleteImages, setDeleteImages] = useState<boolean>(false);
   const observerTarget = useRef<HTMLDivElement>(null);
+  const uploadImagesRef = useRef<UploadImagesHandle | null>(null);
 
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } = useInfiniteGetGalleries(20);
 
@@ -60,7 +61,7 @@ export const Gallery = () => {
       preloadImages(urls);
     }
   }, [allImages.length]);
-  console.log(selectingSignal.value);
+
   useLayoutEffect(() => {
     selectingSignal.value = {
       isSelecting: false,
@@ -89,7 +90,7 @@ export const Gallery = () => {
             </div>
             {selectingSignal.value.isSelecting && <p class="font-medium text-sm">Deselect ({selectingSignal.value.selectedItems.length})</p>}
           </button>
-          <UploadImages />
+          <UploadImages ref={uploadImagesRef} />
           <a href="/folders">
             <li class="relative min-h-5 min-w-5 p-1">
               <Icon icon="bi:folder" className="h-4 w-4 text-black" />
@@ -117,7 +118,7 @@ export const Gallery = () => {
         </ul>
       )}
 
-      {!isLoading && allImages.length === 0 && <EmptyGallery />}
+      {!isLoading && allImages.length === 0 && <EmptyGallery onUploadClick={() => uploadImagesRef.current?.triggerUpload()} />}
 
       {allImages.length > 0 && (
         <div class="mt-4 grid auto-rows-fr grid-cols-3 gap-1">
@@ -300,13 +301,13 @@ const GalleryImage = (props: {
   );
 };
 
-const EmptyGallery = () => (
+const EmptyGallery = (props: { onUploadClick: () => void }) => (
   <div class="flex flex-1 flex-col items-center justify-center gap-4">
     <div class="flex flex-col items-center gap-4">
       <h2 class="text-2xl leading-0">No works to show.</h2>
       <p class="font-medium text-grey-500 text-sm">Upload your best works from your gallery</p>
     </div>
-    <button class="flex items-center gap-2 py-2" type="button">
+    <button class="flex items-center gap-2 py-2" type="button" onClick={props.onUploadClick}>
       <p class="font-medium text-sm">Upload</p>
       <Icon icon="iconoir:upload" className="h-5 w-5 text-black" />
     </button>

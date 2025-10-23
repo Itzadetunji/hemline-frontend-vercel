@@ -135,7 +135,7 @@ const SelectImages = (props: SelectImagesProps) => {
       }}
       className="flex flex-1 flex-col gap-8 overflow-y-auto px-4 py-6"
     >
-      <div class="flex flex-col gap-8">
+      <div class="flex flex-col gap-8 flex-1">
         <div class="relative flex items-center justify-center">
           <button
             type="button"
@@ -160,9 +160,15 @@ const SelectImages = (props: SelectImagesProps) => {
           )}
 
           {!isLoading && allImages.length === 0 && (
-            <div class="flex flex-1 flex-col items-center justify-center gap-4 py-16">
-              <Icon icon="solar:gallery-linear" fontSize={48} className="text-grey-400" />
-              <p class="text-center text-grey-500">No images in gallery</p>
+            <div class="flex flex-1 flex-col items-center justify-center gap-4">
+              <div class="flex flex-col items-center gap-4">
+                <h2 class="text-2xl leading-0">No works to show.</h2>
+                <p class="font-medium text-grey-500 text-sm">Upload your best works from your gallery</p>
+              </div>
+              <a class="flex items-center gap-2 py-2" href="/gallery">
+                <p class="font-medium text-sm">Upload</p>
+                <Icon icon="si:add-duotone" className="h-5 w-5 text-black" />
+              </a>
             </div>
           )}
 
@@ -202,7 +208,7 @@ const SelectImages = (props: SelectImagesProps) => {
             </div>
           )}
 
-          {selectedImageIds.length && (
+          {!!selectedImageIds.length && (
             <Button class="-translate-x-1/2 fixed bottom-6 left-1/2 z-50 w-fit gap-3 px-6" type="button" onClick={handleContinue}>
               Add {selectedImageIds.length} image{selectedImageIds.length !== 1 ? "s" : ""}
             </Button>

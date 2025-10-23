@@ -3,8 +3,8 @@ import type { Dispatch, StateUpdater } from "preact/hooks";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 
-import { useCreateFolder } from "@/api/http/v1/gallery/folders.hooks";
-import { CreateFolderSchema, type CreateFolderPayload } from "@/api/http/v1/gallery/folders.types";
+import { useCreateFolder } from "@/api/http/v1/gallery/folders/folders.hooks";
+import { CreateFolderSchema, type CreateFolderPayload } from "@/api/http/v1/gallery/folders/folders.types";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";

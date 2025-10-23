@@ -1,4 +1,4 @@
-import $http from "../../xhr";
+import $http from "../../../xhr";
 import type {
 	AddImagesToFolderPayload,
 	AddImagesToFolderResponse,

@@ -12,6 +12,7 @@ import type {
   UpdateGalleryImageResponse,
   UploadImagesResponse,
 } from "./gallery.types";
+import { usersQuerykeys } from "../users/users.hooks";
 
 // Query keys factory
 const galleryQueryKeys = {
@@ -89,6 +90,10 @@ export const useUploadImages = () => {
         queryKey: galleryQueryKeys.lists(),
       });
 
+      queryClient.invalidateQueries({
+        queryKey: usersQuerykeys.all,
+      });
+
       // Optionally, set the uploaded images in cache for detail queries
       data.data.forEach((image) => {
         queryClient.setQueryData<GetGalleryImageResponse>(galleryQueryKeys.detail(image.id), {
@@ -146,6 +151,10 @@ export const useDeleteImages = () => {
       // Invalidate all lists to refetch without deleted images
       queryClient.invalidateQueries({
         queryKey: galleryQueryKeys.lists(),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: usersQuerykeys.all,
       });
     },
     onError: (error) => {

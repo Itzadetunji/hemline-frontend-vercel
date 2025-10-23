@@ -115,6 +115,6 @@ export const useUpdateUserProfile = () => {
   });
 };
 
-const usersQuerykeys = {
+export const usersQuerykeys = {
   all: ["user-profile"] as const,
 } as const;

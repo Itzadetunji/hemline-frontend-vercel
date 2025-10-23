@@ -1,10 +1,18 @@
 import { Icon } from "@iconify/react";
-import { useRef, useState } from "preact/hooks";
+import { useRef, useState, useImperativeHandle } from "preact/hooks";
+import { forwardRef } from "preact/compat";
 
-import { useUploadImages } from "@/api/http/v1/gallery";
 import { AddToFolder } from "@/components/AddToFolder";
+import { useUploadImages } from "@/api/http/v1/gallery/gallery.hooks";
 
-export const UploadImages = () => {
+export interface UploadImagesHandle {
+  triggerUpload: () => void;
+}
+
+// biome-ignore lint/complexity/noBannedTypes: Empty props interface for forwardRef
+type UploadImagesProps = {};
+
+export const UploadImages = forwardRef<UploadImagesHandle, UploadImagesProps>((_props, ref) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [totalFiles, setTotalFiles] = useState(0);
   const [hasUploaded, setHasUploaded] = useState(false);
@@ -16,6 +24,11 @@ export const UploadImages = () => {
   const handleButtonClick = () => {
     fileInputRef.current?.click();
   };
+
+  // Expose triggerUpload method to parent
+  useImperativeHandle(ref, () => ({
+    triggerUpload: handleButtonClick,
+  }));
 
   const handleFileChange = async (e: Event) => {
     const target = e.target as HTMLInputElement;
@@ -111,4 +124,6 @@ export const UploadImages = () => {
       </div>
     </>
   );
-};
+});
+
+UploadImages.displayName = "UploadImages";

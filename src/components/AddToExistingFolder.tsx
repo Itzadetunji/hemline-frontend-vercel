@@ -4,8 +4,8 @@ import type { Dispatch, StateUpdater } from "preact/hooks";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { useAddImagesToFolder, useGetFolders } from "@/api/http/v1/gallery/folders.hooks";
-import type { Folder } from "@/api/http/v1/gallery/folders.types";
+import { useAddImagesToFolder, useGetFolders } from "@/api/http/v1/gallery/folders/folders.hooks";
+import type { Folder } from "@/api/http/v1/gallery/folders/folders.types";
 import { Button } from "./ui/button";
 import { CheckboxGroup } from "./ui/checkbox-group";
 import { Drawer } from "./ui/drawer";
@@ -118,8 +118,8 @@ export const AddToExistingFolder = (props: AddToExistingFolderProps) => {
             </div>
           ) : !getFoldersQuery.data || getFoldersQuery.data.data.length === 0 ? (
             <div class="flex flex-1 flex-col items-center justify-center gap-2">
-              <Icon icon="bi:folder" fontSize={48} className="text-grey-400" />
-              <p class="text-center text-grey-500">No folders available. Create one first!</p>
+              <Icon icon="bi:folder" fontSize={48} className="text-black" />
+              <p class="text-center text-black">No folders available. Create one first!</p>
             </div>
           ) : (
             <Controller

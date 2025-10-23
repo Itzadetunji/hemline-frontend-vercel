@@ -1,4 +1,4 @@
-import { useRemoveImagesFromFolder } from "@/api/http/v1/gallery/folders.hooks";
+import { useRemoveImagesFromFolder } from "@/api/http/v1/gallery/folders/folders.hooks";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader } from "@/components/ui/dialog";
 import { selectingSignal } from "@/layout/Header";

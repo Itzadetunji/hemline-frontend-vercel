@@ -1,5 +1,5 @@
-import { useUpdateFolder } from "@/api/http/v1/gallery/folders.hooks";
-import type { Folder } from "@/api/http/v1/gallery/folders.types";
+import { useUpdateFolder } from "@/api/http/v1/gallery/folders/folders.hooks";
+import type { Folder } from "@/api/http/v1/gallery/folders/folders.types";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";

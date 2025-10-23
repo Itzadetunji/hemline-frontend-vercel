@@ -3,7 +3,7 @@ import type { RefObject } from "preact";
 import { type Dispatch, type StateUpdater, useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
 import { useLocation } from "preact-iso";
 
-import { useInfiniteGetFolder } from "@/api/http/v1/gallery/folders.hooks";
+import { useInfiniteGetFolder } from "@/api/http/v1/gallery/folders/folders.hooks";
 import type { GalleryImageType } from "@/api/http/v1/gallery/gallery.types";
 import { useGetUserProfile } from "@/api/http/v1/users/users.hooks";
 import { AddToFolder } from "@/components/AddToFolder";
@@ -70,8 +70,6 @@ export const SingleFolderGallery = () => {
       preloadImages(urls);
     }
   }, [allImages.length]);
-
-  console.log(selectingSignal.value);
 
   useLayoutEffect(() => {
     selectingSignal.value = {

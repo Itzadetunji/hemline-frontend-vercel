@@ -1,8 +1,8 @@
 import { Icon } from "@iconify/react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader } from "@/components/ui/dialog";
-import type { Folder } from "@/api/http/v1/gallery/folders.types";
-import { useDeleteFolder } from "@/api/http/v1/gallery/folders.hooks";
+import type { Folder } from "@/api/http/v1/gallery/folders/folders.types";
+import { useDeleteFolder } from "@/api/http/v1/gallery/folders/folders.hooks";
 import { selectingSignal } from "@/layout/Header";
 import toast from "react-hot-toast";
 

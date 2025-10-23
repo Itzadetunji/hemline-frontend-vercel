@@ -1,7 +1,7 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 
-import { FOLDERS_API } from "./folders/folders.api";
+import { FOLDERS_API } from "./folders.api";
 import type {
   AddImagesToFolderPayload,
   AddImagesToFolderResponse,
