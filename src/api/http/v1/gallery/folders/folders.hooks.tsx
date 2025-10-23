@@ -18,6 +18,7 @@ import type {
   UpdateFolderPayload,
   UpdateFolderResponse,
 } from "./folders.types";
+import { usersQuerykeys } from "../../users/users.hooks";
 
 // Query keys factory
 const foldersQueryKeys = {
@@ -110,6 +111,10 @@ export const useCreateFolder = () => {
       // Invalidate all folder lists to refetch with new folder
       queryClient.invalidateQueries({
         queryKey: foldersQueryKeys.lists(),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: usersQuerykeys.all,
       });
 
       // Invalidate the detail query to refetch with correct structure
@@ -231,6 +236,10 @@ export const useRemoveImagesFromFolder = () => {
       queryClient.invalidateQueries({
         queryKey: ["gallery"],
       });
+
+      queryClient.invalidateQueries({
+        queryKey: usersQuerykeys.all,
+      });
     },
     onError: (error) => {
       console.error("Error removing images from folder:", error);
@@ -260,6 +269,10 @@ export const useDeleteFolder = () => {
       // Invalidate gallery queries as images may have updated folder_ids
       queryClient.invalidateQueries({
         queryKey: ["gallery"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: usersQuerykeys.all,
       });
     },
     onError: (error) => {

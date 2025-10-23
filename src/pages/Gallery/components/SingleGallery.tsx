@@ -1,12 +1,13 @@
+import { useGetGalleryImage, useUpdateGalleryImage } from "@/api/http/v1/gallery/gallery.hooks";
 import type { GalleryImageType } from "@/api/http/v1/gallery/gallery.types";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Drawer } from "@/components/ui/drawer";
-import { Icon } from "@iconify/react";
-import { type Dispatch, type StateUpdater, useState, useEffect } from "preact/hooks";
 import { Button } from "@/components/ui/button";
+import { Drawer } from "@/components/ui/drawer";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useUpdateGalleryImage } from "@/api/http/v1/gallery/gallery.hooks";
 import { useImageCache } from "@/hooks/useImageCache";
+import { Icon } from "@iconify/react";
+import { type Dispatch, type StateUpdater, useEffect, useState } from "preact/hooks";
+import { useForm } from "react-hook-form";
 
 interface SingleGalleryProps {
   currentSelectedImage?: GalleryImageType;
@@ -16,15 +17,31 @@ interface SingleGalleryProps {
   setDeleteImages: Dispatch<StateUpdater<boolean>>;
 }
 
+interface WorkDetailsForm {
+  description: string;
+}
+
 export const SingleGallery = (props: SingleGalleryProps) => {
   const isOpen = !!props.currentSelectedImage;
   const [isEditing, setIsEditing] = useState(false);
-  const [description, setDescription] = useState("");
 
   const updateMutation = useUpdateGalleryImage();
+  const getGalleryQuery = useGetGalleryImage(props.currentSelectedImage?.id as string);
 
   // Use the image cache hook
   const { cachedUrl, isLoading: loading } = useImageCache(props.currentSelectedImage?.url);
+
+  // Initialize react-hook-form
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { isDirty },
+  } = useForm<WorkDetailsForm>({
+    defaultValues: {
+      description: getGalleryQuery.data?.data.description,
+    },
+  });
 
   const handleImageLoad = () => {
     // Image load handler for additional processing if needed
@@ -32,10 +49,9 @@ export const SingleGallery = (props: SingleGalleryProps) => {
 
   const handleEdit = () => {
     setIsEditing(true);
-    setDescription(props.currentSelectedImage?.description || "");
   };
 
-  const handleSave = async () => {
+  const onSubmit = async (data: WorkDetailsForm) => {
     if (!props.currentSelectedImage?.id) return;
 
     try {
@@ -43,7 +59,7 @@ export const SingleGallery = (props: SingleGalleryProps) => {
         id: props.currentSelectedImage.id,
         data: {
           gallery: {
-            description,
+            description: data.description,
           },
         },
       });
@@ -55,16 +71,20 @@ export const SingleGallery = (props: SingleGalleryProps) => {
 
   const handleCancel = () => {
     setIsEditing(false);
-    setDescription(props.currentSelectedImage?.description || "");
+    reset({
+      description: getGalleryQuery.data?.data.description || "",
+    });
   };
 
-  // Reset states when drawer opens/closes or image changes
+  // Reset form when drawer opens/closes or image changes
   useEffect(() => {
     if (props.currentSelectedImage) {
-      setDescription(props.currentSelectedImage.description || "");
+      reset({
+        description: getGalleryQuery.data?.data.description || "",
+      });
       setIsEditing(false);
     }
-  }, [props.currentSelectedImage?.id]);
+  }, [getGalleryQuery.data]);
 
   return (
     <Drawer isOpen={isOpen} onClose={() => props.setCurrentSelectedImage(undefined)} className="flex flex-1 flex-col gap-6 overflow-y-auto pt-6 pb-6">
@@ -133,21 +153,21 @@ export const SingleGallery = (props: SingleGalleryProps) => {
           </Popover>
         </div>
         <div class="flex flex-1 flex-col justify-between gap-6">
-          <div class="relative flex-1">
+          <div class="relative max-h-[50vh] overflow-hidden">
             {loading && <Skeleton class="absolute inset-0 h-full w-full rounded-none" />}
             <img
               src={cachedUrl}
               alt={props.currentSelectedImage?.file_name}
               onLoad={handleImageLoad}
-              class="h-full w-full flex-1 object-contain"
+              class="h-full w-full object-contain"
               style={{ display: loading ? "none" : "block" }}
             />
           </div>
-          <div class="flex flex-1 flex-col justify-end gap-4 px-4">
+          <form class="flex flex-1 flex-col justify-end gap-4 px-4" onSubmit={handleSubmit(onSubmit) as any}>
             <ul class="flex items-center justify-between gap-4">
               <h2 class="text-2xl leading-5">Work Details</h2>
               {!isEditing ? (
-                <Button class="h-6 px-2 py-1.5 text-black" variant="secondary" onClick={handleEdit}>
+                <Button class="h-6 px-2 py-1.5 text-black" variant="secondary" onClick={handleEdit} type="button">
                   <p class="text-sm">Edit</p>
                   <i class="grid size-3 place-content-center">
                     <Icon icon="iconoir:edit" />
@@ -155,23 +175,22 @@ export const SingleGallery = (props: SingleGalleryProps) => {
                 </Button>
               ) : (
                 <div class="flex items-center gap-2">
-                  <Button class="h-6 px-2 py-1.5 text-black" variant="secondary" onClick={handleCancel} disabled={updateMutation.isPending}>
+                  <Button class="h-6 px-2 py-1.5 text-black" variant="secondary" onClick={handleCancel} disabled={updateMutation.isPending} type="button">
                     <p class="text-sm">Cancel</p>
                   </Button>
-                  <Button class="h-6 px-2 py-1.5" onClick={handleSave} disabled={updateMutation.isPending}>
+                  <Button class="h-6 px-2 py-1.5" disabled={updateMutation.isPending || !isDirty} type="submit">
                     <p class="text-sm">{updateMutation.isPending ? "Saving..." : "Save"}</p>
                   </Button>
                 </div>
               )}
             </ul>
             <textarea
+              {...register("description")}
               class="max-h-32 flex-1 border border-line px-3 py-3.5 text-sm placeholder:text-grey-500"
               placeholder="add some info about this work"
-              value={description}
-              onInput={(e) => setDescription((e.target as HTMLTextAreaElement).value)}
               disabled={!isEditing}
             />
-          </div>
+          </form>
         </div>
       </div>
     </Drawer>
