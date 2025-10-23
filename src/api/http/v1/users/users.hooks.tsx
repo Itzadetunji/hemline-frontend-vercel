@@ -5,6 +5,7 @@ import { useEffect } from "preact/hooks";
 import { APIVersion1PatchUserProfile, USERS_API } from "./users.api";
 import type { GetUserProfileResponse, OnboardingFormData, OnboardingUserResponse, RequestMagicLinkPayload, VerifyMagicCodePayload } from "./users.types";
 import { useLocation } from "preact-iso";
+import { setEmail } from "@/stores/authStore";
 
 export const useJoinWaitlist = () => {
   return useMutation({
@@ -34,6 +35,7 @@ export const useGetUserProfile = () => {
         theme: window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light",
         token: undefined,
       });
+      setEmail("");
       location.route("/", true);
     }
     if (getUserProfileQuery.status === "success") {

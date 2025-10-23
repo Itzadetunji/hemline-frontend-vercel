@@ -4,17 +4,17 @@ import { type Dispatch, type StateUpdater, useEffect, useLayoutEffect, useRef, u
 
 import { useInfiniteGetGalleries } from "@/api/http/v1/gallery/gallery.hooks";
 import type { GalleryImageType } from "@/api/http/v1/gallery/gallery.types";
+import { useGetUserProfile } from "@/api/http/v1/users/users.hooks";
 import { AddToFolder } from "@/components/AddToFolder";
 import { DeleteImages } from "@/components/DeleteImages";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
+import { preloadImages, useImageCache } from "@/hooks/useImageCache";
 import { headerContentSignal, selectingSignal } from "@/layout/Header";
-import { SingleGallery } from "./components/SingleGallery";
-import { useImageCache, preloadImages } from "@/hooks/useImageCache";
-import { UploadImages } from "./components/UploadImages";
-import { useGetUserProfile } from "@/api/http/v1/users/users.hooks";
+import { cn } from "@/lib/utils";
 import { AddToFolderBar } from "./components/AddToFolderBar";
+import { SingleGallery } from "./components/SingleGallery";
+import { UploadImages } from "./components/UploadImages";
 
 export const Gallery = () => {
   // const [galleryLayout, setGalleryLayout] = useState<"fancy" | "grid">("fancy");
@@ -72,7 +72,7 @@ export const Gallery = () => {
       showHeader: true,
       title: "Gallery",
       tab: "gallery",
-      headerContent: (
+      headerContent: () => (
         <>
           <button
             class="flex items-center gap-1.5"
@@ -170,7 +170,7 @@ const GalleryImage = (props: {
   setDeleteImages: Dispatch<StateUpdater<boolean>>;
   setCurrentSelectedImage: Dispatch<StateUpdater<GalleryImageType | undefined>>;
 }) => {
-  const [isLandscape, setIsLandscape] = useState(false);
+  const isLandscape = (props.image.meta?.width ?? 0) / (props.image.meta?.height ?? 0) > 1;
   const [iconColor, setIconColor] = useState("text-white");
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
@@ -182,8 +182,6 @@ const GalleryImage = (props: {
 
   const handleImageLoad = (e: Event) => {
     const img = e.target as HTMLImageElement;
-    const aspectRatio = img.naturalWidth / img.naturalHeight;
-    setIsLandscape(aspectRatio > 1);
 
     // Detect background color at icon position
     detectBackgroundColor(img, setIconColor);

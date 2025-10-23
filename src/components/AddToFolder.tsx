@@ -61,6 +61,7 @@ export const AddToFolder = (props: AddToFolderProps) => {
                 class="py-3.5 font-medium text-sm"
                 type="button"
                 onClick={() => {
+                  props.setAddToFolder(false);
                   setAddToNewFolder(true);
                 }}
               >
@@ -71,19 +72,17 @@ export const AddToFolder = (props: AddToFolderProps) => {
         </DialogContent>
       </Dialog>
 
-      {addToNewFolder && (
-        <AddToNewFolder
-          image_ids={props.image_ids}
-          setAddToFolder={props.setAddToFolder}
-          addToNewFolder={addToNewFolder}
-          setAddToNewFolder={setAddToNewFolder}
-          onSuccess={() => {
-            setAddToNewFolder(false);
-            props.setHasUploaded?.(false);
-            props.setProgressSuccess?.(false);
-          }}
-        />
-      )}
+      <AddToNewFolder
+        image_ids={props.image_ids}
+        setAddToFolder={props.setAddToFolder}
+        addToNewFolder={addToNewFolder}
+        setAddToNewFolder={setAddToNewFolder}
+        onSuccess={() => {
+          setAddToNewFolder(false);
+          props.setHasUploaded?.(false);
+          props.setProgressSuccess?.(false);
+        }}
+      />
 
       <AddToExistingFolder
         image_ids={props.image_ids}

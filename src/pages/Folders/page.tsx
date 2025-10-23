@@ -9,7 +9,7 @@ import { useGetFolders } from "@/api/http/v1/gallery/folders.hooks";
 import { useGetUserProfile } from "@/api/http/v1/users/users.hooks";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { DeleteFolderDialog } from "./components/DeleteFolderDialog";
-import { RenameFolderDialog } from "./components/RenameFolderDialog";
+import { EditFolderDialog } from "./components/EditFolderDialog";
 import { cn } from "@/lib/utils";
 
 export const Folders = () => {
@@ -86,7 +86,7 @@ export const Folders = () => {
       {showDeleteDialog && <DeleteFolderDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog} selectedFolder={selectedFolder} />}
 
       {/* Rename Dialog */}
-      {showRenameDialog && selectedFolder && <RenameFolderDialog open={showRenameDialog} onOpenChange={setShowRenameDialog} folder={selectedFolder} />}
+      {showRenameDialog && selectedFolder && <EditFolderDialog open={showRenameDialog} onOpenChange={setShowRenameDialog} folder={selectedFolder} />}
     </div>
   );
 };
@@ -267,9 +267,9 @@ const FolderCard = (props: FolderCardProps) => {
                         props.setShowRenameDialog?.(true);
                       }}
                     >
-                      <p class="font-medium text-sm">Rename</p>
+                      <p class="font-medium text-sm">Edit</p>
                       <div class="min-w-5 p-1">
-                        <Icon icon="material-symbols:edit-outline" className="h-4 w-4 text-black" />
+                        <Icon icon="iconoir:edit" className="h-4 w-4 text-black" />
                       </div>
                     </button>
                     <button
