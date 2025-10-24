@@ -9,7 +9,7 @@ interface headerContentSignalType {
   title: any;
   showHeader: boolean;
   headerContent?: any;
-  tab: Tab;
+  tab: "gallery" | "clients" | "folders";
 }
 export const headerContentSignal = signal<headerContentSignalType>({
   showHeader: true,
@@ -55,7 +55,11 @@ export const Header = () => {
   );
 };
 
-const Tabs = ["gallery", "clients", "folders"] as const;
+const Tabs = [
+  { title: "gallery", link: "gallery" },
+  { title: "clients", link: "clients" },
+  { title: "folders", link: "gallery/folders" },
+] as const;
 type Tab = (typeof Tabs)[number];
 
 export const NavBar = () => {
@@ -74,13 +78,13 @@ export const NavBar = () => {
 
 const NavbarCard = (props: { tab: Tab }) => {
   return (
-    <a href={`/${props.tab}`}>
+    <a href={`/${props.tab.link}`}>
       <li
         class={cn("bg-primary px-4 py-2.5 text-white capitalize transition-colors", {
-          "bg-transparent text-grey-500": headerContentSignal.value.tab !== props.tab,
+          "bg-transparent text-grey-500": headerContentSignal.value.tab !== props.tab.title,
         })}
       >
-        {props.tab}
+        {props.tab.title}
       </li>
     </a>
   );

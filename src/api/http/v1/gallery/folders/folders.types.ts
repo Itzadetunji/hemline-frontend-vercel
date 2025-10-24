@@ -16,6 +16,9 @@ export interface Folder {
 	cover_image: string | null;
 	created_at: string;
 	folder_color: number;
+	is_public?: boolean;
+	public_id?: string;
+	public_url?: string;
 }
 
 // Pagination query parameters
@@ -57,6 +60,7 @@ export const CreateFolderSchema = z.object({
 		name: z.string().min(1, "Folder name is required"),
 		description: z.string().optional().default(""),
 		folder_color: z.number().int().min(1).max(9),
+		is_public: z.boolean().optional().default(false),
 	}),
 	image_ids: z.array(z.uuid()).optional(),
 });
@@ -74,6 +78,7 @@ export const UpdateFolderSchema = z.object({
 	name: z.string().min(1, "Folder name is required").optional(),
 	description: z.string().optional(),
 	folder_color: z.number().int().min(1).max(9).optional(),
+	is_public: z.boolean().optional(),
 });
 
 export type UpdateFolderPayload = z.infer<typeof UpdateFolderSchema>;
@@ -132,4 +137,62 @@ export interface RemoveImagesFromFolderResponse {
 // Delete Folder - Response
 export interface DeleteFolderResponse {
 	message: string;
+}
+
+// Public User Info
+export interface PublicUserInfo {
+	id: string;
+	first_name: string;
+	last_name: string;
+	full_name: string;
+	business_name: string;
+	business_image: string;
+	profession: string;
+}
+
+// Share Folder - Request
+export const ShareFolderSchema = z.discriminatedUnion("share_type", [
+	z.object({
+		share_type: z.literal("email"),
+		email: z.email("Invalid email address"),
+		is_public: z.boolean(),
+	}),
+	z.object({
+		share_type: z.literal("client"),
+		client_id: z.string().uuid("Invalid client ID"),
+		is_public: z.boolean(),
+	}),
+	z.object({
+		share_type: z.literal("link"),
+		is_public: z.boolean(),
+	}),
+]);
+
+export type ShareFolderPayload = z.infer<typeof ShareFolderSchema>;
+
+// Share Folder - Response
+export interface ShareFolderResponse {
+	message: string;
+	data: { is_public: boolean; public_id: string; public_url: string };
+}
+
+// Get Public Folder - Response
+export interface GetPublicFolderResponse {
+	message: string;
+	data: {
+		folder: Folder;
+		user: PublicUserInfo;
+		images: GalleryImageType[];
+		pagination: PaginationReponse;
+	};
+}
+
+// Get Public Folder Images - Response
+export interface GetPublicFolderImagesResponse {
+	message: string;
+	data: {
+		images: GalleryImageType[];
+		user: PublicUserInfo;
+	};
+	pagination: PaginationReponse;
 }

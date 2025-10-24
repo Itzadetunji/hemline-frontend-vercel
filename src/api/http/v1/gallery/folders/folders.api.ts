@@ -7,11 +7,15 @@ import type {
 	DeleteFolderResponse,
 	GetFolderResponse,
 	GetFoldersResponse,
+	GetPublicFolderImagesResponse,
+	GetPublicFolderResponse,
 	PaginationParams,
 	RemoveImagesFromFolderPayload,
 	RemoveImagesFromFolderResponse,
 	SetFolderCoverImagePayload,
 	SetFolderCoverImageResponse,
+	ShareFolderPayload,
+	ShareFolderResponse,
 	UpdateFolderPayload,
 	UpdateFolderResponse,
 } from "./folders.types";
@@ -26,6 +30,10 @@ const FOLDERS_ENDPOINTS = {
 	removeImagesFromFolder: (id: string) =>
 		`/gallery/folders/${id}/remove_images`,
 	deleteFolder: (id: string) => `/gallery/folders/${id}`,
+	shareFolder: (id: string) => `/gallery/folders/${id}/share`,
+	getPublicFolder: (publicId: string) => `/public/folders/${publicId}`,
+	getPublicFolderImages: (publicId: string) =>
+		`/public/folders/${publicId}/images`,
 } as const;
 
 export const FOLDERS_API = {
@@ -94,5 +102,39 @@ export const FOLDERS_API = {
 	DELETE_FOLDER: async (id: string): Promise<DeleteFolderResponse> =>
 		await $http
 			.delete(FOLDERS_ENDPOINTS.deleteFolder(id))
+			.then((res) => res.data),
+
+	SHARE_FOLDER: async (
+		id: string,
+		data: ShareFolderPayload
+	): Promise<ShareFolderResponse> =>
+		await $http
+			.post(FOLDERS_ENDPOINTS.shareFolder(id), data)
+			.then((res) => res.data),
+
+	GET_PUBLIC_FOLDER: async (
+		publicId: string,
+		params?: PaginationParams
+	): Promise<GetPublicFolderResponse> =>
+		await $http
+			.get(FOLDERS_ENDPOINTS.getPublicFolder(publicId), {
+				params: {
+					per_page: params?.per_page ?? 20,
+					page: params?.page ?? 1,
+				},
+			})
+			.then((res) => res.data),
+
+	GET_PUBLIC_FOLDER_IMAGES: async (
+		publicId: string,
+		params?: PaginationParams
+	): Promise<GetPublicFolderImagesResponse> =>
+		await $http
+			.get(FOLDERS_ENDPOINTS.getPublicFolderImages(publicId), {
+				params: {
+					per_page: params?.per_page ?? 20,
+					page: params?.page ?? 1,
+				},
+			})
 			.then((res) => res.data),
 };

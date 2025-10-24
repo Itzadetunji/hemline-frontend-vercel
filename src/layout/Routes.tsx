@@ -23,8 +23,8 @@ export const Routes = () => {
           <Route path="/sign-in" component={SignIn} />
           <ProtectedRoute path="/onboarding" component={Onboarding} />
           <ProtectedRoute path="/gallery" component={Gallery} />
-          <ProtectedRoute path="/folders" component={Folders} />
-          <ProtectedRoute path="/folders/:id" component={SingleFolderGallery} />
+          <ProtectedRoute path="/gallery/folders" component={Folders} />
+          <ProtectedRoute path="/gallery/folders/:id" component={SingleFolderGallery} />
           <ProtectedRoute path="/clients" component={Gallery} />
         </Router>
       </ErrorBoundary>

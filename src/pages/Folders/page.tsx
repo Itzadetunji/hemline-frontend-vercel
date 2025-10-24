@@ -13,12 +13,14 @@ import { EditFolderDialog } from "./components/EditFolderDialog";
 import { SelectFolderType } from "./components/SelectFolderType";
 import { cn } from "@/lib/utils";
 import { useLocation } from "preact-iso";
+import { ShareToClientDialog } from "./components/ShareToClientDialog";
 
 export const Folders = () => {
   const [step, setStep] = useState(2);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showRenameDialog, setShowRenameDialog] = useState(false);
   const [showSelectFolder, setShowSelectFolder] = useState(false);
+  const [shareClientDialog, showShareClientDialog] = useState(false);
   const [selectedFolder, setSelectedFolder] = useState<Folder | null>(null);
   const getUserProfile = useGetUserProfile();
   const getFoldersQuery = useGetFolders();
@@ -65,7 +67,7 @@ export const Folders = () => {
           <button class="min-h-5 min-w-5 p-1" type="button" onClick={() => setShowSelectFolder(true)}>
             <Icon icon="iconoir:upload" className="h-4 w-4 text-black" />
           </button>
-          <a href="/folders">
+          <a href="/gallery/folders">
             <li class="relative min-h-5 min-w-5 p-1">
               <Icon icon="bi:folder" className="h-4 w-4 text-black" />
               <p class="-top-0.5 -right-0.5 absolute grid min-h-3.5 min-w-3.5 place-content-center rounded-full bg-primary text-[0.625rem] text-white leading-0">
@@ -86,7 +88,14 @@ export const Folders = () => {
       </button>
       {userSignal.value?.user?.total_folders === 0 && <NoFolders step={step} setStep={setStep} setShowSelectFolder={setShowSelectFolder} />}
       {Boolean(userSignal.value?.user?.total_folders) && (
-        <AllFolders step={step} setStep={setStep} setShowDeleteDialog={setShowDeleteDialog} setShowRenameDialog={setShowRenameDialog} setSelectedFolder={setSelectedFolder} />
+        <AllFolders
+          step={step}
+          setStep={setStep}
+          setShowDeleteDialog={setShowDeleteDialog}
+          setShowRenameDialog={setShowRenameDialog}
+          setSelectedFolder={setSelectedFolder}
+          showShareClientDialog={showShareClientDialog}
+        />
       )}
 
       {/* Delete Dialog */}
@@ -96,13 +105,16 @@ export const Folders = () => {
       {showRenameDialog && selectedFolder && <EditFolderDialog open={showRenameDialog} onOpenChange={setShowRenameDialog} folder={selectedFolder} />}
 
       {/* Select Folder Type Dialog */}
-      <SelectFolderType
-        isOpen={showSelectFolder}
-        onClose={() => {
-          setShowSelectFolder(false);
-          getFoldersQuery.refetch();
-        }}
-      />
+      {showRenameDialog && selectedFolder && (
+        <SelectFolderType
+          isOpen={showSelectFolder}
+          onClose={() => {
+            setShowSelectFolder(false);
+            getFoldersQuery.refetch();
+          }}
+        />
+      )}
+      {shareClientDialog && selectedFolder && <ShareToClientDialog folder={selectedFolder} open={shareClientDialog} onOpenChange={showShareClientDialog} />}
     </div>
   );
 };
@@ -114,6 +126,7 @@ interface Mainprops {
   setShowRenameDialog?: Dispatch<StateUpdater<boolean>>;
   setSelectedFolder?: Dispatch<StateUpdater<Folder | null>>;
   setShowSelectFolder?: Dispatch<StateUpdater<boolean>>;
+  showShareClientDialog?: Dispatch<StateUpdater<boolean>>;
 }
 
 const NoFolders = (props: Mainprops) => {
@@ -188,6 +201,7 @@ interface FolderCardProps {
   setShowDeleteDialog?: Dispatch<StateUpdater<boolean>>;
   setShowRenameDialog?: Dispatch<StateUpdater<boolean>>;
   setSelectedFolder?: Dispatch<StateUpdater<Folder | null>>;
+  showShareClientDialog?: Dispatch<StateUpdater<boolean>>;
 }
 
 const AllFolders = (props: Mainprops) => {
@@ -208,6 +222,7 @@ const AllFolders = (props: Mainprops) => {
                 setShowDeleteDialog={props.setShowDeleteDialog}
                 setShowRenameDialog={props.setShowRenameDialog}
                 setSelectedFolder={props.setSelectedFolder}
+                showShareClientDialog={props.showShareClientDialog}
               />
             ))}
           </div>
@@ -252,7 +267,7 @@ const FolderCard = (props: FolderCardProps) => {
           handleSelect();
           return;
         }
-        location.route(`/folders/${props.folder.id}`);
+        location.route(`/gallery/folders/${props.folder.id}`);
       }}
       type="button"
     >
@@ -281,12 +296,27 @@ const FolderCard = (props: FolderCardProps) => {
             ) : (
               <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
                 <PopoverTrigger asChild onClick={(e: Event) => e.stopPropagation()}>
-                  <button type="button">
+                  <button type="button" class="min-h-4 min-w-4">
                     <Icon icon="pepicons-pencil:dots-x" />
                   </button>
                 </PopoverTrigger>
                 <PopoverContent className="flex w-40 flex-col items-stretch rounded-sm border-line-400 bg-white/70 drop-shadow-[0.6px_0.8px_9px_rgba(0,0,0,0,95)] backdrop-blur-lg">
                   <ul class="flex flex-col gap-3">
+                    <button
+                      type="button"
+                      class="flex cursor-pointer items-center justify-between gap-2"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsPopoverOpen(false);
+                        props.setSelectedFolder?.(props.folder);
+                        props.showShareClientDialog?.(true);
+                      }}
+                    >
+                      <p class="font-medium text-sm">Share to Client</p>
+                      <div class="min-w-5 p-1">
+                        <Icon icon="lineicons:share-1" className="h-4 w-4 text-black" />
+                      </div>
+                    </button>
                     <button
                       type="button"
                       class="flex cursor-pointer items-center justify-between gap-2"

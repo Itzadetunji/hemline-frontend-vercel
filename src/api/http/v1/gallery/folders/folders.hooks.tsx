@@ -10,11 +10,15 @@ import type {
   DeleteFolderResponse,
   GetFolderResponse,
   GetFoldersResponse,
+  GetPublicFolderImagesResponse,
+  GetPublicFolderResponse,
   PaginationParams,
   RemoveImagesFromFolderPayload,
   RemoveImagesFromFolderResponse,
   SetFolderCoverImagePayload,
   SetFolderCoverImageResponse,
+  ShareFolderPayload,
+  ShareFolderResponse,
   UpdateFolderPayload,
   UpdateFolderResponse,
 } from "./folders.types";
@@ -29,6 +33,9 @@ const foldersQueryKeys = {
   detail: (id: string) => [...foldersQueryKeys.details(), id] as const,
   infinite: (perPage?: number) => [...foldersQueryKeys.lists(), "infinite", perPage] as const,
   infiniteFolder: (id: string, perPage?: number) => [...foldersQueryKeys.detail(id), "infinite", perPage] as const,
+  public: () => [...foldersQueryKeys.all, "public"] as const,
+  publicFolder: (publicId: string) => [...foldersQueryKeys.public(), publicId] as const,
+  publicFolderImages: (publicId: string, perPage?: number) => [...foldersQueryKeys.publicFolder(publicId), "images", perPage] as const,
 } as const;
 
 // GET: Fetch all folders with pagination
@@ -278,5 +285,70 @@ export const useDeleteFolder = () => {
     onError: (error) => {
       console.error("Error deleting folder:", error);
     },
+  });
+};
+
+// PATCH: Share a folder (make it public/private)
+export const useShareFolder = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<ShareFolderResponse, AxiosError<{ error: string; errors?: string[] }>, { id: string; data: ShareFolderPayload }>({
+    mutationFn: ({ id, data }) => FOLDERS_API.SHARE_FOLDER(id, data),
+    onSuccess: (response, variables) => {
+      console.log("Folder shared successfully:", response);
+
+      // Invalidate the specific folder to refetch
+      queryClient.invalidateQueries({
+        queryKey: foldersQueryKeys.detail(variables.id),
+      });
+
+      // Invalidate lists to reflect the update
+      queryClient.invalidateQueries({
+        queryKey: foldersQueryKeys.lists(),
+      });
+
+      // Invalidate infinite folder query
+      queryClient.invalidateQueries({
+        queryKey: foldersQueryKeys.infiniteFolder(variables.id),
+      });
+    },
+    onError: (error) => {
+      console.error("Error sharing folder:", error);
+    },
+  });
+};
+
+// GET: Fetch a public folder by public ID
+export const useGetPublicFolder = (publicId: string, params?: PaginationParams, enabled = true) => {
+  return useQuery<GetPublicFolderResponse, AxiosError>({
+    queryKey: foldersQueryKeys.publicFolder(publicId),
+    queryFn: () => FOLDERS_API.GET_PUBLIC_FOLDER(publicId, params),
+    enabled: enabled && !!publicId,
+  });
+};
+
+// GET: Fetch public folder images with infinite scroll
+export const useInfiniteGetPublicFolderImages = (publicId: string, perPage = 20, enabled = true) => {
+  return useInfiniteQuery<GetPublicFolderImagesResponse, AxiosError>({
+    queryKey: foldersQueryKeys.publicFolderImages(publicId, perPage),
+    queryFn: ({ pageParam = 1 }) =>
+      FOLDERS_API.GET_PUBLIC_FOLDER_IMAGES(publicId, {
+        per_page: perPage,
+        page: pageParam as number,
+      }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      if (!lastPage.pagination) return undefined;
+
+      const { current_page, total_pages } = lastPage.pagination;
+      return current_page < total_pages ? current_page + 1 : undefined;
+    },
+    getPreviousPageParam: (firstPage) => {
+      if (!firstPage.pagination) return undefined;
+
+      const { current_page } = firstPage.pagination;
+      return current_page > 1 ? current_page - 1 : undefined;
+    },
+    enabled: enabled && !!publicId,
   });
 };

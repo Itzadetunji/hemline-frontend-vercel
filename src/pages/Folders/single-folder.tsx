@@ -82,7 +82,7 @@ export const SingleFolderGallery = () => {
       showHeader: true,
       title: () => (
         <div class="-ml-2 flex items-center">
-          <a href="/folders">
+          <a href="/gallery/folders">
             <Icon icon="fluent:chevron-left-24-regular" fontSize={24} />
           </a>
           <h1 class="max-w-[10ch] truncate pr-1 text-3xl text-black">{folderInfo?.name || "Folder"}</h1>
@@ -109,7 +109,7 @@ export const SingleFolderGallery = () => {
           <button class="min-h-5 min-w-5 p-1" type="button" onClick={() => setShowAddImagesDrawer(true)}>
             <Icon icon="iconoir:upload" className="h-4 w-4 text-black" />
           </button>
-          <a href="/folders">
+          <a href="/gallery/folders">
             <li class="relative min-h-5 min-w-5 p-1">
               <Icon icon="bi:folder" className="h-4 w-4 text-black" />
               <p class="-top-0.5 -right-0.5 absolute grid min-h-3.5 min-w-3.5 place-content-center rounded-full bg-primary text-[0.625rem] text-white leading-0">
