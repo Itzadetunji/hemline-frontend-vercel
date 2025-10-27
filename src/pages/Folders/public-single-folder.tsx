@@ -1,13 +1,13 @@
 import { Icon } from "@iconify/react";
 import type { RefObject } from "preact";
-import { useRoute } from "preact-iso";
 import { type Dispatch, type StateUpdater, useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
+import { useLocation, useRoute } from "preact-iso";
 
 import { useInfiniteGetFolder } from "@/api/http/v1/gallery/folders/folders.hooks";
 import type { GalleryImageType } from "@/api/http/v1/gallery/gallery.types";
 import { useGetUserProfile } from "@/api/http/v1/users/users.hooks";
-import { AddImagesToFolder } from "@/components/AddImagesToFolder";
 import { AddToFolder } from "@/components/AddToFolder";
+import { AddImagesToFolder } from "@/components/AddImagesToFolder";
 import { DeleteImages } from "@/components/DeleteImages";
 import { RemoveFromFolder } from "@/components/RemoveFromFolder";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -15,15 +15,15 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { preloadImages, useImageCache } from "@/hooks/useImageCache";
 import { headerContentSignal, selectingSignal } from "@/layout/Header";
 import { cn } from "@/lib/utils";
-import { SingleGallery } from "../Gallery/components/SingleGallery";
 import { RemoveFromFolderBar } from "./components/RemoveFromFolderBar";
+import { SingleGallery } from "../Gallery/components/SingleGallery";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-export const SingleFolderGallery = () => {
+export const PublicFolderGallery = () => {
   // Get folder ID from route params
   const { params } = useRoute();
-  const folderId = params.folder_id;
+  const folderId = params.public_id;
 
-  const getUserProfile = useGetUserProfile();
   const [currentSelectedImage, setCurrentSelectedImage] = useState<GalleryImageType | undefined>(undefined);
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [addToFolder, setAddToFolder] = useState<boolean>(false);
@@ -71,128 +71,100 @@ export const SingleFolderGallery = () => {
     }
   }, [allImages.length]);
 
-  useLayoutEffect(() => {
-    selectingSignal.value = {
-      isSelecting: false,
-      selectedItems: [],
-    };
-
-    headerContentSignal.value = {
-      ...headerContentSignal.value,
-      showHeader: true,
-      title: () => (
-        <div class="-ml-2 flex items-center">
-          <a href="/gallery/folders">
-            <Icon icon="fluent:chevron-left-24-regular" fontSize={24} />
-          </a>
-          <h1 class="max-w-[10ch] truncate pr-1 text-3xl text-black">{folderInfo?.name || "Folder"}</h1>
-        </div>
-      ),
-      tab: "folders",
-      headerContent: () => (
-        <>
-          <button
-            class="flex items-center gap-1.5"
-            type="button"
-            onClick={() => {
-              selectingSignal.value = {
-                selectedItems: [],
-                isSelecting: !selectingSignal.value.isSelecting,
-              };
-            }}
-          >
-            <div class="min-h-5 min-w-5 p-1">
-              <Icon icon="gala:select" className="h-4 w-4 text-black" />
-            </div>
-            {selectingSignal.value.isSelecting && <p class="flex-shrink-0 font-medium text-sm">Deselect ({selectingSignal.value.selectedItems.length})</p>}
-          </button>
-          <button class="min-h-5 min-w-5 p-1" type="button" onClick={() => setShowAddImagesDrawer(true)}>
-            <Icon icon="iconoir:upload" className="h-4 w-4 text-black" />
-          </button>
-          <a href="/gallery/folders">
-            <li class="relative min-h-5 min-w-5 p-1">
-              <Icon icon="bi:folder" className="h-4 w-4 text-black" />
-              <p class="-top-0.5 -right-0.5 absolute grid min-h-3.5 min-w-3.5 place-content-center rounded-full bg-primary text-[0.625rem] text-white leading-0">
-                {getUserProfile.data?.data.user.total_folders || 0}
-              </p>
-            </li>
-          </a>
-        </>
-      ),
-    };
-  }, [folderInfo?.name]);
-
   return (
-    <div class="flex flex-1 flex-col pb-8">
-      <button class="flex items-center gap-2 px-4" type="button">
-        <Icon icon="streamline-ultimate:layout" className="text-black" />
-        <p class="font-medium text-sm">Change Layout</p>
-      </button>
-      {isLoading && (
-        <ul class="mt-4 grid grid-cols-[auto_auto_auto] gap-1">
-          {Array.from({ length: 12 }).map((_, i) => (
-            <Skeleton key={i} class="h-40 rounded-none" />
-          ))}
+    <div class="flex flex-1 flex-col">
+      <header class="sticky top-0 z-50 flex items-center justify-between gap-2 bg-white px-4 pt-4 pb-3">
+        <div class="size-8 rounded-full bg-red-900" />
+        <ul class="flex items-center justify-end gap-3">
+          <li>
+            <button class="flex items-center gap-2" type="button">
+              <Icon icon="streamline-ultimate:layout" className="text-black" />
+              <p class="font-medium text-sm">Change Layout</p>
+            </button>
+          </li>
+          <button type="button" class="size-6">
+            <Icon icon="material-symbols:dark-mode" />
+          </button>
+          {/* <li class="-9 size-9 w-9 overflow-hidden rounded-full">
+            <img src={getUserProfile.data?.data.user.business_image} alt="" />
+            <Avatar>
+              {(<AvatarImage src={getUserProfile.data?.data.user.business_image} />) as any}
+              <AvatarFallback>
+                {getUserProfile.data?.data.user.full_name
+                  ? getInitials(getUserProfile.data?.data.user.full_name, true)
+                  : getInitials(getUserProfile.data?.data.user.email as string)}
+              </AvatarFallback>
+            </Avatar>
+          </li> */}
         </ul>
-      )}
+      </header>
+      <div class="flex flex-1 flex-col pb-8">
+        {isLoading && (
+          <ul class="mt-4 grid grid-cols-[auto_auto_auto] gap-1">
+            {Array.from({ length: 12 }).map((_, i) => (
+              <Skeleton key={i} class="h-40 rounded-none" />
+            ))}
+          </ul>
+        )}
 
-      {!isLoading && allImages.length === 0 && <EmptyGallery folderName={folderInfo?.name} />}
+        {!isLoading && allImages.length === 0 && <EmptyGallery folderName={folderInfo?.name} />}
 
-      {allImages.length > 0 && (
-        <div class="mt-4 grid auto-rows-fr grid-cols-3 gap-1">
-          {allImages.map((img, idx) => (
-            <FolderGalleryImage
-              key={img.id}
-              image={img}
-              nextImage={allImages[idx + 1] ?? undefined}
-              isLastItem={idx === allImages.length - 1}
-              observerRef={idx === allImages.length - 1 ? observerTarget : undefined}
-              setSelectedImages={setSelectedImages}
-              setAddToFolder={setAddToFolder}
-              setDeleteImages={setDeleteImages}
-              setRemoveFromFolder={setRemoveFromFolder}
-              setCurrentSelectedImage={setCurrentSelectedImage}
-            />
-          ))}
-        </div>
-      )}
+        {allImages.length > 0 && (
+          <div class="mt-4 grid auto-rows-fr grid-cols-3 gap-1">
+            {allImages.map((img, idx) => (
+              <FolderGalleryImage
+                key={img.id}
+                image={img}
+                nextImage={allImages[idx + 1] ?? undefined}
+                isLastItem={idx === allImages.length - 1}
+                observerRef={idx === allImages.length - 1 ? observerTarget : undefined}
+                setSelectedImages={setSelectedImages}
+                setAddToFolder={setAddToFolder}
+                setDeleteImages={setDeleteImages}
+                setRemoveFromFolder={setRemoveFromFolder}
+                setCurrentSelectedImage={setCurrentSelectedImage}
+              />
+            ))}
+          </div>
+        )}
 
-      {isFetchingNextPage && (
-        <div class="mt-1 grid grid-cols-[auto_auto_auto] gap-1">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} class="h-40 rounded-none" />
-          ))}
-        </div>
-      )}
+        {isFetchingNextPage && (
+          <div class="mt-1 grid grid-cols-[auto_auto_auto] gap-1">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Skeleton key={i} class="h-40 rounded-none" />
+            ))}
+          </div>
+        )}
 
-      <AddToFolder image_ids={selectedImages} addToFolder={addToFolder} setAddToFolder={setAddToFolder} />
+        <AddToFolder image_ids={selectedImages} addToFolder={addToFolder} setAddToFolder={setAddToFolder} />
 
-      <DeleteImages image_ids={selectedImages} deleteImages={deleteImages} setDeleteImages={setDeleteImages} />
+        <DeleteImages image_ids={selectedImages} deleteImages={deleteImages} setDeleteImages={setDeleteImages} />
 
-      <RemoveFromFolder
-        folderId={folderId}
-        folderName={folderInfo?.name}
-        image_ids={selectedImages}
-        removeFromFolder={removeFromFolder}
-        setRemoveFromFolder={setRemoveFromFolder}
-      />
+        <RemoveFromFolder
+          folderId={folderId}
+          folderName={folderInfo?.name}
+          image_ids={selectedImages}
+          removeFromFolder={removeFromFolder}
+          setRemoveFromFolder={setRemoveFromFolder}
+        />
 
-      {selectingSignal.value.isSelecting && <RemoveFromFolderBar folderId={folderId} folderName={folderInfo?.name} />}
+        {selectingSignal.value.isSelecting && <RemoveFromFolderBar folderId={folderId} folderName={folderInfo?.name} />}
 
-      <AddImagesToFolder
-        isOpen={showAddImagesDrawer}
-        onClose={() => setShowAddImagesDrawer(false)}
-        folder={data?.pages[0]?.data?.folder}
-        excludeImageIds={allImages.map((img) => img.id)}
-      />
+        <AddImagesToFolder
+          isOpen={showAddImagesDrawer}
+          onClose={() => setShowAddImagesDrawer(false)}
+          folder={data?.pages[0]?.data?.folder}
+          excludeImageIds={allImages.map((img) => img.id)}
+        />
 
-      <SingleGallery
-        currentSelectedImage={currentSelectedImage}
-        setCurrentSelectedImage={setCurrentSelectedImage}
-        setSelectedImages={setSelectedImages}
-        setAddToFolder={setAddToFolder}
-        setDeleteImages={setDeleteImages}
-      />
+        <SingleGallery
+          currentSelectedImage={currentSelectedImage}
+          setCurrentSelectedImage={setCurrentSelectedImage}
+          setSelectedImages={setSelectedImages}
+          setAddToFolder={setAddToFolder}
+          setDeleteImages={setDeleteImages}
+        />
+      </div>
     </div>
   );
 };
