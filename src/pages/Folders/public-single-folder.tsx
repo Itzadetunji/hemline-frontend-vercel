@@ -78,17 +78,6 @@ export const PublicFolderGallery = () => {
             <button type="button" class="size-6">
               <Icon icon="material-symbols:dark-mode" />
             </button>
-            {/* <li class="-9 size-9 w-9 overflow-hidden rounded-full">
-            <img src={getUserProfile.data?.data.user.business_image} alt="" />
-            <Avatar>
-              {(<AvatarImage src={getUserProfile.data?.data.user.business_image} />) as any}
-              <AvatarFallback>
-                {getUserProfile.data?.data.user.full_name
-                  ? getInitials(getUserProfile.data?.data.user.full_name, true)
-                  : getInitials(getUserProfile.data?.data.user.email as string)}
-              </AvatarFallback>
-            </Avatar>
-          </li> */}
           </ul>
         </header>
         <div class="flex flex-1 flex-col py-8">

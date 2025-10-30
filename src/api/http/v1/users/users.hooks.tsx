@@ -1,16 +1,29 @@
-import { userStore } from "@/stores/userStore";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
-import { useEffect } from "preact/hooks";
-import { APIVersion1PatchUserProfile, USERS_API } from "./users.api";
-import type { GetUserProfileResponse, OnboardingFormData, OnboardingUserResponse, RequestMagicLinkPayload, VerifyMagicCodePayload } from "./users.types";
 import { useLocation } from "preact-iso";
-import { setEmail } from "@/stores/authStore";
+import { useEffect } from "preact/hooks";
+import toast from "react-hot-toast";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-export const useJoinWaitlist = () => {
-  return useMutation({
-    mutationFn: APIVersion1PatchUserProfile,
+import { clearEmail, setEmail } from "@/stores/authStore";
+import { userStore } from "@/stores/userStore";
+import { USERS_API } from "./users.api";
+import type { GetUserProfileResponse, OnboardingFormData, OnboardingUserResponse, RequestMagicLinkPayload, VerifyMagicCodePayload } from "./users.types";
+
+export const useLogout = () => {
+  const logoutMutation = useMutation({
+    mutationFn: USERS_API.LOGOUT,
   });
+
+  useEffect(() => {
+    if (logoutMutation.data || logoutMutation.error) {
+      toast.success("Logged out successfully!");
+      clearEmail();
+      userStore.logout();
+      localStorage.clear();
+    }
+  }, [logoutMutation.data, logoutMutation.error]);
+
+  return logoutMutation;
 };
 
 export const useGetMagicLink = () => {
