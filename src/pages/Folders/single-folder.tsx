@@ -17,6 +17,7 @@ import { headerContentSignal, selectingSignal } from "@/layout/Header";
 import { cn } from "@/lib/utils";
 import { SingleGallery } from "../Gallery/components/SingleGallery";
 import { RemoveFromFolderBar } from "./components/RemoveFromFolderBar";
+import { detectBackgroundColor } from "../Gallery/page";
 
 export const SingleFolderGallery = () => {
   // Get folder ID from route params
@@ -347,54 +348,3 @@ const EmptyGallery = ({ folderName }: { folderName?: string }) => (
     </a>
   </div>
 );
-
-const detectBackgroundColor = (img: HTMLImageElement, setIconColor: Dispatch<StateUpdater<string>>) => {
-  try {
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-
-    if (!ctx) return;
-
-    // Set canvas size to image size
-    canvas.width = img.naturalWidth;
-    canvas.height = img.naturalHeight;
-
-    // Draw image on canvas
-    ctx.drawImage(img, 0, 0);
-
-    // Sample area where the icon will be (top-left corner)
-    // Sample a small region around the icon position
-    const sampleX = Math.floor(img.naturalWidth * 0.05); // 5% from left
-    const sampleY = Math.floor(img.naturalHeight * 0.1); // 10% from top
-    const sampleSize = 20;
-
-    const imageData = ctx.getImageData(sampleX, sampleY, sampleSize, sampleSize);
-    const data = imageData.data;
-
-    // Calculate average color
-    let r = 0;
-    let g = 0;
-    let b = 0;
-    const pixelCount = data.length / 4;
-
-    for (let i = 0; i < data.length; i += 4) {
-      r += data[i];
-      g += data[i + 1];
-      b += data[i + 2];
-    }
-
-    r = Math.floor(r / pixelCount);
-    g = Math.floor(g / pixelCount);
-    b = Math.floor(b / pixelCount);
-
-    // Calculate perceived brightness using relative luminance formula
-    const brightness = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-
-    // If background is light (bright), use black icon, otherwise use white
-    setIconColor(brightness > 0.6 ? "text-black" : "text-white");
-  } catch (error) {
-    console.error("Error detecting background color:", error);
-    // Fallback to white if detection fails
-    setIconColor("text-white");
-  }
-};

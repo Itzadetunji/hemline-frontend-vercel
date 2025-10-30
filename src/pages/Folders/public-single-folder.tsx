@@ -1,45 +1,38 @@
 import { Icon } from "@iconify/react";
 import type { RefObject } from "preact";
-import { type Dispatch, type StateUpdater, useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
-import { useLocation, useRoute } from "preact-iso";
+import { useRoute } from "preact-iso";
+import { type Dispatch, type StateUpdater, useEffect, useRef, useState } from "preact/hooks";
 
-import { useInfiniteGetFolder } from "@/api/http/v1/gallery/folders/folders.hooks";
+import { useGetPublicFolder, useInfiniteGetPublicFolderImages } from "@/api/http/v1/gallery/folders/folders.hooks";
 import type { GalleryImageType } from "@/api/http/v1/gallery/gallery.types";
-import { useGetUserProfile } from "@/api/http/v1/users/users.hooks";
-import { AddToFolder } from "@/components/AddToFolder";
-import { AddImagesToFolder } from "@/components/AddImagesToFolder";
-import { DeleteImages } from "@/components/DeleteImages";
-import { RemoveFromFolder } from "@/components/RemoveFromFolder";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Skeleton } from "@/components/ui/skeleton";
 import { preloadImages, useImageCache } from "@/hooks/useImageCache";
-import { headerContentSignal, selectingSignal } from "@/layout/Header";
+import { selectingSignal } from "@/layout/Header";
 import { cn } from "@/lib/utils";
-import { RemoveFromFolderBar } from "./components/RemoveFromFolderBar";
-import { SingleGallery } from "../Gallery/components/SingleGallery";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { PublicSingleGallery } from "./components/PublicSingleGallery";
+import { detectBackgroundColor } from "../Gallery/page";
 
 export const PublicFolderGallery = () => {
   // Get folder ID from route params
   const { params } = useRoute();
   const folderId = params.public_id;
 
+  const getPublicFolderQuery = useGetPublicFolder();
+
   const [currentSelectedImage, setCurrentSelectedImage] = useState<GalleryImageType | undefined>(undefined);
-  const [selectedImages, setSelectedImages] = useState<string[]>([]);
-  const [addToFolder, setAddToFolder] = useState<boolean>(false);
-  const [deleteImages, setDeleteImages] = useState<boolean>(false);
-  const [removeFromFolder, setRemoveFromFolder] = useState<boolean>(false);
-  const [showAddImagesDrawer, setShowAddImagesDrawer] = useState<boolean>(false);
+  const [_, setSelectedImages] = useState<string[]>([]);
+
   const observerTarget = useRef<HTMLDivElement>(null);
 
-  const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } = useInfiniteGetFolder(folderId, 20, !!folderId);
+  const imagesInfiniteQuery = useInfiniteGetPublicFolderImages(folderId, 20, !!folderId);
 
   // Intersection Observer for infinite scroll
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage();
+        if (entries[0].isIntersecting && imagesInfiniteQuery.hasNextPage && !imagesInfiniteQuery.isFetchingNextPage) {
+          imagesInfiniteQuery.fetchNextPage();
         }
       },
       { threshold: 0.1 }
@@ -55,13 +48,10 @@ export const PublicFolderGallery = () => {
         observer.unobserve(currentTarget);
       }
     };
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
-
-  // Get folder info from first page
-  const folderInfo = data?.pages[0]?.data?.folder;
+  }, [imagesInfiniteQuery.hasNextPage, imagesInfiniteQuery.isFetchingNextPage, imagesInfiniteQuery.fetchNextPage]);
 
   // Flatten all pages into a single array of images
-  const allImages = data?.pages.flatMap((page) => page.data.images) ?? [];
+  const allImages = imagesInfiniteQuery.data?.pages.flatMap((page) => page.data.images) ?? [];
 
   // Preload images when they are fetched
   useEffect(() => {
@@ -72,20 +62,23 @@ export const PublicFolderGallery = () => {
   }, [allImages.length]);
 
   return (
-    <div class="flex flex-1 flex-col">
-      <header class="sticky top-0 z-50 flex items-center justify-between gap-2 bg-white px-4 pt-4 pb-3">
-        <div class="size-8 rounded-full bg-red-900" />
-        <ul class="flex items-center justify-end gap-3">
-          <li>
-            <button class="flex items-center gap-2" type="button">
-              <Icon icon="streamline-ultimate:layout" className="text-black" />
-              <p class="font-medium text-sm">Change Layout</p>
+    <>
+      <NavBar />
+      <div class="flex flex-1 flex-col">
+        <header class="sticky top-0 z-50 flex items-center justify-between gap-2 bg-white px-4 pt-4 pb-3">
+          {/* <div class="size-8 rounded-full bg-red-900" > */}
+          <img src="/assets/brand/logo.svg" class="size-7 rounded-full bg-red-900" alt="Hemline Logo" />
+          <ul class="flex items-center justify-end gap-3">
+            <li>
+              <button class="flex items-center gap-2" type="button">
+                <Icon icon="streamline-ultimate:layout" className="text-black" />
+                <p class="font-medium text-sm">Change Layout</p>
+              </button>
+            </li>
+            <button type="button" class="size-6">
+              <Icon icon="material-symbols:dark-mode" />
             </button>
-          </li>
-          <button type="button" class="size-6">
-            <Icon icon="material-symbols:dark-mode" />
-          </button>
-          {/* <li class="-9 size-9 w-9 overflow-hidden rounded-full">
+            {/* <li class="-9 size-9 w-9 overflow-hidden rounded-full">
             <img src={getUserProfile.data?.data.user.business_image} alt="" />
             <Avatar>
               {(<AvatarImage src={getUserProfile.data?.data.user.business_image} />) as any}
@@ -96,76 +89,69 @@ export const PublicFolderGallery = () => {
               </AvatarFallback>
             </Avatar>
           </li> */}
-        </ul>
-      </header>
-      <div class="flex flex-1 flex-col pb-8">
-        {isLoading && (
-          <ul class="mt-4 grid grid-cols-[auto_auto_auto] gap-1">
-            {Array.from({ length: 12 }).map((_, i) => (
-              <Skeleton key={i} class="h-40 rounded-none" />
-            ))}
           </ul>
-        )}
-
-        {!isLoading && allImages.length === 0 && <EmptyGallery folderName={folderInfo?.name} />}
-
-        {allImages.length > 0 && (
-          <div class="mt-4 grid auto-rows-fr grid-cols-3 gap-1">
-            {allImages.map((img, idx) => (
-              <FolderGalleryImage
-                key={img.id}
-                image={img}
-                nextImage={allImages[idx + 1] ?? undefined}
-                isLastItem={idx === allImages.length - 1}
-                observerRef={idx === allImages.length - 1 ? observerTarget : undefined}
-                setSelectedImages={setSelectedImages}
-                setAddToFolder={setAddToFolder}
-                setDeleteImages={setDeleteImages}
-                setRemoveFromFolder={setRemoveFromFolder}
-                setCurrentSelectedImage={setCurrentSelectedImage}
-              />
-            ))}
+        </header>
+        <div class="flex flex-1 flex-col py-8">
+          <div class="flex flex-col gap-4 px-4">
+            {getPublicFolderQuery.data?.data.user.business_image && <img src={getPublicFolderQuery.data?.data.user.business_image} alt="" />}
+            <div class="flex flex-col gap-3.5">
+              <div class="flex flex-col gap-3.5">
+                <h2 class="!font-cormorant text-2xl leading-1">{getPublicFolderQuery.data?.data.user.business_name ?? getPublicFolderQuery.data?.data.user.full_name} </h2>
+                <p class="font-medium text-grey-500 text-sm">{getPublicFolderQuery.data?.data.user.business_address}</p>
+              </div>
+              <div class="flex flex-col gap-2">
+                <p class="font-medium text-black text-sm">Skills</p>
+                <ul class="flex flex-wrap gap-1">
+                  {getPublicFolderQuery.data?.data.user.skills.map((skill) => (
+                    <li key={skill} class="group text-grey-500 text-sm">
+                      {skill} <span class="group-last:hidden">/</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </div>
-        )}
+          {(imagesInfiniteQuery.isLoading || getPublicFolderQuery.isLoading) && (
+            <ul class="mt-4 grid grid-cols-[auto_auto_auto] gap-1">
+              {Array.from({ length: 12 }).map((_, i) => (
+                <Skeleton key={i} class="h-40 rounded-none" />
+              ))}
+            </ul>
+          )}
 
-        {isFetchingNextPage && (
-          <div class="mt-1 grid grid-cols-[auto_auto_auto] gap-1">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <Skeleton key={i} class="h-40 rounded-none" />
-            ))}
-          </div>
-        )}
+          {!imagesInfiniteQuery.isLoading && !getPublicFolderQuery.isLoading && allImages.length === 0 && <EmptyGallery folderName={getPublicFolderQuery.data?.data.folder.name} />}
 
-        <AddToFolder image_ids={selectedImages} addToFolder={addToFolder} setAddToFolder={setAddToFolder} />
+          {allImages.length > 0 && (
+            <div class="flex flex-1 flex-col items-stretch gap-8 pt-10">
+              <p class="self-end px-4">{getPublicFolderQuery.data?.data.folder.name}</p>
+              <div class="grid auto-rows-fr grid-cols-3 gap-1">
+                {allImages.map((img, idx) => (
+                  <FolderGalleryImage
+                    key={img.id}
+                    image={img}
+                    nextImage={allImages[idx + 1] ?? undefined}
+                    isLastItem={idx === allImages.length - 1}
+                    observerRef={idx === allImages.length - 1 ? observerTarget : undefined}
+                    setSelectedImages={setSelectedImages}
+                    setCurrentSelectedImage={setCurrentSelectedImage}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
 
-        <DeleteImages image_ids={selectedImages} deleteImages={deleteImages} setDeleteImages={setDeleteImages} />
+          {imagesInfiniteQuery.isFetchingNextPage && (
+            <div class="mt-1 grid grid-cols-[auto_auto_auto] gap-1">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <Skeleton key={i} class="h-40 rounded-none" />
+              ))}
+            </div>
+          )}
 
-        <RemoveFromFolder
-          folderId={folderId}
-          folderName={folderInfo?.name}
-          image_ids={selectedImages}
-          removeFromFolder={removeFromFolder}
-          setRemoveFromFolder={setRemoveFromFolder}
-        />
-
-        {selectingSignal.value.isSelecting && <RemoveFromFolderBar folderId={folderId} folderName={folderInfo?.name} />}
-
-        <AddImagesToFolder
-          isOpen={showAddImagesDrawer}
-          onClose={() => setShowAddImagesDrawer(false)}
-          folder={data?.pages[0]?.data?.folder}
-          excludeImageIds={allImages.map((img) => img.id)}
-        />
-
-        <SingleGallery
-          currentSelectedImage={currentSelectedImage}
-          setCurrentSelectedImage={setCurrentSelectedImage}
-          setSelectedImages={setSelectedImages}
-          setAddToFolder={setAddToFolder}
-          setDeleteImages={setDeleteImages}
-        />
+          <PublicSingleGallery currentSelectedImage={currentSelectedImage} setCurrentSelectedImage={setCurrentSelectedImage} setSelectedImages={setSelectedImages} />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
@@ -175,9 +161,6 @@ const FolderGalleryImage = (props: {
   isLastItem?: boolean;
   observerRef?: RefObject<HTMLDivElement>;
   setSelectedImages: Dispatch<StateUpdater<string[]>>;
-  setAddToFolder: Dispatch<StateUpdater<boolean>>;
-  setDeleteImages: Dispatch<StateUpdater<boolean>>;
-  setRemoveFromFolder: Dispatch<StateUpdater<boolean>>;
   setCurrentSelectedImage: Dispatch<StateUpdater<GalleryImageType | undefined>>;
 }) => {
   const isLandscape = (props.image.meta?.width ?? 0) / (props.image.meta?.height ?? 0) > 1;
@@ -240,20 +223,6 @@ const FolderGalleryImage = (props: {
           <PopoverContent className="flex w-40 flex-col items-stretch rounded-sm border-line-400 bg-white/70 drop-shadow-[0.6px_0.8px_9px_rgba(0,0,0,0,95)] backdrop-blur-lg">
             <ul class="flex flex-col gap-3">
               <button
-                onClick={() => {
-                  props.setSelectedImages(() => [props.image.id]);
-                  props.setRemoveFromFolder(true);
-                }}
-                type="button"
-                class="flex cursor-pointer items-center justify-between gap-2"
-              >
-                <p class="font-medium text-sm">Remove</p>
-                <div class="min-w-5 p-1">
-                  <Icon icon="material-symbols:remove-rounded" className="h-4 w-4 text-black" />
-                </div>
-              </button>
-
-              <button
                 type="button"
                 class="flex cursor-pointer items-center justify-between gap-2"
                 onClick={() => {
@@ -261,34 +230,17 @@ const FolderGalleryImage = (props: {
                   props.setCurrentSelectedImage(props.image);
                 }}
               >
-                <p class="font-medium text-sm">Add Details</p>
+                <p class="font-medium text-sm">View Details</p>
                 <div class="min-w-5 p-1">
                   <Icon icon="iconamoon:screen-full-light" className="h-4 w-4 text-black" />
                 </div>
               </button>
-              <button
-                onClick={() => {
-                  props.setSelectedImages(() => [props.image.id]);
-                  props.setDeleteImages(true);
-                }}
-                type="button"
-                class="flex cursor-pointer items-center justify-between gap-2"
-              >
-                <p class="font-medium text-destructive text-sm">Delete</p>
+              <a href={props.image.url} class="flex cursor-pointer items-center justify-between gap-2" target="_blank" onClick={() => setIsPopoverOpen(false)} download>
+                <p class="font-medium text-sm">Download</p>
                 <div class="min-w-5 p-1">
-                  <Icon icon="material-symbols-light:delete-outline-sharp" className="h-4 w-4 text-destructive" />
+                  <Icon icon="iconoir:download" className="h-4 w-4 text-black" />
                 </div>
-              </button>
-              <li class="flex cursor-pointer items-center justify-between gap-2">
-                <p class="font-medium text-sm">Uploaded</p>
-                <span class="text-sm">
-                  {new Intl.DateTimeFormat("en-GB", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "2-digit",
-                  }).format(new Date(props.image.created_at))}
-                </span>
-              </li>
+              </a>
             </ul>
           </PopoverContent>
         </Popover>
@@ -320,53 +272,55 @@ const EmptyGallery = ({ folderName }: { folderName?: string }) => (
   </div>
 );
 
-const detectBackgroundColor = (img: HTMLImageElement, setIconColor: Dispatch<StateUpdater<string>>) => {
-  try {
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
+const Tabs = ["solar:phone-linear", "ic:outline-whatsapp", "fluent:mail-20-regular"] as const;
+type Tab = (typeof Tabs)[number];
 
-    if (!ctx) return;
+export const NavBar = () => {
+  // if (!headerContentSignal.value.showHeader) return null;
 
-    // Set canvas size to image size
-    canvas.width = img.naturalWidth;
-    canvas.height = img.naturalHeight;
+  if (selectingSignal.value.isSelecting) return null;
 
-    // Draw image on canvas
-    ctx.drawImage(img, 0, 0);
+  return (
+    <ul class="-translate-x-1/2 fixed bottom-6 left-1/2 flex items-center border border-line-500 bg-white p-0.5">
+      <NavbarCard tab={Tabs[0]} />
+      <NavbarCard tab={Tabs[1]} />
+      <NavbarCard tab={Tabs[2]} />
+    </ul>
+  );
+};
 
-    // Sample area where the icon will be (top-left corner)
-    // Sample a small region around the icon position
-    const sampleX = Math.floor(img.naturalWidth * 0.05); // 5% from left
-    const sampleY = Math.floor(img.naturalHeight * 0.1); // 10% from top
-    const sampleSize = 20;
+const NavbarCard = (props: { tab: Tab }) => {
+  const getPublicFolderQuery = useGetPublicFolder();
 
-    const imageData = ctx.getImageData(sampleX, sampleY, sampleSize, sampleSize);
-    const data = imageData.data;
+  const user = getPublicFolderQuery.data?.data.user;
 
-    // Calculate average color
-    let r = 0;
-    let g = 0;
-    let b = 0;
-    const pixelCount = data.length / 4;
+  const getLink = (tab: Tab) => {
+    switch (tab) {
+      case "solar:phone-linear":
+        return `tel:${user?.phone_number}`;
 
-    for (let i = 0; i < data.length; i += 4) {
-      r += data[i];
-      g += data[i + 1];
-      b += data[i + 2];
+      case "fluent:mail-20-regular":
+        return `mailto:${user?.email}`;
+
+      case "ic:outline-whatsapp":
+        return `https://wa.me/${user?.phone_number}`;
+
+      default:
+        break;
     }
+  };
 
-    r = Math.floor(r / pixelCount);
-    g = Math.floor(g / pixelCount);
-    b = Math.floor(b / pixelCount);
+  const link = getLink(props.tab);
 
-    // Calculate perceived brightness using relative luminance formula
-    const brightness = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-
-    // If background is light (bright), use black icon, otherwise use white
-    setIconColor(brightness > 0.6 ? "text-black" : "text-white");
-  } catch (error) {
-    console.error("Error detecting background color:", error);
-    // Fallback to white if detection fails
-    setIconColor("text-white");
-  }
+  if (!link) return null;
+  return (
+    <>
+      <a href={link} class="" target="_blank" rel="noreferrer">
+        <li class={cn("grid h-9 w-14 place-content-center bg-white text-white capitalize transition-colors")}>
+          <Icon icon={props.tab} fontSize={18} className="text-grey-500" />
+        </li>
+      </a>
+      <div class="h-9 w-[1px] bg-line-500 last:hidden" />
+    </>
+  );
 };

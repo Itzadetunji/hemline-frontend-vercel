@@ -314,7 +314,7 @@ const EmptyGallery = (props: { onUploadClick: () => void }) => (
   </div>
 );
 
-const detectBackgroundColor = (img: HTMLImageElement, setIconColor: Dispatch<StateUpdater<string>>) => {
+export const detectBackgroundColor = (img: HTMLImageElement, setIconColor: Dispatch<StateUpdater<string>>) => {
   try {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");

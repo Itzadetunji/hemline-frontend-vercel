@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { GalleryImageType } from "../gallery.types";
+import { SkillChoicesType } from "../../users/users.types";
 
 // Folder Color Type
 export type FolderColor = {
@@ -145,9 +146,13 @@ export interface PublicUserInfo {
 	first_name: string;
 	last_name: string;
 	full_name: string;
-	business_name: string;
+	business_address: string;
 	business_image: string;
+	business_name: string;
 	profession: string;
+	email: string;
+	phone_number: string;
+	skills: SkillChoicesType[];
 }
 
 // Share Folder - Request

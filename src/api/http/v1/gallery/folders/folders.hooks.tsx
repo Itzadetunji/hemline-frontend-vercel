@@ -23,6 +23,7 @@ import type {
   UpdateFolderResponse,
 } from "./folders.types";
 import { usersQuerykeys } from "../../users/users.hooks";
+import { useRoute } from "preact-iso";
 
 // Query keys factory
 const foldersQueryKeys = {
@@ -319,11 +320,14 @@ export const useShareFolder = () => {
 };
 
 // GET: Fetch a public folder by public ID
-export const useGetPublicFolder = (publicId: string, params?: PaginationParams, enabled = true) => {
+export const useGetPublicFolder = (params?: PaginationParams, enabled = true) => {
+  const { params: routerParams } = useRoute();
+  const publicFolderId = routerParams.public_id;
+
   return useQuery<GetPublicFolderResponse, AxiosError>({
-    queryKey: foldersQueryKeys.publicFolder(publicId),
-    queryFn: () => FOLDERS_API.GET_PUBLIC_FOLDER(publicId, params),
-    enabled: enabled && !!publicId,
+    queryKey: foldersQueryKeys.publicFolder(publicFolderId),
+    queryFn: () => FOLDERS_API.GET_PUBLIC_FOLDER(publicFolderId, params),
+    enabled: enabled && !!publicFolderId,
   });
 };
 

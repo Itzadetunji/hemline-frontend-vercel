@@ -137,6 +137,7 @@ export const ShareToClientDialog = (props: ShareToClientDialogProps) => {
                   {...formMethods.register("email", {
                     onChange: () => {
                       formMethods.setValue("share_type", "email");
+                      formMethods.setValue("is_public", true);
                     },
                   })}
                   id="client-email"

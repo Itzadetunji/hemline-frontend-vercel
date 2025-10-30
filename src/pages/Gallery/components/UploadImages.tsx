@@ -41,7 +41,7 @@ export const UploadImages = forwardRef<UploadImagesHandle, UploadImagesProps>((_
 
       // Add all files to FormData
       for (const file of files) {
-        formData.append("images", file);
+        formData.append("images[]", file);
       }
 
       try {
