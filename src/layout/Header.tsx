@@ -11,7 +11,7 @@ interface headerContentSignalType {
   title: any;
   showHeader: boolean;
   headerContent?: any;
-  tab: "gallery" | "clients" | "folders";
+  tab?: "gallery" | "clients" | "folders";
 }
 export const headerContentSignal = signal<headerContentSignalType>({
   showHeader: true,
