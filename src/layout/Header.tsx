@@ -59,7 +59,7 @@ export const Header = () => {
               <a href="/profile" class="flex cursor-pointer items-center justify-between gap-2 text-grey-500 hover:bg-secondary">
                 <p class="font-medium text-sm">Profile</p>
                 <div class="min-w-5 p-1">
-                  <Icon icon="iconoir:download" className="h-4 w-4 text-black" />
+                  <Icon icon="hugeicons:user-02" className="h-4 w-4 text-black" />
                 </div>
               </a>
               <button

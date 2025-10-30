@@ -70,7 +70,7 @@
 	--color-sidebar-ring: var(--sidebar-ring);
 
 	/* Font families */
-	--font-primary: "Grenze Gotisch", serif;
+	--font-primary: "Cormorant Garamond", sans-serif;
 	--font-secondary: "Manrope", sans-serif;
 	--font-cormorant: "Cormorant Garamond", sans-serif;
 
@@ -216,9 +216,8 @@
 	--dark-800: #060606;
 	--dark-900: #040404;
 
-	--font-primary: "Grenze Gotisch", serif;
+	--font-primary: "Cormorant Garamond", sans-serif;
 	--font-secondary: "Manrope", sans-serif;
-	--font-cormorant: "Cormorant Garamond", sans-serif;
 
 	/* Z-index layers */
 	--z-popover: 50;
