@@ -12,9 +12,11 @@ export interface SelectProps {
   value: string[];
   onChange: (value: string[]) => void;
   placeholder?: string;
-  icon?: string;
+  icon?: string | null;
   maxItems?: number;
   className?: string;
+  itemClassName?: string;
+  valueClassName?: string;
   disabled?: boolean;
 }
 
@@ -26,6 +28,8 @@ export const Select = ({
   icon = "fluent:chevron-down-24-regular",
   maxItems = Number.POSITIVE_INFINITY,
   className,
+  itemClassName,
+  valueClassName,
   disabled = false,
 }: SelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -99,9 +103,13 @@ export const Select = ({
       >
         {icon && <Icon icon={icon} fontSize="18" />}
         <p
-          class={cn("flex-1 text-left text-sm", {
-            "text-grey-400": value.length === 0,
-          })}
+          class={cn(
+            "flex-1 text-left text-sm",
+            {
+              "text-grey-400": value.length === 0,
+            },
+            valueClassName
+          )}
         >
           {getDisplayText()}
         </p>
@@ -133,10 +141,14 @@ export const Select = ({
                 return (
                   <li key={option.value}>
                     <label
-                      class={cn("flex cursor-pointer items-center justify-between gap-3 px-3 py-2 transition-colors hover:bg-secondary", {
-                        "cursor-not-allowed opacity-50": isDisabled,
-                        "bg-secondary/50": isSelected,
-                      })}
+                      class={cn(
+                        "flex cursor-pointer items-center justify-between gap-3 px-3 py-2 transition-colors hover:bg-secondary",
+                        {
+                          "cursor-not-allowed opacity-50": isDisabled,
+                          "bg-secondary/50": isSelected,
+                        },
+                        itemClassName
+                      )}
                     >
                       <span class="flex-1 text-sm">{option.label}</span>
                       <input

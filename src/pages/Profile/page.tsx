@@ -4,9 +4,10 @@ import { Icon } from "@iconify/react";
 import { useLayoutEffect, useState } from "preact/hooks";
 import { ProfileTab, ProfileTabs } from "./components/ProfileTabs";
 import { Account } from "./components/Account";
+import { CustomFields } from "./components/CustomFields";
 
 export const Profile = () => {
-  const [activeTab, setActiveTab] = useState<ProfileTab>("account");
+  const [activeTab, setActiveTab] = useState<ProfileTab>("custom_fields");
   const getUserProfile = useGetUserProfile();
 
   useLayoutEffect(() => {
@@ -42,6 +43,7 @@ export const Profile = () => {
     <div class="flex flex-1 flex-col px-4 pt-6">
       <ProfileTabs activeTab={activeTab} setActiveTab={setActiveTab} />
       {activeTab === "account" && <Account />}
+      {activeTab === "custom_fields" && <CustomFields />}
     </div>
   );
 };

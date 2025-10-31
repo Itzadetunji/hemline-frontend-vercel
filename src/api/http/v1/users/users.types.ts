@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { CustomFieldType } from "../custom_fields/custom_fields.types";
 
 export const VerifyMagicCodeSchema = z.object({
 	code: z.union([
@@ -20,7 +21,7 @@ export type RequestMagicLinkPayload = z.infer<
 export interface CustomFieldAttributes {
 	id: string;
 	field_name: string;
-	field_type: string;
+	field_type: CustomFieldType;
 	is_active: boolean;
 	created_at: string;
 	updated_at: string;
@@ -29,7 +30,7 @@ export interface CustomFieldAttributes {
 
 export interface CustomFieldData {
 	id: string;
-	type: string;
+	type: "custom_field";
 	attributes: CustomFieldAttributes;
 }
 

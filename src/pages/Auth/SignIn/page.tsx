@@ -45,20 +45,6 @@ export const SignIn = () => {
         <Label class="flex flex-col items-stretch gap-4">
           <p class="font-medium text-sm leading-0">Email</p>
           <div class="flex flex-col gap-1.5">
-            {/* <div class="flex items-center gap-3.5 border-line-700 border h-10.5 px-3">
-							<i className="size-4.5">
-								<Icon
-									icon="fluent:mail-16-regular"
-									fontSize="18"
-								/>
-							</i>
-							<input
-								{...formMethods.register("email")}
-								type="email"
-								placeholder="hello@hemline.app"
-								class="text-sm placeholder:text-grey-400 flex-1"
-							/>
-						</div> */}
             <div class="flex h-10.5 items-center gap-3.5 border border-line-700 px-3">
               <i className="size-4.5">
                 <Icon icon="fluent:mail-16-regular" fontSize="18" />

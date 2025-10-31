@@ -52,7 +52,7 @@ export const useGetUserProfile = () => {
       location.route("/", true);
     }
     if (getUserProfileQuery.status === "success") {
-      console.log("User profile fetched successfully:", getUserProfileQuery.data);
+      // console.log("User profile fetched successfully:", getUserProfileQuery.data);
       userStore.updateUser({
         token: getUserProfileQuery.data.data.token,
         user: getUserProfileQuery.data.data.user,
