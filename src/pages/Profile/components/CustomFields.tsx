@@ -3,37 +3,14 @@ import type { JSX } from "preact";
 import { Controller, useForm } from "react-hook-form";
 
 import { useCreateCustomField, useGetCustomFields } from "@/api/http/v1/custom_fields/custom_fields.hooks";
-import { type CreateCustomFieldPayload, type CustomField, CustomFieldAttributeType, UpdateCustomFieldSchema } from "@/api/http/v1/custom_fields/custom_fields.types";
+import { type CreateCustomFieldPayload, CreateCustomFieldSchema, type CustomField, CustomFieldAttributeType } from "@/api/http/v1/custom_fields/custom_fields.types";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
-import { Icon } from "@iconify/react";
-import { signal } from "@preact/signals";
-import { DeactivateCustomFields } from "./DeactivateCustomFields";
 import { Skeleton } from "@/components/ui/skeleton";
-
-interface DeactivateCustomFieldSignalProps {
-  isOpen: boolean;
-  customField?: CustomField;
-  setIsOpen: (open: boolean) => void;
-  setCustomField: (customField: CustomField) => void;
-}
-
-export const deactivateCustomFieldSignal = signal<DeactivateCustomFieldSignalProps>({
-  isOpen: false,
-  setIsOpen: (isOpen) => {
-    deactivateCustomFieldSignal.value = {
-      ...deactivateCustomFieldSignal.value,
-      isOpen,
-    };
-  },
-  setCustomField: (customField) => {
-    deactivateCustomFieldSignal.value = {
-      ...deactivateCustomFieldSignal.value,
-      customField,
-    };
-  },
-});
+import { Icon } from "@iconify/react";
+import { DeactivateCustomFieldsDialog, deactivateCustomFieldSignal } from "./DeactivateCustomFieldsDialog";
+import { EditCustomFieldsDialog, editCustomFieldSignal } from "./EditCustomFieldsDialog";
 
 export const CustomFields = () => {
   const getCustomFields = useGetCustomFields();
@@ -51,7 +28,8 @@ export const CustomFields = () => {
         <SavedCustomFields />
       </div>
 
-      <DeactivateCustomFields />
+      <DeactivateCustomFieldsDialog />
+      <EditCustomFieldsDialog />
     </>
   );
 };
@@ -60,7 +38,7 @@ const CreateCustomFields = () => {
   const getCustomFields = useGetCustomFields();
   const createCustomFieldMutation = useCreateCustomField();
   const formMethods = useForm<CreateCustomFieldPayload>({
-    resolver: zodResolver(UpdateCustomFieldSchema) as any,
+    resolver: zodResolver(CreateCustomFieldSchema) as any,
     mode: "onChange",
   });
 
@@ -72,16 +50,12 @@ const CreateCustomFields = () => {
   const onSubmit = async (payload: CreateCustomFieldPayload) => {
     await createCustomFieldMutation.mutateAsync(payload, {
       onSuccess: () => {
-        // Store theme preference locally or in user store
         formMethods.reset();
-      },
-      onError: () => {
-        // console.error("Onboarding error:", error);
       },
     });
   };
 
-  console.log(formMethods.formState.errors, formMethods.getValues());
+  // console.log(formMethods.formState.errors, formMethods.getValues());
 
   return (
     <div class="flex flex-col gap-8">
@@ -89,7 +63,7 @@ const CreateCustomFields = () => {
         <div class="flex flex-col items-stretch gap-6">
           <div class="flex flex-col gap-2">
             <p class="font-medium text-base leading-none">Create your custom fields</p>
-            <p class="font-medium text-grey-500 text-sm leading-none">
+            <p class="font-medium text-grey-500 text-sm leading-[1.25]">
               We try to cover many possible measurement fields but we&apos;ve made it possible for you to add more yourself.
             </p>
           </div>
@@ -194,7 +168,14 @@ const SavedCustomField = (props: { field: CustomField }) => {
       <div class="flex items-center justify-between gap-4">
         <p class="font-medium text-sm leading-1">{props.field.data.attributes.field_name}</p>
         <ul class="flex items-center gap-2.5">
-          <button type="button" class="size-4">
+          <button
+            type="button"
+            class="size-4"
+            onClick={() => {
+              editCustomFieldSignal.value.setIsOpen(true);
+              editCustomFieldSignal.value.setCustomField(props.field);
+            }}
+          >
             <Icon icon="iconoir:edit" fontSize={16} />
           </button>
           <button

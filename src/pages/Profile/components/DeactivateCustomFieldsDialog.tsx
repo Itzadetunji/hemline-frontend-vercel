@@ -2,11 +2,35 @@ import { Icon } from "@iconify/react";
 import toast from "react-hot-toast";
 
 import { useDeactivateCustomField, useUpdateCustomField } from "@/api/http/v1/custom_fields/custom_fields.hooks";
+import type { CustomField } from "@/api/http/v1/custom_fields/custom_fields.types";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader } from "@/components/ui/dialog";
-import { deactivateCustomFieldSignal } from "./CustomFields";
+import { signal } from "@preact/signals";
 
-export const DeactivateCustomFields = () => {
+interface DeactivateCustomFieldSignalProps {
+  isOpen: boolean;
+  customField?: CustomField;
+  setIsOpen: (open: boolean) => void;
+  setCustomField: (customField: CustomField) => void;
+}
+
+export const deactivateCustomFieldSignal = signal<DeactivateCustomFieldSignalProps>({
+  isOpen: false,
+  setIsOpen: (isOpen) => {
+    deactivateCustomFieldSignal.value = {
+      ...deactivateCustomFieldSignal.value,
+      isOpen,
+    };
+  },
+  setCustomField: (customField) => {
+    deactivateCustomFieldSignal.value = {
+      ...deactivateCustomFieldSignal.value,
+      customField,
+    };
+  },
+});
+
+export const DeactivateCustomFieldsDialog = () => {
   const deactivateCustomFieldMutation = useDeactivateCustomField();
   const reactivateCustomFieldMutation = useUpdateCustomField();
 

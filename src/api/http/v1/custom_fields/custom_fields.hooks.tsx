@@ -21,8 +21,18 @@ export const useCreateCustomField = () => {
 
   return useMutation<CustomFieldResponse, AxiosError, CreateCustomFieldPayload>({
     mutationFn: (payload) => CUSTOM_FIELDS_API.CREATE(payload),
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast.success("Custom Field created!");
+
+      // Update query data before invalidating
+      queryClient.setQueryData<CustomFieldsListResponse | undefined>(customFieldsQueryKeys.all, (oldData) => {
+        if (!oldData) return oldData;
+        return {
+          ...oldData,
+          data: [...oldData.data, data.data],
+        } as CustomFieldsListResponse;
+      });
+
       // Refresh list
       queryClient.invalidateQueries({ queryKey: customFieldsQueryKeys.all });
     },
@@ -38,8 +48,25 @@ export const useUpdateCustomField = () => {
 
   return useMutation<CustomFieldResponse, AxiosError, { id: string; payload: UpdateCustomFieldPayload }>({
     mutationFn: ({ id, payload }) => CUSTOM_FIELDS_API.UPDATE(id, payload),
-    onSuccess: () => {
+    onSuccess: (data, vars) => {
+      // Update query data before invalidation
+      queryClient.setQueryData<CustomFieldsListResponse | undefined>(customFieldsQueryKeys.all, (oldData) => {
+        if (!oldData) return oldData;
+        // console.log("OLD DATA", oldData);
+        const updatedData = oldData.data.map((item) => {
+          return item.data.id === vars.id ? { ...data.data } : item;
+        });
+
+        console.log(oldData, { data: updatedData });
+        return {
+          ...oldData,
+          data: updatedData,
+        } as CustomFieldsListResponse;
+      });
+
       // toast.success("Custom field updated");
+
+      // Refresh list
       queryClient.invalidateQueries({ queryKey: customFieldsQueryKeys.all });
     },
     onError: (err) => {
@@ -54,7 +81,18 @@ export const useDeactivateCustomField = () => {
 
   return useMutation<{ message: string }, AxiosError, string>({
     mutationFn: (id) => CUSTOM_FIELDS_API.DEACTIVATE(id),
-    onSuccess: () => {
+    onSuccess: (_, id) => {
+      // Update query data before invalidation
+      queryClient.setQueryData<CustomFieldsListResponse>(customFieldsQueryKeys.all, (oldData) => {
+        if (!oldData) return oldData;
+        const updatedData = oldData.data.map((item) => (item.data.id === id ? { ...item, is_active: false } : item));
+        return {
+          ...oldData,
+          data: updatedData,
+        };
+      });
+
+      // Referesh List
       queryClient.invalidateQueries({ queryKey: customFieldsQueryKeys.all });
     },
     onError: (err) => {

@@ -58,7 +58,7 @@ const ProfileTab = forwardRef(({ tab, activeTab, setActiveTab, icon }: ProfileTa
     })}
     onClick={() => setActiveTab(tab)}
   >
-    <div class="min-h-6 min-w-7 p-1">
+    <div class="grid min-h-6 min-w-6 place-content-center p-1">
       <Icon icon={icon} className="h-5 w-5" />
     </div>
     <p class="leading-1">{tab.split("_").join(" ")}</p>

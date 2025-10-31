@@ -1,11 +1,12 @@
 import { signal } from "@preact/signals";
 
 import { useGetUserProfile, useLogout } from "@/api/http/v1/users/users.hooks";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { cn, getInitials } from "@/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Icon } from "@iconify/react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useImageCache } from "@/hooks/useImageCache";
+import { cn } from "@/lib/utils";
 import { profileNavbarSignal } from "@/pages/Profile/components/Account";
+import { Icon } from "@iconify/react";
 
 // Signal for header content that can be accessed anywhere
 interface headerContentSignalType {
@@ -31,6 +32,7 @@ export const selectingSignal = signal<{
 export const Header = () => {
   const getUserProfile = useGetUserProfile();
   const logoutMutation = useLogout();
+  const { cachedUrl, isLoading: loading } = useImageCache(getUserProfile.data?.data.user.business_image);
 
   if (!headerContentSignal.value.showHeader) return null;
 
@@ -44,16 +46,19 @@ export const Header = () => {
         {headerContent}
         <Popover>
           <PopoverTrigger asChild>
-            <li class="size-9 overflow-hidden rounded-full">
-              <img src={getUserProfile.data?.data.user.business_image} alt="" />
-              <Avatar>
-                {(<AvatarImage src={getUserProfile.data?.data.user.business_image} />) as any}
-                <AvatarFallback>
-                  {getUserProfile.data?.data.user.full_name
-                    ? getInitials(getUserProfile.data?.data.user.full_name, true)
-                    : getInitials(getUserProfile.data?.data.user.email as string)}
-                </AvatarFallback>
-              </Avatar>
+            <li class="relative size-9 overflow-hidden rounded-full">
+              {getUserProfile.data?.data.user.business_image && (
+                <>
+                  {loading && <Skeleton class="absolute inset-0 size-9 h-full w-full rounded-full" />}
+
+                  <img
+                    src={cachedUrl}
+                    alt="Business Logo"
+                    class={cn("size-9 h-full w-full object-cover transition-opacity duration-300", loading ? "opacity-0" : "opacity-100")}
+                    crossOrigin="anonymous"
+                  />
+                </>
+              )}
             </li>
           </PopoverTrigger>
           <PopoverContent className="!top-14 !right-124 mr-4 flex w-40 flex-col items-stretch rounded-sm border-line-400 bg-white/70 drop-shadow-[0.6px_0.8px_9px_rgba(0,0,0,0,95)] backdrop-blur-lg">

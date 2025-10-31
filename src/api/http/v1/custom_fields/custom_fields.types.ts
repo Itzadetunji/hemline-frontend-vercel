@@ -27,11 +27,9 @@ export type CustomFieldType = (typeof CustomFieldAttributeType)[number];
 export const CreateCustomFieldSchema = z.object({
 	custom_field: z.object({
 		field_name: z.string().min(1, "Field name is required"),
-		field_type: z
-			.enum(CustomFieldAttributeType, {
-				error: "Kindly select a type",
-			})
-			.default("measurement"),
+		field_type: z.enum(CustomFieldAttributeType, {
+			error: "Kindly select a type",
+		}),
 		is_active: z.boolean().optional(),
 	}),
 });
@@ -44,7 +42,6 @@ export const UpdateCustomFieldSchema = z.object({
 		field_name: z.string().optional(),
 		field_type: z
 			.enum(CustomFieldAttributeType, { error: "Kindly select a type" })
-			.default("measurement")
 			.optional(),
 		is_active: z.boolean().optional(),
 	}),
