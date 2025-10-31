@@ -291,10 +291,10 @@ const OnboardingStep2 = (props: OnboardingStepProps) => {
 const OnboardingStep3 = (props: OnboardingStepProps) => {
   const {
     control,
-    getValues,
+    // getValues,
     formState: { errors },
   } = useFormContext<OnboardingFormData>();
-  console.log(getValues());
+  // console.log(getValues());
   return (
     <div class="flex flex-1 flex-col gap-10">
       <div class="flex flex-col items-stretch gap-10">

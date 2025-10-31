@@ -6,6 +6,7 @@ import { cn } from "../../lib/utils";
 interface CheckboxGroupProps<T> {
   options: readonly T[];
   value: T[];
+  isDisabled?: boolean;
   onChange: (selected: T[]) => void;
   renderOption?: (option: T, isSelected: boolean) => ComponentChildren;
   className?: string;
@@ -20,6 +21,7 @@ interface CheckboxGroupProps<T> {
 export function CheckboxGroup<T extends string | number>({
   options,
   value,
+  isDisabled = false,
   onChange,
   renderOption,
   className,
@@ -47,25 +49,17 @@ export function CheckboxGroup<T extends string | number>({
       {options.map((option) => {
         const isSelected = value.includes(option);
 
-        // const isDisabled = !isSelected && value.length >= maxSelected;
-
         return (
           <label
             key={option}
             class={cn(
               "flex h-8 cursor-pointer items-center gap-3 border border-line-700 px-2 text-sm transition-colors",
               optionClassName,
-              isSelected ? selectedClassName : unselectedClassName
-              // isDisabled && "opacity-50 cursor-not-allowed"
+              isSelected ? selectedClassName : unselectedClassName,
+              isDisabled && "cursor-not-allowed opacity-50"
             )}
           >
-            <input
-              type="checkbox"
-              class="hidden"
-              checked={isSelected}
-              // disabled={isDisabled}
-              onChange={() => handleToggle(option)}
-            />
+            <input type="checkbox" class="hidden" checked={isSelected} disabled={isDisabled} onChange={() => handleToggle(option)} />
             {renderOption ? renderOption(option, isSelected) : <p>{option}</p>}
           </label>
         );

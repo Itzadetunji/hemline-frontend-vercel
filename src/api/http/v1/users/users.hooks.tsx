@@ -128,6 +128,48 @@ export const useUpdateUserProfile = () => {
   });
 };
 
+export const useUpdateBusinessImage = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<OnboardingUserResponse, AxiosError<{ error: string }>, FormData>({
+    mutationFn: USERS_API.UPDATE_BUSINESS_IMAGE,
+    onSuccess: (data) => {
+      // Update the user store with the new user data
+      userStore.updateUser({
+        user: data.data,
+      });
+
+      toast.success("Business image updated successfully!", {
+        id: `${usersQuerykeys.all[0]}-update`,
+      });
+
+      // Update the query cache directly with the new user data
+      queryClient.setQueryData<GetUserProfileResponse>(usersQuerykeys.all, (oldData) => {
+        if (!oldData) return oldData;
+
+        return {
+          ...oldData,
+          data: {
+            ...oldData.data,
+            user: data.data,
+          },
+        };
+      });
+
+      // Invalidate queries to trigger a refetch for any other dependent queries
+      queryClient.invalidateQueries({
+        queryKey: usersQuerykeys.all,
+      });
+    },
+    onError: (error) => {
+      toast.error("Failed to upload business logo", {
+        id: `${usersQuerykeys.all[0]}-update`,
+      });
+      console.error("Error updating user profile:", error);
+    },
+  });
+};
+
 export const usersQuerykeys = {
   all: ["user-profile"] as const,
 } as const;

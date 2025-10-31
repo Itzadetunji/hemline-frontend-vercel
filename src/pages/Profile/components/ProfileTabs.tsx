@@ -1,33 +1,32 @@
 import { Icon } from "@iconify/react";
 import { forwardRef, type Ref } from "preact/compat";
-import { type Dispatch, type StateUpdater, useEffect, useRef, useState } from "preact/hooks";
+import { type Dispatch, type StateUpdater, useEffect, useRef } from "preact/hooks";
 
 import { cn } from "@/lib/utils";
 
-const Tabs = ["profile", "custom_fields"] as const;
-type Tab = (typeof Tabs)[number];
+const Tabs = ["account", "custom_fields"] as const;
+export type ProfileTab = (typeof Tabs)[number];
 
 type ProfileTabProps = {
-  tab: Tab;
-  activeTab: Tab;
-  setActiveTab: Dispatch<StateUpdater<Tab>>;
+  tab: ProfileTab;
+  activeTab: ProfileTab;
+  setActiveTab: Dispatch<StateUpdater<ProfileTab>>;
   icon: string;
 };
 
-export const ProfileTabs = () => {
-  const [activeTab, setActiveTab] = useState<Tab>("profile");
+export const ProfileTabs = (props: { activeTab: ProfileTab; setActiveTab: Dispatch<StateUpdater<ProfileTab>> }) => {
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const indicatorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!indicatorRef.current || tabRefs.current.length === 0) return;
-    const activeIndex = Tabs.indexOf(activeTab);
+    const activeIndex = Tabs.indexOf(props.activeTab);
     const activeTabEl = tabRefs.current[activeIndex];
     if (!activeTabEl) return;
 
     indicatorRef.current.style.width = `${activeTabEl.offsetWidth}px`;
     indicatorRef.current.style.left = `${activeTabEl.offsetLeft}px`;
-  }, [activeTab]);
+  }, [props.activeTab]);
 
   return (
     <div class="relative border-b-2 border-b-line-700">
@@ -36,9 +35,9 @@ export const ProfileTabs = () => {
           <ProfileTab
             key={tab}
             tab={tab}
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            icon={tab === "profile" ? "hugeicons:user-02" : "material-symbols-light:draw-outline-rounded"}
+            activeTab={props.activeTab}
+            setActiveTab={props.setActiveTab}
+            icon={tab === "account" ? "hugeicons:user-02" : "material-symbols-light:draw-outline-rounded"}
             ref={(el: any) => {
               tabRefs.current[index] = el;
             }}

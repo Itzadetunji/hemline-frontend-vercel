@@ -12,6 +12,7 @@ const USERS_ENDPOINTS = {
 	getMagicLink: "/auth/request_magic_link",
 	verifyMagicCode: "/auth/verify_code",
 	updateUserProfile: "/users/profile",
+	updateBusinessImage: "/users/business_image",
 	logout: "/auth/logout",
 } as const;
 
@@ -40,6 +41,13 @@ export const USERS_API = {
 	): Promise<OnboardingUserResponse> =>
 		await $http
 			.patch(USERS_ENDPOINTS.updateUserProfile, data)
+			.then((res) => res.data),
+
+	UPDATE_BUSINESS_IMAGE: async (
+		data: FormData
+	): Promise<OnboardingUserResponse> =>
+		await $http
+			.patch(USERS_ENDPOINTS.updateBusinessImage, data)
 			.then((res) => res.data),
 
 	LOGOUT: async (): Promise<OnboardingUserResponse> =>

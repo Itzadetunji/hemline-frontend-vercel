@@ -22,6 +22,13 @@ $http.interceptors.request.use(
 			config.headers.Authorization = `Bearer ${token}`;
 		}
 
+		if (config.data instanceof FormData) {
+			if (config.headers) {
+				delete config.headers["Content-Type"];
+				config.headers["Content-Type"] = "multipart/form-data";
+			}
+		}
+
 		return config;
 	},
 	(error) => Promise.reject(error)

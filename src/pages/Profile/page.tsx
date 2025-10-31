@@ -1,10 +1,12 @@
 import { useGetUserProfile } from "@/api/http/v1/users/users.hooks";
 import { headerContentSignal, selectingSignal } from "@/layout/Header";
 import { Icon } from "@iconify/react";
-import { useLayoutEffect } from "preact/hooks";
-import { ProfileTabs } from "./components/ProfileTabs";
+import { useLayoutEffect, useState } from "preact/hooks";
+import { ProfileTab, ProfileTabs } from "./components/ProfileTabs";
+import { Account } from "./components/Account";
 
 export const Profile = () => {
+  const [activeTab, setActiveTab] = useState<ProfileTab>("account");
   const getUserProfile = useGetUserProfile();
 
   useLayoutEffect(() => {
@@ -21,19 +23,15 @@ export const Profile = () => {
       headerContent: () => (
         <>
           <a href="/gallery">
-            <li>
-              <i>
-                <Icon icon="iconoir:upload" className="h-4 w-4 text-black" />
-              </i>
-            </li>
+            <i>
+              <Icon icon="iconoir:upload" className="h-4 w-4 text-black" />
+            </i>
           </a>
-          <a href="/gallery/folders">
-            <li class="relative min-h-5 min-w-5 p-1">
-              <Icon icon="bi:folder" className="h-4 w-4 text-black" />
-              <p class="-top-0.5 -right-0.5 absolute grid min-h-3.5 min-w-3.5 place-content-center rounded-full bg-primary text-[0.625rem] text-white leading-0">
-                {getUserProfile.data?.data.user.total_folders || 0}
-              </p>
-            </li>
+          <a href="/gallery/folders" class="relative min-h-5 min-w-5 p-1">
+            <Icon icon="bi:folder" className="h-4 w-4 text-black" />
+            <p class="-top-0.5 -right-0.5 absolute grid min-h-3.5 min-w-3.5 place-content-center rounded-full bg-primary text-[0.625rem] text-white leading-0">
+              {getUserProfile.data?.data.user.total_folders || 0}
+            </p>
           </a>
         </>
       ),
@@ -41,8 +39,9 @@ export const Profile = () => {
   }, []);
 
   return (
-    <div class="flex flex-1 flex-col pt-6 px-4">
-      <ProfileTabs />
+    <div class="flex flex-1 flex-col px-4 pt-6">
+      <ProfileTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+      {activeTab === "account" && <Account />}
     </div>
   );
 };

@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn, getInitials } from "@/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Icon } from "@iconify/react";
+import { profileNavbarSignal } from "@/pages/Profile/components/Account";
 
 // Signal for header content that can be accessed anywhere
 interface headerContentSignalType {
@@ -18,6 +19,7 @@ export const headerContentSignal = signal<headerContentSignalType>({
   title: "Gallery",
   tab: "gallery",
 });
+
 export const selectingSignal = signal<{
   isSelecting: boolean;
   selectedItems: string[];
@@ -42,7 +44,7 @@ export const Header = () => {
         {headerContent}
         <Popover>
           <PopoverTrigger asChild>
-            <li class="-9 size-9 w-9 overflow-hidden rounded-full">
+            <li class="size-9 overflow-hidden rounded-full">
               <img src={getUserProfile.data?.data.user.business_image} alt="" />
               <Avatar>
                 {(<AvatarImage src={getUserProfile.data?.data.user.business_image} />) as any}
@@ -90,6 +92,7 @@ const Tabs = [
 type Tab = (typeof Tabs)[number];
 
 export const NavBar = () => {
+  if (profileNavbarSignal.value.showNavbar) return null;
   if (!headerContentSignal.value.showHeader) return null;
 
   if (selectingSignal.value.isSelecting) return null;
