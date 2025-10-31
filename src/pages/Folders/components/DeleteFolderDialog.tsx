@@ -57,7 +57,7 @@ export const DeleteFolderDialog = (props: DeleteFolderDialogProps) => {
       <DialogContent showClose={false} class="flex flex-col gap-8">
         <DialogHeader class="p-0">
           <div class="flex items-center gap-2">
-            <DialogClose>
+            <DialogClose class="size-4">
               <Icon icon="ix:cancel" fontSize={16} />
             </DialogClose>
             <p class="font-medium text-sm">Delete</p>

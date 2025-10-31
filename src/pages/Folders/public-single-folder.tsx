@@ -82,7 +82,7 @@ export const PublicFolderGallery = () => {
         </header>
         <div class="flex flex-1 flex-col py-8">
           <div class="flex flex-col gap-4 px-4">
-            {getPublicFolderQuery.data?.data.user.business_image && <img src={getPublicFolderQuery.data?.data.user.business_image} alt="" />}
+            {getPublicFolderQuery.data?.data.user.business_image && <img src={getPublicFolderQuery.data?.data.user.business_image} alt="" class="size-16 object-cover" />}
             <div class="flex flex-col gap-3.5">
               <div class="flex flex-col gap-3.5">
                 <h2 class="!font-cormorant text-2xl leading-1">{getPublicFolderQuery.data?.data.user.business_name ?? getPublicFolderQuery.data?.data.user.full_name} </h2>
@@ -270,7 +270,7 @@ export const NavBar = () => {
   if (selectingSignal.value.isSelecting) return null;
 
   return (
-    <ul class="-translate-x-1/2 fixed bottom-6 left-1/2 flex items-center border border-line-500 bg-white p-0.5">
+    <ul class="-translate-x-1/2 fixed bottom-6 left-1/2 z-50 flex items-center border border-line-500 bg-white p-0.5">
       <NavbarCard tab={Tabs[0]} />
       <NavbarCard tab={Tabs[1]} />
       <NavbarCard tab={Tabs[2]} />

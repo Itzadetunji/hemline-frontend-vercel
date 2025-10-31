@@ -97,7 +97,7 @@ export const ShareToClientDialog = (props: ShareToClientDialogProps) => {
       <DialogContent showClose={false} class="flex flex-col gap-8 rounded-none">
         <DialogHeader class="p-0">
           <div class="flex items-center gap-2">
-            <DialogClose class="size-4">
+            <DialogClose class="size-6">
               <Icon icon="solar:arrow-left-linear" fontSize={24} />
             </DialogClose>
             <p class="font-medium text-base">Share to Client</p>
