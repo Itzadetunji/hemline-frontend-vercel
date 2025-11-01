@@ -17,7 +17,7 @@ import type {
   SetFolderCoverImageResponse,
   UpdateFolderPayload,
   UpdateFolderResponse,
-} from "./folders.types";
+} from "./folders/folders.types";
 
 // Query keys factory
 const foldersQueryKeys = {
