@@ -1,49 +1,36 @@
-# Build stage
-FROM oven/bun:1 AS builder
-
-# Set working directory
+# Stage 1: Build the React app
+FROM node:18-alpine AS build
 WORKDIR /app
 
-# Copy package files
-COPY package.json bun.lockb* ./
+# Leverage caching by installing dependencies first
+COPY package.json package-lock.json ./
+RUN npm install --frozen-lockfile
 
-# Install dependencies
-RUN bun install --frozen-lockfile
+# Copy the rest of the application code and build for production
+COPY . ./
+RUN npm run build
 
-# Copy source code
-COPY . .
+# Stage 2: Development environment
+FROM node:18-alpine AS development
+WORKDIR /app
 
-# Build the application
-RUN bun run build
+# Install dependencies again for development
+COPY package.json package-lock.json ./
+RUN npm install --frozen-lockfile
 
-# Production stage
-FROM nginx:alpine
+# Copy the full source code
+COPY . ./
 
-# Copy custom nginx config (optional, see below)
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Expose port for the development server
+EXPOSE 3000
+CMD ["npm", "start"]
 
-# Copy built assets from builder stage
-COPY --from=builder /app/dist /usr/share/nginx/html
+# Stage 3: Production environment
+FROM nginx:alpine AS production
 
-# Add a simple nginx config for SPA routing
-RUN echo 'server { \
-    listen 80; \
-    location / { \
-        root /usr/share/nginx/html; \
-        index index.html index.htm; \
-        try_files $uri $uri/ /index.html; \
-    } \
-    # Gzip compression \
-    gzip on; \
-    gzip_vary on; \
-    gzip_min_length 10240; \
-    gzip_proxied expired no-cache no-store private auth; \
-    gzip_types text/plain text/css text/xml text/javascript application/x-javascript application/xml+rss application/json application/javascript; \
-    gzip_disable "MSIE [1-6]\."; \
-}' > /etc/nginx/conf.d/default.conf
+# Copy the production build artifacts from the build stage
+COPY --from=build /app/build /usr/share/nginx/html
 
-# Expose port 80
+# Expose the default NGINX port
 EXPOSE 80
-
-# Start nginx
 CMD ["nginx", "-g", "daemon off;"]
