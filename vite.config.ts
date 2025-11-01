@@ -20,14 +20,14 @@ export default defineConfig(({ mode }) => ({
 		"import.meta.env.STAGING": mode === "staging",
 	},
 	preview: {
-		port: 5173,
+		port: 8080,
 		strictPort: true,
 	},
 	server: {
-		port: 5173,
+		port: 8080,
 		strictPort: true,
 		host: true,
-		origin: "http://0.0.0.0:5173",
+		origin: "http://0.0.0.0:8080",
 	},
 }));
 
