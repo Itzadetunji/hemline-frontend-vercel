@@ -2,6 +2,9 @@
 FROM node:22-alpine AS build
 WORKDIR /app
 
+# Install build dependencies for native modules
+RUN apk add --no-cache python3 make g++
+
 # Leverage caching by installing dependencies first
 COPY package.json package-lock.json ./
 RUN npm install --frozen-lockfile
@@ -11,8 +14,11 @@ COPY . ./
 RUN npm run build
 
 # Stage 2: Development environment
-FROM node:18-alpine AS development
+FROM node:22-alpine AS development
 WORKDIR /app
+
+# Install build dependencies for native modules
+RUN apk add --no-cache python3 make g++
 
 # Install dependencies again for development
 COPY package.json package-lock.json ./
@@ -29,7 +35,7 @@ CMD ["npm", "start"]
 FROM nginx:alpine AS production
 
 # Copy the production build artifacts from the build stage
-COPY --from=build /app/build /usr/share/nginx/html
+COPY --from=build /app/dist /usr/share/nginx/html
 
 # Expose the default NGINX port
 EXPOSE 80
