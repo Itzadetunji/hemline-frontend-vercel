@@ -26,7 +26,7 @@ const GLOBAL_CONSTANTS = {
   ENVIRONMENT: import.meta.env.VITE_ENVIRONMENT,
 
   URL: {
-    API_BASE_URL: import.meta.env.VITE_BASE_URL,
+    API_BASE_URL: import.meta.env.VITE_API_BASE_URL,
     API_VERSION: import.meta.env.VITE_APP_API_VERSION,
     CLIENT_URL: import.meta.env.VITE_CLIENT_URL,
   },
