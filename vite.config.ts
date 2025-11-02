@@ -22,7 +22,7 @@ export default defineConfig(({ mode }) => ({
 	preview: {
 		port: 8080,
 		strictPort: true,
-		allowedHosts: ["hemline.app", ".hemline.app"],
+		allowedHosts: ["hemline.studio", ".hemline.studio"],
 	},
 	server: {
 		port: 5173,
