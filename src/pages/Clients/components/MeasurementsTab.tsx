@@ -5,7 +5,9 @@ import { Drawer } from "@/components/ui/drawer";
 import { Icon } from "@iconify/react";
 import { signal } from "@preact/signals";
 import { useFormContext, Controller } from "react-hook-form";
-import type { CreateClientPayload, GenderType } from "@/api/http/v1/clients/clients.types";
+import { MeasurementUnit, type CreateClientPayload, type GenderType } from "@/api/http/v1/clients/clients.types";
+import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/select";
 
 interface MeasurementSignalType {
   id: string;
@@ -40,10 +42,9 @@ const measurementDrawerSignal = signal<MeasurementDrawerSignalTypes>({
 
 export const MeasurementsTab = () => {
   const getUserProfile = useGetUserProfile();
-  const { watch } = useFormContext<CreateClientPayload>();
+  const formMethods = useFormContext<CreateClientPayload>();
 
-  const clientGender = watch("client.gender");
-  const measurementUnit = watch("client.measurement_unit");
+  const clientGender = formMethods.watch("client.gender");
 
   return (
     <>
@@ -53,11 +54,32 @@ export const MeasurementsTab = () => {
           <p class="text-grey text-sm">Add the clients measurements and size</p>
         </div>
 
-        {/* Measurement Unit Display */}
-        <div class="flex items-center gap-2">
-          <p class="text-grey text-sm">Using:</p>
-          <p class="font-medium text-sm capitalize">{measurementUnit || "inches"}</p>
-        </div>
+        {/* Measurement Unit */}
+        <Label class="flex flex-col items-stretch gap-4">
+          <p class="font-medium text-sm leading-0">Measurement Unit</p>
+          <Controller
+            name="client.measurement_unit"
+            control={formMethods.control}
+            render={({ field }) =>
+              (
+                <div class="flex flex-col gap-2">
+                  <Select
+                    options={MeasurementUnit.map((unit) => ({
+                      label: unit.charAt(0).toUpperCase() + unit.slice(1),
+                      value: unit,
+                    }))}
+                    value={field.value ? [field.value] : []}
+                    onChange={(selected) => field.onChange(selected[0] || "")}
+                    placeholder="Select measurement unit"
+                    icon="material-symbols-light:straighten-outline"
+                    maxItems={1}
+                  />
+                  {formMethods.formState.errors.client?.measurement_unit && <p class="text-red-500 text-xs">{formMethods.formState.errors.client.measurement_unit.message}</p>}
+                </div>
+              ) as any
+            }
+          />
+        </Label>
       </div>
 
       <div class="mt-6 flex flex-1 flex-col justify-between gap-6 pb-24">
@@ -203,7 +225,7 @@ const MeasurementDrawer = () => {
                       <input
                         type="number"
                         placeholder="0"
-                        class="h-6 w-12 bg-secondary text-center text-grey"
+                        class="h-6 w-12 bg-secondary text-center plceholder:text-grey text-black"
                         inputMode="numeric"
                         value={String(field.value || "")}
                         onChange={(e) => {
@@ -237,7 +259,7 @@ const MeasurementDrawer = () => {
                         {...field}
                         type="number"
                         placeholder="0"
-                        class="h-6 w-12 bg-secondary text-center text-grey"
+                        class="h-6 w-12 bg-secondary text-center plceholder:text-grey text-black"
                         inputMode="numeric"
                         value={String(field.value || "")}
                         onChange={(e) => {
