@@ -5,13 +5,12 @@ import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
 import { useInfiniteGetOrders, useMarkOrderAsDone, useMarkOrderAsPending } from "@/api/http/v1/orders/orders.hooks";
 import type { OrderAttributes } from "@/api/http/v1/orders/orders.types";
 import { useGetUserProfile } from "@/api/http/v1/users/users.hooks";
-import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Skeleton } from "@/components/ui/skeleton";
 import { headerContentSignal, selectingSignal } from "@/layout/Header";
 import { cn } from "@/lib/utils";
-import toast from "react-hot-toast";
 import { DeleteOrders, deleteOrdersSignal } from "./components/DeleteOrders";
+import { exportOrdersToCSV, OrdersActionBar } from "./components/OrdersActionBar";
 
 export const Orders = () => {
   const getUserProfile = useGetUserProfile();
@@ -80,7 +79,7 @@ export const Orders = () => {
       {!isLoading && allOrders.length > 0 && <OrdersList orders={allOrders} hasNextPage={hasNextPage} isFetchingNextPage={isFetchingNextPage} fetchNextPage={fetchNextPage} />}
       {isLoading && <OrdersSkeleton />}
       <DeleteOrders />
-      {deleteOrdersSignal.value.isSelecting && <OrdersDeleteBar />}
+      {deleteOrdersSignal.value.isSelecting && <OrdersActionBar allOrders={allOrders} />}
     </div>
   );
 };
@@ -131,7 +130,7 @@ const OrdersList = (props: { orders: OrderAttributes[]; hasNextPage: boolean; is
     <ul class="mt-6 flex flex-1 flex-col gap-4">
       {props.orders.map((order) => {
         const isLastItem = order.id === lastOrder.id;
-        return <OrdersListItem key={order.id} order={order} isLastItem={isLastItem} observerRef={isLastItem ? observerTarget : undefined} />;
+        return <OrdersListItem key={order.id} order={order} allOrders={props.orders} isLastItem={isLastItem} observerRef={isLastItem ? observerTarget : undefined} />;
       })}
       {props.isFetchingNextPage && <OrdersSkeleton />}
     </ul>
@@ -158,7 +157,7 @@ const OrdersSkeleton = () => {
   );
 };
 
-const OrdersListItem = (props: { order: OrderAttributes; isLastItem: boolean; observerRef?: RefObject<HTMLLIElement> }) => {
+const OrdersListItem = (props: { order: OrderAttributes; allOrders: OrderAttributes[]; isLastItem: boolean; observerRef?: RefObject<HTMLLIElement> }) => {
   const [isChecked, setIsChecked] = useState(props.order.is_done);
   const markAsDoneMutation = useMarkOrderAsDone();
   const markAsPendingMutation = useMarkOrderAsPending();
@@ -207,6 +206,10 @@ const OrdersListItem = (props: { order: OrderAttributes; isLastItem: boolean; ob
     deleteOrdersSignal.value.setIsOpen(true);
   };
 
+  const handleExportSingleOrder = () => {
+    exportOrdersToCSV(props.allOrders, [props.order.id]);
+  };
+
   return (
     <li ref={props.isLastItem ? props.observerRef : null} class="relative flex flex-col gap-3.5 border border-line-700 p-3">
       <div class="flex items-center justify-between border-line-700 border-b pb-3">
@@ -235,7 +238,7 @@ const OrdersListItem = (props: { order: OrderAttributes; isLastItem: boolean; ob
                     <Icon icon="iconoir:edit" className="h-4 w-4 text-black" />
                   </div>
                 </button>
-                <button type="button" class="flex cursor-pointer items-center justify-between gap-2 hover:bg-secondary">
+                <button type="button" onClick={handleExportSingleOrder} class="flex cursor-pointer items-center justify-between gap-2 hover:bg-secondary">
                   <p class="font-medium text-sm">Download CSV</p>
                   <div class="min-w-5 p-1">
                     <Icon icon="iconoir:download" className="h-4 w-4 text-black" />
@@ -283,35 +286,6 @@ const OrdersListItem = (props: { order: OrderAttributes; isLastItem: boolean; ob
         </div>
       </label>
     </li>
-  );
-};
-
-const OrdersDeleteBar = () => {
-  const handleDeleteOrders = () => {
-    if (deleteOrdersSignal.value.orderIds.length === 0) {
-      toast("Please select at least one image to delete", {
-        style: {
-          border: "1px solid var(--primary)",
-          padding: "4px 4px",
-          color: "var(--primary)",
-          borderRadius: "0px",
-        },
-        icon: null,
-      });
-      return;
-    }
-    deleteOrdersSignal.value.setIsOpen(true);
-  };
-
-  return (
-    <ul class="-translate-x-1/2 fixed bottom-6 left-1/2 flex items-center gap-0 border border-line-500">
-      <Button class="-ml-0.5 gap-1.5 bg-white px-4 py-2.5 text-destructive capitalize hover:bg-white/80" onClick={handleDeleteOrders}>
-        <div class="min-w-4.5">
-          <Icon icon="material-symbols-light:delete-outline-sharp" className="h-4.5 w-4.5" />
-        </div>
-        <p class="leading-0">Delete</p>
-      </Button>
-    </ul>
   );
 };
 
