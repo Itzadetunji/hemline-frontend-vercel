@@ -71,7 +71,7 @@ export const MeasurementsTab = () => {
                     value={field.value ? [field.value] : []}
                     onChange={(selected) => field.onChange(selected[0] || "")}
                     placeholder="Select measurement unit"
-                    icon="material-symbols-light:straighten-outline"
+                    icon={null}
                     maxItems={1}
                   />
                   {formMethods.formState.errors.client?.measurement_unit && <p class="text-red-500 text-xs">{formMethods.formState.errors.client.measurement_unit.message}</p>}

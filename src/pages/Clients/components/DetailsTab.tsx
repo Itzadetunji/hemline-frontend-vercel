@@ -64,7 +64,7 @@ export const DetailsTab = () => {
                     value={field.value ? [field.value] : []}
                     onChange={(selected) => field.onChange(selected[0] || "")}
                     placeholder="Select gender"
-                    icon="material-symbols-light:person-outline"
+                    icon={null}
                     maxItems={1}
                   />
                   {formMethods.formState.errors.client?.gender && <p class="text-red-500 text-xs">{formMethods.formState.errors.client.gender.message}</p>}
@@ -90,7 +90,7 @@ export const DetailsTab = () => {
                     value={field.value ? [field.value] : []}
                     onChange={(selected) => field.onChange(selected[0] || "")}
                     placeholder="Select measurement unit"
-                    icon="material-symbols-light:straighten-outline"
+                    icon={null}
                     maxItems={1}
                   />
                   {formMethods.formState.errors.client?.measurement_unit && <p class="text-red-500 text-xs">{formMethods.formState.errors.client.measurement_unit.message}</p>}
