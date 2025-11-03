@@ -10,7 +10,7 @@ import { ClientSkeleton } from "./components/ClientSkeleton";
 
 export const Clients = () => {
   const getUserProfile = useGetUserProfile();
-  const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } = useInfiniteGetClients(20);
+  const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } = useInfiniteGetClients();
 
   // Flatten all pages into a single array of clients
   const allClients = data?.pages.flatMap((page) => page.data) ?? [];
@@ -59,7 +59,7 @@ export const Clients = () => {
   }, []);
 
   return (
-    <div class="flex flex-1 flex-col gap-10 px-4 pb-8">
+    <div class="flex flex-1 flex-col gap-10 px-4 pb-24">
       {!isLoading && allClients.length === 0 && <NoClients />}
 
       {!isLoading && allClients.length > 0 && (

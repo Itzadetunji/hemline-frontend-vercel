@@ -12,7 +12,8 @@ export type OrderStatusType = (typeof OrderStatus)[number];
 // Order attributes
 export interface OrderAttributes {
 	id: string;
-	client_id?: string;
+	client_id: string;
+	client_name: string;
 	item: string;
 	quantity: number;
 	notes?: string;
@@ -75,9 +76,7 @@ export interface CreateOrderResponse {
 export interface UpdateOrderResponse {
 	success: boolean;
 	message: string;
-	data: {
-		order: OrderAttributes;
-	};
+	data: OrderAttributes;
 }
 
 // Delete order response
@@ -90,6 +89,9 @@ export interface DeleteOrderResponse {
 export interface DeleteOrdersResponse {
 	success: boolean;
 	message: string;
+	data: {
+		affected_count: number;
+	};
 }
 
 // Create order payload schema

@@ -10,6 +10,7 @@ import { SingleFolderGallery } from "@/pages/Folders/single-folder";
 import { PublicFolderGallery } from "@/pages/Folders/public-single-folder";
 import { Profile } from "@/pages/Profile/page";
 import { Clients } from "@/pages/Clients/page";
+import { Orders } from "@/pages/Clients/orders/page";
 
 export const Routes = () => {
   return (
@@ -30,6 +31,7 @@ export const Routes = () => {
           <ProtectedRoute path="/gallery/folders/:folder_id" component={SingleFolderGallery} />
           <Route path="/folders/:public_id" component={PublicFolderGallery} />
           <ProtectedRoute path="/clients" component={Clients} />
+          <ProtectedRoute path="/clients/orders" component={Orders} />
           <ProtectedRoute path="/profile" component={Profile} />
         </Router>
       </ErrorBoundary>
