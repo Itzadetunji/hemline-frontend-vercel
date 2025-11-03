@@ -1,5 +1,5 @@
 import type { AxiosError } from "axios";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 import { CLIENTS_API } from "./clients.api";
@@ -20,12 +20,37 @@ export const clientsQueryKeys = {
   list: (params?: { page?: number; per_page?: number }) => [...clientsQueryKeys.lists(), params] as const,
   details: () => [...clientsQueryKeys.all, "detail"] as const,
   detail: (id: string) => [...clientsQueryKeys.details(), id] as const,
+  infinite: (perPage?: number) => [...clientsQueryKeys.lists(), "infinite", perPage] as const,
 } as const;
 
 export const useGetClients = (params?: { page?: number; per_page?: number }) => {
   return useQuery<ListClientsResponse, AxiosError>({
     queryKey: clientsQueryKeys.list(params),
     queryFn: () => CLIENTS_API.GET_ALL(params),
+  });
+};
+
+export const useInfiniteGetClients = (perPage = 20) => {
+  return useInfiniteQuery<ListClientsResponse, AxiosError>({
+    queryKey: clientsQueryKeys.infinite(perPage),
+    queryFn: ({ pageParam = 1 }) =>
+      CLIENTS_API.GET_ALL({
+        per_page: perPage,
+        page: pageParam as number,
+      }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      if (!lastPage.pagination) return undefined;
+
+      const { current_page, total_pages } = lastPage.pagination;
+      return current_page < total_pages ? current_page + 1 : undefined;
+    },
+    getPreviousPageParam: (firstPage) => {
+      if (!firstPage.pagination) return undefined;
+
+      const { current_page } = firstPage.pagination;
+      return current_page > 1 ? current_page - 1 : undefined;
+    },
   });
 };
 

@@ -12,12 +12,13 @@ export type OrderStatusType = (typeof OrderStatus)[number];
 // Order attributes
 export interface OrderAttributes {
 	id: string;
-	client_id: string;
-	description?: string;
-	status: OrderStatusType;
-	due_date?: string;
-	amount?: number;
+	client_id?: string;
+	item: string;
+	quantity: number;
 	notes?: string;
+	is_done: boolean;
+	due_date?: string;
+	overdue: boolean;
 	created_at: string;
 	updated_at: string;
 }
@@ -95,13 +96,11 @@ export interface DeleteOrdersResponse {
 export const CreateOrderSchema = z.object({
 	order: z.object({
 		client_id: z.string().min(1, "Client ID is required"),
-		description: z.string().optional(),
-		status: z.enum(OrderStatus, {
-			error: "Please select a valid status",
-		}),
-		due_date: z.string().optional(),
-		amount: z.number().optional(),
+		item: z.string().min(1, "Item is required"),
+		quantity: z.number().min(1, "Quantity must be at least 1"),
 		notes: z.string().optional(),
+		is_done: z.boolean().optional().default(false),
+		due_date: z.string().optional(),
 	}),
 });
 
@@ -110,11 +109,11 @@ export type CreateOrderPayload = z.infer<typeof CreateOrderSchema>;
 // Update order payload schema
 export const UpdateOrderSchema = z.object({
 	order: z.object({
-		description: z.string().optional(),
-		status: z.enum(OrderStatus).optional(),
-		due_date: z.string().optional(),
-		amount: z.number().optional(),
+		item: z.string().optional(),
+		quantity: z.number().optional(),
 		notes: z.string().optional(),
+		is_done: z.boolean().optional(),
+		due_date: z.string().optional(),
 	}),
 });
 
