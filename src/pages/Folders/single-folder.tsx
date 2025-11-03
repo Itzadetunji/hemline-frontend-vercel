@@ -83,7 +83,7 @@ export const SingleFolderGallery = () => {
       showHeader: true,
       title: () => (
         <div class="-ml-2 flex items-center">
-          <a href="/gallery/folders">
+          <a href="/gallery/folders" class="size-6">
             <Icon icon="fluent:chevron-left-24-regular" fontSize={24} />
           </a>
           <h1 class="max-w-[10ch] truncate pr-1 text-3xl text-black">{folderInfo?.name || "Folder"}</h1>

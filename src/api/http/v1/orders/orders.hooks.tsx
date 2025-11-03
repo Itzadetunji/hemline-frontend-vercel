@@ -118,7 +118,7 @@ export const useDeleteOrder = () => {
   return useMutation<DeleteOrderResponse, AxiosError<{ error: string }>, { order_ids: string[] }>({
     mutationFn: ORDERS_API.BULK_DELETE,
     onSuccess: () => {
-      toast.success("Order deleted successfully!");
+      // toast.success("Order deleted successfully!");
 
       // Invalidate and refetch orders list
       queryClient.invalidateQueries({
@@ -127,7 +127,7 @@ export const useDeleteOrder = () => {
     },
     onError: (error) => {
       console.error("Error deleting order:", error);
-      toast.error("Failed to delete order");
+      // toast.error("Failed to delete order");
     },
   });
 };
@@ -138,7 +138,7 @@ export const useBulkDeleteOrders = () => {
   return useMutation<DeleteOrdersResponse, AxiosError<{ error: string }>, DeleteOrdersPayload>({
     mutationFn: (payload) => ORDERS_API.BULK_DELETE(payload),
     onSuccess: () => {
-      toast.success("Orders deleted successfully!");
+      // toast.success("Orders deleted successfully!");
 
       // Invalidate and refetch orders list
       queryClient.invalidateQueries({
@@ -147,7 +147,7 @@ export const useBulkDeleteOrders = () => {
     },
     onError: (error) => {
       console.error("Error deleting orders:", error);
-      toast.error("Failed to delete orders");
+      // toast.error("Failed to delete orders");
     },
   });
 };

@@ -7,13 +7,16 @@ import toast from "react-hot-toast";
 
 interface DeleteOrdersSignalProps {
   isOpen: boolean;
-  orderIds?: string[];
+  isSelecting: boolean;
+  orderIds: string[];
   setIsOpen: (open: boolean) => void;
-  setOrderDetails: (orderDetails?: string[]) => void;
+  setOrderDetails: (orderIds: string[]) => void;
 }
 
 export const deleteOrdersSignal = signal<DeleteOrdersSignalProps>({
   isOpen: false,
+  orderIds: [],
+  isSelecting: false,
   setIsOpen: (isOpen) => {
     deleteOrdersSignal.value = {
       ...deleteOrdersSignal.value,
@@ -43,7 +46,7 @@ export const DeleteOrders = () => {
         onSuccess: (data) => {
           toast.success(data.message || "Order(s) deleted successfully");
           deleteOrdersSignal.value.setIsOpen(false);
-          deleteOrdersSignal.value.setOrderDetails(undefined);
+          deleteOrdersSignal.value.setOrderDetails([]);
         },
         onError: (error) => {
           const errorMessage = error.response?.data?.error || "Failed to delete orders";

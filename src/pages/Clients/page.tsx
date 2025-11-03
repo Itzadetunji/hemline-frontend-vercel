@@ -27,21 +27,6 @@ export const Clients = () => {
       tab: "clients",
       headerContent: () => (
         <>
-          {/* <button
-            class="flex items-center gap-1.5"
-            type="button"
-            onClick={() => {
-              selectingSignal.value = {
-                selectedItems: [],
-                isSelecting: !selectingSignal.value.isSelecting,
-              };
-            }}
-          >
-            <div class="min-h-5 min-w-5 p-1">
-              <Icon icon="gala:select" className="h-4 w-4 text-black" />
-            </div>
-            {selectingSignal.value.isSelecting && <p class="font-medium text-sm">Deselect ({selectingSignal.value.selectedItems.length})</p>}
-          </button> */}
           <a href="/gallery" class="relative min-h-5 min-w-5 p-1">
             <Icon icon="iconoir:upload" className="h-4 w-4 text-black" />
           </a>
@@ -65,6 +50,8 @@ export const Clients = () => {
       {!isLoading && allClients.length > 0 && (
         <ThereAreClients clients={allClients} hasNextPage={hasNextPage} isFetchingNextPage={isFetchingNextPage} fetchNextPage={fetchNextPage} />
       )}
+
+      {isLoading && Array.from({ length: 5 }).map((_, index) => <ClientSkeleton key={index} />)}
     </div>
   );
 };

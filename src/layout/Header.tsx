@@ -1,22 +1,23 @@
 import { signal } from "@preact/signals";
+import { Icon } from "@iconify/react";
 
 import { useGetUserProfile, useLogout } from "@/api/http/v1/users/users.hooks";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useImageCache } from "@/hooks/useImageCache";
 import { cn } from "@/lib/utils";
-import { profileNavbarSignal } from "@/pages/Profile/components/Account";
-import { Icon } from "@iconify/react";
 
 // Signal for header content that can be accessed anywhere
 interface headerContentSignalType {
   title: any;
   showHeader: boolean;
+  showNavbar: boolean;
   headerContent?: any;
   tab?: "gallery" | "clients" | "folders";
 }
 export const headerContentSignal = signal<headerContentSignalType>({
   showHeader: true,
+  showNavbar: true,
   title: "Gallery",
   tab: "gallery",
 });
@@ -97,7 +98,7 @@ const Tabs = [
 type Tab = (typeof Tabs)[number];
 
 export const NavBar = () => {
-  if (profileNavbarSignal.value.showNavbar) return null;
+  if (!headerContentSignal.value.showNavbar) return null;
   if (!headerContentSignal.value.showHeader) return null;
 
   if (selectingSignal.value.isSelecting) return null;

@@ -188,25 +188,6 @@ const GalleryImage = (props: {
     detectBackgroundColor(img, setIconColor);
   };
 
-  const handleCheckboxChange = (e: Event) => {
-    const target = e.target as HTMLInputElement;
-    const currentSelected = selectingSignal.value.selectedItems;
-
-    if (target.checked) {
-      // Add to selection
-      selectingSignal.value = {
-        ...selectingSignal.value,
-        selectedItems: [...currentSelected, props.image.id],
-      };
-    } else {
-      // Remove from selection
-      selectingSignal.value = {
-        ...selectingSignal.value,
-        selectedItems: currentSelected.filter((id) => id !== props.image.id),
-      };
-    }
-  };
-
   return (
     <>
       {selectingSignal.value.isSelecting && <AddToFolderBar />}
@@ -218,7 +199,7 @@ const GalleryImage = (props: {
       >
         {selectingSignal.value.isSelecting ? (
           <label class="group absolute top-1.5 left-1.5 cursor-pointer">
-            <input type="checkbox" onChange={handleCheckboxChange} class="sr-only" />
+            <input type="checkbox" onChange={(e) => handleCheckboxChange(e, props.image.id)} class="sr-only" />
             <div class="flex size-4.5 items-center justify-center border border-line-500 bg-white/40 transition-colors group-has-[:checked]:border-primary group-has-[:checked]:bg-primary">
               <Icon icon="heroicons:check-20-solid" className="h-3.5 w-3.5 text-white opacity-0 transition-opacity group-has-[:checked]:opacity-100" />
             </div>
@@ -362,5 +343,24 @@ export const detectBackgroundColor = (img: HTMLImageElement, setIconColor: Dispa
     console.error("Error detecting background color:", error);
     // Fallback to white if detection fails
     setIconColor("text-white");
+  }
+};
+
+const handleCheckboxChange = (e: Event, image_id: string) => {
+  const target = e.target as HTMLInputElement;
+  const currentSelected = selectingSignal.value.selectedItems;
+
+  if (target.checked) {
+    // Add to selection
+    selectingSignal.value = {
+      ...selectingSignal.value,
+      selectedItems: [...currentSelected, image_id],
+    };
+  } else {
+    // Remove from selection
+    selectingSignal.value = {
+      ...selectingSignal.value,
+      selectedItems: currentSelected.filter((id) => id !== image_id),
+    };
   }
 };

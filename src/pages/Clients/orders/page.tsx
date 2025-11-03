@@ -1,14 +1,16 @@
 import { Icon } from "@iconify/react";
-import { useLayoutEffect, useState, useEffect, useRef } from "preact/hooks";
 import type { RefObject } from "preact";
+import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
 
 import { useInfiniteGetOrders, useMarkOrderAsDone, useMarkOrderAsPending } from "@/api/http/v1/orders/orders.hooks";
 import type { OrderAttributes } from "@/api/http/v1/orders/orders.types";
 import { useGetUserProfile } from "@/api/http/v1/users/users.hooks";
+import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Skeleton } from "@/components/ui/skeleton";
 import { headerContentSignal, selectingSignal } from "@/layout/Header";
 import { cn } from "@/lib/utils";
+import toast from "react-hot-toast";
 import { DeleteOrders, deleteOrdersSignal } from "./components/DeleteOrders";
 
 export const Orders = () => {
@@ -28,7 +30,7 @@ export const Orders = () => {
       showHeader: true,
       title: () => (
         <div class="-ml-2 flex items-center">
-          <a href="/gallery/folders">
+          <a href="/gallery/folders" class="size-6">
             <Icon icon="fluent:chevron-left-24-regular" fontSize={24} />
           </a>{" "}
           <h1 class="text-3xl text-black">All Orders</h1>{" "}
@@ -37,21 +39,26 @@ export const Orders = () => {
       tab: "clients",
       headerContent: () => (
         <>
-          {/* <button
-              class="flex items-center gap-1.5"
-              type="button"
-              onClick={() => {
-                selectingSignal.value = {
-                  selectedItems: [],
-                  isSelecting: !selectingSignal.value.isSelecting,
-                };
-              }}
-            >
-              <div class="min-h-5 min-w-5 p-1">
-                <Icon icon="gala:select" className="h-4 w-4 text-black" />
-              </div>
-              {selectingSignal.value.isSelecting && <p class="font-medium text-sm">Deselect ({selectingSignal.value.selectedItems.length})</p>}
-            </button> */}
+          <button
+            class="flex items-center gap-1.5"
+            type="button"
+            onClick={() => {
+              headerContentSignal.value = {
+                ...headerContentSignal.value,
+                showNavbar: !headerContentSignal.value.showNavbar,
+              };
+              deleteOrdersSignal.value = {
+                ...deleteOrdersSignal.value,
+                orderIds: [],
+                isSelecting: !deleteOrdersSignal.value.isSelecting,
+              };
+            }}
+          >
+            <div class="min-h-5 min-w-5 p-1">
+              <Icon icon="gala:select" className="h-4 w-4 text-black" />
+            </div>
+            {deleteOrdersSignal.value.isSelecting && <p class="font-medium text-sm">Deselect ({deleteOrdersSignal.value.orderIds?.length})</p>}
+          </button>
           <a href="/gallery" class="relative min-h-5 min-w-5 p-1">
             <Icon icon="iconoir:upload" className="h-4 w-4 text-black" />
           </a>
@@ -73,6 +80,7 @@ export const Orders = () => {
       {!isLoading && allOrders.length > 0 && <OrdersList orders={allOrders} hasNextPage={hasNextPage} isFetchingNextPage={isFetchingNextPage} fetchNextPage={fetchNextPage} />}
       {isLoading && <OrdersSkeleton />}
       <DeleteOrders />
+      {deleteOrdersSignal.value.isSelecting && <OrdersDeleteBar />}
     </div>
   );
 };
@@ -202,36 +210,47 @@ const OrdersListItem = (props: { order: OrderAttributes; isLastItem: boolean; ob
   return (
     <li ref={props.isLastItem ? props.observerRef : null} class="relative flex flex-col gap-3.5 border border-line-700 p-3">
       <div class="flex items-center justify-between border-line-700 border-b pb-3">
-        <p class="!font-primary font-medium text-2xl leading-1">{props.order.client_name}</p>
-        <Popover>
-          <PopoverTrigger asChild>
-            <button type="button" class="relative min-h-5 min-w-5 rounded-full border border-line">
-              <Icon icon="pepicons-pencil:dots-x" className="size-5 text-black" />
-            </button>
-          </PopoverTrigger>
-          <PopoverContent className="flex w-40 flex-col items-stretch rounded-sm border-line-400 bg-white/70 drop-shadow-[0.6px_0.8px_9px_rgba(0,0,0,0,95)] backdrop-blur-lg">
-            <ul class="flex flex-col gap-3">
-              <button type="button" class="flex cursor-pointer items-center justify-between gap-2 hover:bg-secondary">
-                <p class="font-medium text-sm">Edit</p>
-                <div class="min-w-5 p-1">
-                  <Icon icon="iconoir:edit" className="h-4 w-4 text-black" />
-                </div>
+        <a href={`/clients/${props.order.client_id}`} class="!font-primary font-medium text-2xl leading-1">
+          {props.order.client_name}
+        </a>
+        {deleteOrdersSignal.value.isSelecting ? (
+          <label class="group top-1.5 left-1.5 cursor-pointer">
+            <input type="checkbox" onChange={(e) => handleSelectOrderChange(e, props.order.id)} class="sr-only" />
+            <div class="flex size-4.5 items-center justify-center border border-line-500 bg-white/40 transition-colors group-has-[:checked]:border-primary group-has-[:checked]:bg-primary">
+              <Icon icon="heroicons:check-20-solid" className="h-3.5 w-3.5 text-white opacity-0 transition-opacity group-has-[:checked]:opacity-100" />
+            </div>
+          </label>
+        ) : (
+          <Popover>
+            <PopoverTrigger asChild>
+              <button type="button" class="relative min-h-5 min-w-5 rounded-full border border-line">
+                <Icon icon="pepicons-pencil:dots-x" className="size-5 text-black" />
               </button>
-              <button type="button" class="flex cursor-pointer items-center justify-between gap-2 hover:bg-secondary">
-                <p class="font-medium text-sm">Download CSV</p>
-                <div class="min-w-5 p-1">
-                  <Icon icon="iconoir:download" className="h-4 w-4 text-black" />
-                </div>
-              </button>
-              <button type="button" onClick={handleDelete} class="flex cursor-pointer items-center justify-between gap-2 hover:bg-secondary">
-                <p class="font-medium text-destructive text-sm">Delete Order </p>
-                <div class="min-w-5 p-1">
-                  <Icon icon="material-symbols-light:delete-outline-sharp" className="h-4 w-4 text-destructive" />
-                </div>
-              </button>
-            </ul>
-          </PopoverContent>
-        </Popover>
+            </PopoverTrigger>
+            <PopoverContent className="flex w-40 flex-col items-stretch rounded-sm border-line-400 bg-white/70 drop-shadow-[0.6px_0.8px_9px_rgba(0,0,0,0,95)] backdrop-blur-lg">
+              <ul class="flex flex-col gap-3">
+                <button type="button" class="flex cursor-pointer items-center justify-between gap-2 hover:bg-secondary">
+                  <p class="font-medium text-sm">Edit</p>
+                  <div class="min-w-5 p-1">
+                    <Icon icon="iconoir:edit" className="h-4 w-4 text-black" />
+                  </div>
+                </button>
+                <button type="button" class="flex cursor-pointer items-center justify-between gap-2 hover:bg-secondary">
+                  <p class="font-medium text-sm">Download CSV</p>
+                  <div class="min-w-5 p-1">
+                    <Icon icon="iconoir:download" className="h-4 w-4 text-black" />
+                  </div>
+                </button>
+                <button type="button" onClick={handleDelete} class="flex cursor-pointer items-center justify-between gap-2 hover:bg-secondary">
+                  <p class="font-medium text-destructive text-sm">Delete Order </p>
+                  <div class="min-w-5 p-1">
+                    <Icon icon="material-symbols-light:delete-outline-sharp" className="h-4 w-4 text-destructive" />
+                  </div>
+                </button>
+              </ul>
+            </PopoverContent>
+          </Popover>
+        )}
       </div>
       <ul class="flex flex-col gap-1">
         <div class="flex font-medium text-sm">
@@ -265,4 +284,52 @@ const OrdersListItem = (props: { order: OrderAttributes; isLastItem: boolean; ob
       </label>
     </li>
   );
+};
+
+const OrdersDeleteBar = () => {
+  const handleDeleteOrders = () => {
+    if (deleteOrdersSignal.value.orderIds.length === 0) {
+      toast("Please select at least one image to delete", {
+        style: {
+          border: "1px solid var(--primary)",
+          padding: "4px 4px",
+          color: "var(--primary)",
+          borderRadius: "0px",
+        },
+        icon: null,
+      });
+      return;
+    }
+    deleteOrdersSignal.value.setIsOpen(true);
+  };
+
+  return (
+    <ul class="-translate-x-1/2 fixed bottom-6 left-1/2 flex items-center gap-0 border border-line-500">
+      <Button class="-ml-0.5 gap-1.5 bg-white px-4 py-2.5 text-destructive capitalize hover:bg-white/80" onClick={handleDeleteOrders}>
+        <div class="min-w-4.5">
+          <Icon icon="material-symbols-light:delete-outline-sharp" className="h-4.5 w-4.5" />
+        </div>
+        <p class="leading-0">Delete</p>
+      </Button>
+    </ul>
+  );
+};
+
+const handleSelectOrderChange = (e: Event, order_id: string) => {
+  const target = e.target as HTMLInputElement;
+  const currentSelected = deleteOrdersSignal.value.orderIds;
+
+  if (target.checked) {
+    // Add to selection
+    deleteOrdersSignal.value = {
+      ...deleteOrdersSignal.value,
+      orderIds: [...currentSelected, order_id],
+    };
+  } else {
+    // Remove from selection
+    deleteOrdersSignal.value = {
+      ...deleteOrdersSignal.value,
+      orderIds: currentSelected.filter((id) => id !== order_id),
+    };
+  }
 };
