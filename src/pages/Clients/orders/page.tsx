@@ -29,7 +29,7 @@ export const Orders = () => {
       showHeader: true,
       title: () => (
         <div class="-ml-2 flex items-center">
-          <a href="/gallery/folders" class="size-6">
+          <a href="/clients" class="size-6">
             <Icon icon="fluent:chevron-left-24-regular" fontSize={24} />
           </a>{" "}
           <h1 class="text-3xl text-black">All Orders</h1>{" "}
@@ -73,6 +73,7 @@ export const Orders = () => {
       ),
     };
   }, []);
+
   return (
     <div class="flex flex-1 flex-col gap-10 px-4 pb-24">
       {!isLoading && allOrders.length === 0 && <NoOders />}

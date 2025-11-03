@@ -1,8 +1,8 @@
 import { z } from "zod";
-import type { OrderAttributes } from "../orders/orders.types";
+import { OrderSchema, type OrderAttributes } from "../orders/orders.types";
 
 // Gender choices
-export const Gender = ["Male", "Female", "Other"] as const;
+export const Gender = ["Male", "Female"] as const;
 export type GenderType = (typeof Gender)[number];
 
 // Measurement unit choices
@@ -142,8 +142,7 @@ export const CreateClientSchema = z.object({
 		round_underbust: z.string().optional(),
 		neck_circumference: z.string().optional(),
 		armhole_circumference: z.string().optional(),
-		arm_length_full: z.string().optional(),
-		arm_length_three_quarter: z.string().optional(),
+		arm_length_full_three_quarter: z.string().optional(),
 		sleeve_length: z.string().optional(),
 		round_sleeve_bicep: z.string().optional(),
 		elbow_circumference: z.string().optional(),
@@ -171,7 +170,11 @@ export const CreateClientSchema = z.object({
 		waist_to_floor: z.string().optional(),
 		slit_height: z.string().optional(),
 		bust_apex_to_waist: z.string().optional(),
+		custom_fields: z.record(z.string(), z.string().optional()).optional(),
 	}),
+	orders: z
+		.array(OrderSchema.omit({ client_id: true, is_done: true }))
+		.optional(),
 });
 
 export type CreateClientPayload = z.infer<typeof CreateClientSchema>;

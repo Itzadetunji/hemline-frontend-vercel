@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { zIndexManager } from "@/lib/z-index-manager";
 import { animate, createDraggable, createTimeline, type Draggable, type JSAnimation, type Timeline, utils } from "animejs";
 import type { ComponentChildren } from "preact";
@@ -121,7 +122,7 @@ export const Drawer = ({ isOpen, onClose, children, className = "", drawerClass 
     <>
       {/* Drawer */}
 
-      <div ref={drawerRef} class={`fixed right-0 bottom-0 left-0 h-[91%] w-full will-change-transform ${drawerClass}`} style={{ zIndex }} data-type="drawer">
+      <div ref={drawerRef} class={cn("fixed right-0 bottom-0 left-0 h-[91%] w-full will-change-transform", drawerClass)} style={{ zIndex }} data-type="drawer">
         <div class="relative flex h-full w-full flex-col overflow-hidden rounded-t-3xl border-t border-t-line-500 bg-white">
           {/* Content */}
           <div class={className}>{children}</div>

@@ -1,0 +1,36 @@
+Upper measurement
+  Shoulder width
+  Bust / Chest
+  Round underbust
+  Neck circumference
+  Armhole / Arm Circumference
+  Arm Length (Full & ¾)
+  Sleeve Length
+  Round Sleeve / Bicep
+  Elbow Circumference
+  Wrist Circumference
+  Top Length / Blouse Length
+  Bust Point (Nipple to Nipple)
+  Shoulder to Bust Point
+  Shoulder to Waist
+  Round Chest / Upper Bust
+  Back Width
+  Back Length
+  Tommy / Waist
+
+Lower measurement
+  Waist
+  High Hip
+  Hip / Full Hip
+  Lap / Thigh
+  Knee Circumference
+  Calf Circumference
+  Ankle Circumference
+  Skirt Length
+  Trouser Length / Outseam
+  Inseam
+  Crotch Depth
+  Waist to Hip
+  Waist to Floor
+  Slit Height
+  Bust Apex to Waist

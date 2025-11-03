@@ -94,16 +94,18 @@ export interface DeleteOrdersResponse {
 	};
 }
 
+export const OrderSchema = z.object({
+	client_id: z.string().min(1, "Client ID is required"),
+	item: z.string().min(1, "Item is required"),
+	quantity: z.number().min(1, "Quantity must be at least 1"),
+	notes: z.string().optional(),
+	is_done: z.boolean().optional().default(false),
+	due_date: z.string().optional(),
+});
+
 // Create order payload schema
 export const CreateOrderSchema = z.object({
-	order: z.object({
-		client_id: z.string().min(1, "Client ID is required"),
-		item: z.string().min(1, "Item is required"),
-		quantity: z.number().min(1, "Quantity must be at least 1"),
-		notes: z.string().optional(),
-		is_done: z.boolean().optional().default(false),
-		due_date: z.string().optional(),
-	}),
+	order: OrderSchema,
 });
 
 export type CreateOrderPayload = z.infer<typeof CreateOrderSchema>;
