@@ -233,3 +233,11 @@ export const DeleteClientsSchema = z.object({
 });
 
 export type DeleteClientsPayload = z.infer<typeof DeleteClientsSchema>;
+
+export interface GetAllClientsParams {
+	page?: number;
+	per_page?: number;
+	search?: string;
+	sort_by?: "a-z" | "z-a" | "last_updated";
+	include_trashed?: boolean;
+}

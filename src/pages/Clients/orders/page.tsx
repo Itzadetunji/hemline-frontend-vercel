@@ -5,8 +5,10 @@ import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
 import { useInfiniteGetOrders, useMarkOrderAsDone, useMarkOrderAsPending } from "@/api/http/v1/orders/orders.hooks";
 import type { OrderAttributes } from "@/api/http/v1/orders/orders.types";
 import { useGetUserProfile } from "@/api/http/v1/users/users.hooks";
+import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useDebounce } from "@/hooks/useDebounce";
 import { headerContentSignal, selectingSignal } from "@/layout/Header";
 import { cn } from "@/lib/utils";
 import { DeleteOrders, deleteOrdersSignal } from "./components/DeleteOrders";
@@ -14,10 +16,16 @@ import { exportOrdersToCSV, OrdersActionBar } from "./components/OrdersActionBar
 
 export const Orders = () => {
   const getUserProfile = useGetUserProfile();
-  const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } = useInfiniteGetOrders(20);
+  const { data, isLoading, isFetchingNextPage, isFetching, hasNextPage, fetchNextPage } = useInfiniteGetOrders();
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearchTerm = useDebounce(searchTerm, 200);
+  const isSearching = debouncedSearchTerm.length > 0;
+  const getIniniteOrdersSearchQuery = useInfiniteGetOrders({ search: debouncedSearchTerm, enabled: isSearching });
 
   // Flatten all pages into a single array of orders
   const allOrders = data?.pages.flatMap((page) => page.data.orders) ?? [];
+  const allSearchingOrders = getIniniteOrdersSearchQuery.data?.pages.flatMap((page) => page.data.orders) ?? [];
 
   useLayoutEffect(() => {
     selectingSignal.value = {
@@ -77,8 +85,41 @@ export const Orders = () => {
   return (
     <div class="flex flex-1 flex-col gap-10 px-4 pb-24">
       {!isLoading && allOrders.length === 0 && <NoOders />}
-      {!isLoading && allOrders.length > 0 && <OrdersList orders={allOrders} hasNextPage={hasNextPage} isFetchingNextPage={isFetchingNextPage} fetchNextPage={fetchNextPage} />}
-      {isLoading && <OrdersSkeleton />}
+      <div
+        class={cn("flex flex-col gap-6", {
+          "flex-1": !(getIniniteOrdersSearchQuery.isFetching || isFetching),
+        })}
+      >
+        <Label class="flex flex-col items-stretch gap-4">
+          <div class="flex h-10.5 items-center gap-3.5 border border-line-700 px-3">
+            <i className="size-4.5">
+              <Icon icon="lucide:search" fontSize="18" />
+            </i>
+            <input
+              type="text"
+              placeholder="Item, Notes, Client Name"
+              class="flex-1 text-sm placeholder:text-grey-400"
+              value={searchTerm}
+              onInput={(e: Event) => setSearchTerm((e.currentTarget as HTMLInputElement).value)}
+            />
+          </div>
+        </Label>
+        {!isSearching && !isLoading && allOrders.length > 0 && (
+          <OrdersList orders={allOrders} hasNextPage={hasNextPage} isFetchingNextPage={isFetchingNextPage} fetchNextPage={fetchNextPage} isFetching={isFetching} />
+        )}
+
+        {isSearching && (
+          <OrdersList
+            orders={allSearchingOrders}
+            hasNextPage={getIniniteOrdersSearchQuery.hasNextPage}
+            isFetchingNextPage={getIniniteOrdersSearchQuery.isFetchingNextPage}
+            fetchNextPage={getIniniteOrdersSearchQuery.fetchNextPage}
+            isFetching={getIniniteOrdersSearchQuery.isFetching}
+          />
+        )}
+      </div>
+
+      {(getIniniteOrdersSearchQuery.isFetching || isFetching) && <OrdersSkeleton />}
       <DeleteOrders />
       {deleteOrdersSignal.value.isSelecting && <OrdersActionBar allOrders={allOrders} />}
     </div>
@@ -98,7 +139,7 @@ const NoOders = () => {
   );
 };
 
-const OrdersList = (props: { orders: OrderAttributes[]; hasNextPage: boolean; isFetchingNextPage: boolean; fetchNextPage: () => void }) => {
+const OrdersList = (props: { orders: OrderAttributes[]; hasNextPage: boolean; isFetchingNextPage: boolean; isFetching: boolean; fetchNextPage: () => void }) => {
   const observerTarget = useRef<HTMLLIElement>(null);
 
   // Intersection Observer for infinite scroll
@@ -128,13 +169,23 @@ const OrdersList = (props: { orders: OrderAttributes[]; hasNextPage: boolean; is
   const lastOrder = props.orders[props.orders.length - 1];
 
   return (
-    <ul class="mt-6 flex flex-1 flex-col gap-4">
-      {props.orders.map((order) => {
-        const isLastItem = order.id === lastOrder.id;
-        return <OrdersListItem key={order.id} order={order} allOrders={props.orders} isLastItem={isLastItem} observerRef={isLastItem ? observerTarget : undefined} />;
-      })}
-      {props.isFetchingNextPage && <OrdersSkeleton />}
-    </ul>
+    <>
+      {!props.isFetching && props.orders.length > 0 && (
+        <ul class="flex flex-1 flex-col gap-4">
+          {props.orders.map((order) => {
+            const isLastItem = order.id === lastOrder.id;
+            return <OrdersListItem key={order.id} order={order} allOrders={props.orders} isLastItem={isLastItem} observerRef={isLastItem ? observerTarget : undefined} />;
+          })}
+          {props.isFetchingNextPage && <OrdersSkeleton />}
+        </ul>
+      )}
+
+      {!props.isFetching && !props.isFetchingNextPage && !props.orders.length && (
+        <div class="flex flex-1 flex-col items-center justify-center gap-4">
+          <h2 class="text-2xl">No Orders Found</h2>
+        </div>
+      )}
+    </>
   );
 };
 

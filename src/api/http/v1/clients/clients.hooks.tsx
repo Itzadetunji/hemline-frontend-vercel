@@ -12,32 +12,36 @@ import type {
   CreateClientPayload,
   UpdateClientPayload,
   DeleteClientsPayload,
+  GetAllClientsParams,
 } from "./clients.types";
 
 export const clientsQueryKeys = {
   all: ["clients"] as const,
   lists: () => [...clientsQueryKeys.all, "list"] as const,
-  list: (params?: { page?: number; per_page?: number }) => [...clientsQueryKeys.lists(), params] as const,
+  list: (params?: GetAllClientsParams) => [...clientsQueryKeys.lists(), params] as const,
   details: () => [...clientsQueryKeys.all, "detail"] as const,
   detail: (id: string) => [...clientsQueryKeys.details(), id] as const,
-  infinite: (perPage?: number) => [...clientsQueryKeys.lists(), "infinite", perPage] as const,
+  infinite: (params?: GetAllClientsParams) => [...clientsQueryKeys.lists(), "infinite", params] as const,
 } as const;
 
-export const useGetClients = (params?: { page?: number; per_page?: number }) => {
+export const useGetClients = (params?: GetAllClientsParams & { enabled?: boolean }) => {
   return useQuery<ListClientsResponse, AxiosError>({
     queryKey: clientsQueryKeys.list(params),
     queryFn: () => CLIENTS_API.GET_ALL(params),
+    enabled: params?.enabled ?? true,
   });
 };
 
-export const useInfiniteGetClients = (perPage = 20) => {
+export const useInfiniteGetClients = (params?: GetAllClientsParams & { enabled?: boolean }) => {
   return useInfiniteQuery<ListClientsResponse, AxiosError>({
-    queryKey: clientsQueryKeys.infinite(perPage),
+    queryKey: clientsQueryKeys.infinite(params),
     queryFn: ({ pageParam = 1 }) =>
       CLIENTS_API.GET_ALL({
-        per_page: perPage,
+        ...params,
+        per_page: params?.per_page,
         page: pageParam as number,
       }),
+    enabled: params?.enabled ?? true,
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
       if (!lastPage.pagination) return undefined;

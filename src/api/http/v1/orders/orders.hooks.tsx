@@ -13,6 +13,7 @@ import type {
   ListOrdersResponse,
   UpdateOrderPayload,
   UpdateOrderResponse,
+  GetAllOrdersParams,
 } from "./orders.types";
 
 export const ordersQueryKeys = {
@@ -21,15 +22,10 @@ export const ordersQueryKeys = {
   list: (clientId: string, params?: { page?: number; per_page?: number }) => [...ordersQueryKeys.lists(), clientId, params] as const,
   details: () => [...ordersQueryKeys.all, "detail"] as const,
   detail: (orderId: string) => [...ordersQueryKeys.details(), orderId] as const,
+  infinite: (params?: GetAllOrdersParams) => [...ordersQueryKeys.lists(), "infinite", params],
 } as const;
 
-export const useGetOrders = (
-  clientId: string,
-  params?: {
-    page?: number;
-    per_page?: number;
-  }
-) => {
+export const useGetOrders = (clientId: string, params?: GetAllOrdersParams & { enabled: boolean }) => {
   return useQuery<ListOrdersResponse, AxiosError>({
     queryKey: ordersQueryKeys.list(clientId, params),
     queryFn: () => ORDERS_API.GET_ALL(params),
@@ -37,10 +33,10 @@ export const useGetOrders = (
   });
 };
 
-export const useInfiniteGetOrders = (perPage = 20) => {
+export const useInfiniteGetOrders = (params?: GetAllOrdersParams & { enabled: boolean }) => {
   return useInfiniteQuery<ListOrdersResponse, AxiosError>({
-    queryKey: [...ordersQueryKeys.lists(), perPage],
-    queryFn: ({ pageParam = 1 }) => ORDERS_API.GET_ALL({ page: pageParam as number, per_page: perPage }),
+    queryKey: [...ordersQueryKeys.lists(), params],
+    queryFn: ({ pageParam = 1 }) => ORDERS_API.GET_ALL({ ...params, page: pageParam as number, per_page: params?.per_page }),
     getNextPageParam: (lastPage) => {
       const currentPage = lastPage.data.pagination.current_page;
       const totalPages = lastPage.data.pagination.total_pages;
@@ -192,7 +188,7 @@ export const useMarkOrderAsDone = () => {
       });
 
       // Update infinite query cache
-      queryClient.setQueriesData<InfiniteData<ListOrdersResponse>>({ queryKey: ordersQueryKeys.lists(), exact: false }, (oldData) => {
+      queryClient.setQueriesData<InfiniteData<ListOrdersResponse>>({ queryKey: ordersQueryKeys.infinite(), exact: false }, (oldData) => {
         if (!oldData) return oldData;
         console.log(oldData);
         const newdata = {
@@ -243,7 +239,7 @@ export const useMarkOrderAsPending = () => {
       });
 
       // Update infinite query cache
-      queryClient.setQueriesData<InfiniteData<ListOrdersResponse>>({ queryKey: ordersQueryKeys.lists(), exact: false }, (oldData) => {
+      queryClient.setQueriesData<InfiniteData<ListOrdersResponse>>({ queryKey: ordersQueryKeys.infinite(), exact: false }, (oldData) => {
         if (!oldData) return oldData;
         console.log(oldData);
         const newdata = {

@@ -9,6 +9,7 @@ import type {
 	CreateOrderPayload,
 	UpdateOrderPayload,
 	DeleteOrdersPayload,
+	GetAllOrdersParams,
 } from "./orders.types";
 
 const ORDERS_ENDPOINTS = {
@@ -25,10 +26,7 @@ const ORDERS_ENDPOINTS = {
 } as const;
 
 export const ORDERS_API = {
-	GET_ALL: async (params?: {
-		page?: number;
-		per_page?: number;
-	}): Promise<ListOrdersResponse> =>
+	GET_ALL: async (params?: GetAllOrdersParams): Promise<ListOrdersResponse> =>
 		await $http.get(ORDERS_ENDPOINTS.list, { params }).then((res) => res.data),
 
 	GET: async (clientId: string, orderId: string): Promise<GetOrderResponse> =>

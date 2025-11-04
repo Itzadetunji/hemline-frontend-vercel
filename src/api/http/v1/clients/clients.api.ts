@@ -8,6 +8,7 @@ import type {
 	CreateClientPayload,
 	UpdateClientPayload,
 	DeleteClientsPayload,
+	GetAllClientsParams,
 } from "./clients.types";
 
 const CLIENTS_ENDPOINTS = {
@@ -19,10 +20,7 @@ const CLIENTS_ENDPOINTS = {
 } as const;
 
 export const CLIENTS_API = {
-	GET_ALL: async (params?: {
-		page?: number;
-		per_page?: number;
-	}): Promise<ListClientsResponse> =>
+	GET_ALL: async (params?: GetAllClientsParams): Promise<ListClientsResponse> =>
 		await $http.get(CLIENTS_ENDPOINTS.list, { params }).then((res) => res.data),
 
 	GET: async (id: string): Promise<GetClientResponse> =>

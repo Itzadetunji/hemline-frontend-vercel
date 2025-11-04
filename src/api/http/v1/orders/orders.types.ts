@@ -129,3 +129,11 @@ export const DeleteOrdersSchema = z.object({
 });
 
 export type DeleteOrdersPayload = z.infer<typeof DeleteOrdersSchema>;
+
+export interface GetAllOrdersParams {
+	page?: number;
+	per_page?: number;
+	search?: string;
+	sort_by?: "a-z" | "z-a" | "last_updated" | "due_date_asc" | "due_date_desc";
+	status?: "pending" | "completed" | "overdue" | "upcoming";
+}

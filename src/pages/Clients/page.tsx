@@ -1,10 +1,12 @@
 import { Icon } from "@iconify/react";
 import type { RefObject } from "preact";
-import { useEffect, useLayoutEffect, useRef } from "preact/hooks";
+import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
 
 import { useInfiniteGetClients } from "@/api/http/v1/clients/clients.hooks";
 import type { ClientAttributes, ClientData } from "@/api/http/v1/clients/clients.types";
 import { useGetUserProfile } from "@/api/http/v1/users/users.hooks";
+import { Label } from "@/components/ui/label";
+import { useDebounce } from "@/hooks/useDebounce";
 import { headerContentSignal, selectingSignal } from "@/layout/Header";
 import { ClientSkeleton } from "./components/ClientSkeleton";
 
@@ -74,8 +76,16 @@ const NoClients = () => {
 };
 
 const ThereAreClients = (props: { clients: ClientData[]; hasNextPage: boolean; isFetchingNextPage: boolean; fetchNextPage: () => void }) => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearchTerm = useDebounce(searchTerm, 200);
+  const isSearching = debouncedSearchTerm.length > 0;
+
+  const getClientsSearchInifiniteQuery = useInfiniteGetClients({ search: debouncedSearchTerm, enabled: debouncedSearchTerm.length > 0 });
+
+  const allSearchClients = getClientsSearchInifiniteQuery.data?.pages.flatMap((page) => page.data) ?? [];
+
   return (
-    <div class="flex flex-col gap-6">
+    <div class="flex flex-1 flex-col gap-6">
       <ul class="flex items-center justify-between gap-4">
         <a class="flex items-center gap-2 py-2" href="/clients/add">
           <p class="font-medium text-sm">Add Client</p>
@@ -90,12 +100,90 @@ const ThereAreClients = (props: { clients: ClientData[]; hasNextPage: boolean; i
           </i>
         </a>
       </ul>
-      <ClientList clients={props.clients} hasNextPage={props.hasNextPage} isFetchingNextPage={props.isFetchingNextPage} fetchNextPage={props.fetchNextPage} />
+
+      <Label class="flex flex-col items-stretch gap-4">
+        <div class="flex h-10.5 items-center gap-3.5 border border-line-700 px-3">
+          <i className="size-4.5">
+            <Icon icon="lucide:search" fontSize="18" />
+          </i>
+          <input
+            type="text"
+            placeholder="Name, Email, Phone Number"
+            class="flex-1 text-sm placeholder:text-grey-400"
+            value={searchTerm}
+            onInput={(e: Event) => setSearchTerm((e.currentTarget as HTMLInputElement).value)}
+          />
+        </div>
+      </Label>
+
+      {isSearching ? (
+        <ClientList
+          clients={allSearchClients}
+          hasNextPage={getClientsSearchInifiniteQuery.hasNextPage}
+          isFetchingNextPage={getClientsSearchInifiniteQuery.isFetchingNextPage}
+          fetchNextPage={getClientsSearchInifiniteQuery.fetchNextPage}
+          isFetching={getClientsSearchInifiniteQuery.isFetching}
+        />
+      ) : (
+        <GroupedClientList clients={props.clients} hasNextPage={props.hasNextPage} isFetchingNextPage={props.isFetchingNextPage} fetchNextPage={props.fetchNextPage} />
+      )}
     </div>
   );
 };
 
-const ClientList = (props: { clients: ClientData[]; hasNextPage: boolean; isFetchingNextPage: boolean; fetchNextPage: () => void }) => {
+const ClientList = (props: { clients: ClientData[]; hasNextPage: boolean; isFetchingNextPage: boolean; isFetching: boolean; fetchNextPage: () => void }) => {
+  const observerTarget = useRef<HTMLAnchorElement>(null);
+
+  // Intersection Observer for infinite scroll
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && props.hasNextPage && !props.isFetchingNextPage) {
+          props.fetchNextPage();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    const currentTarget = observerTarget.current;
+    if (currentTarget) {
+      observer.observe(currentTarget);
+    }
+
+    return () => {
+      if (currentTarget) {
+        observer.unobserve(currentTarget);
+      }
+    };
+  }, [props.hasNextPage, props.isFetchingNextPage, props.fetchNextPage]);
+
+  // Get the last client to attach the observer
+  const lastClient = props.clients[props.clients.length - 1];
+
+  return (
+    <div class="flex flex-1 flex-col gap-4">
+      <ul class="flex flex-col gap-3.5">
+        {props.clients.map((client) => {
+          const isLastItem = client.id === lastClient.attributes.id;
+          return <ClientListItem key={client.id} client={client.attributes} isLastItem={isLastItem} observerRef={isLastItem ? observerTarget : undefined} />;
+        })}
+      </ul>
+      {(props.isFetchingNextPage || props.isFetching) && (
+        <div class="flex flex-col gap-2">
+          <ClientSkeleton />
+        </div>
+      )}
+
+      {!props.isFetching && !props.isFetchingNextPage && !props.clients.length && (
+        <div class="flex flex-1 flex-col items-center justify-center gap-4">
+          <h2 class="text-2xl">No Clients Found</h2>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const GroupedClientList = (props: { clients: ClientData[]; hasNextPage: boolean; isFetchingNextPage: boolean; fetchNextPage: () => void }) => {
   const observerTarget = useRef<HTMLAnchorElement>(null);
 
   // Intersection Observer for infinite scroll
@@ -167,7 +255,7 @@ const ClientList = (props: { clients: ClientData[]; hasNextPage: boolean; isFetc
 const ClientListItem = (props: { client: ClientAttributes; isLastItem: boolean; observerRef?: RefObject<HTMLAnchorElement> }) => {
   return (
     <a href={`/clients/${props.client.id}`} class="flex items-center gap-3.5" ref={props.isLastItem ? props.observerRef : null}>
-      <p class="grid size-8 place-content-center bg-secondary px-2 py-2.5 text-black">{props.client.first_name[0]}</p>
+      <p class="grid size-8 place-content-center bg-secondary px-2 py-2.5 text-black uppercase">{props.client.first_name[0]}</p>
       <div class="flex h-10 flex-1 items-center border-b border-b-line text-base">{props.client.full_name}</div>
     </a>
   );
