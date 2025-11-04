@@ -96,7 +96,7 @@ export interface GetClientResponse {
 	success: boolean;
 	message: string;
 	data: {
-		client: ClientAttributes;
+		data: { id: string; type: "client"; attributes: ClientAttributes };
 	};
 }
 
@@ -114,7 +114,9 @@ export interface UpdateClientResponse {
 	success: boolean;
 	message: string;
 	data: {
-		client: ClientAttributes;
+		id: string;
+		type: "client";
+		attributes: ClientAttributes;
 	};
 }
 
@@ -136,7 +138,7 @@ export const CreateClientSchema = z.object({
 			error: "Please select a valid measurement unit",
 		}),
 		phone_number: z.string().optional(),
-		email: z.string().email().optional().or(z.literal("")),
+		email: z.email().optional().or(z.literal("")),
 		shoulder_width: z.string().optional(),
 		bust_chest: z.string().optional(),
 		round_underbust: z.string().optional(),
@@ -182,46 +184,54 @@ export type CreateClientPayload = z.infer<typeof CreateClientSchema>;
 // Update client payload schema
 export const UpdateClientSchema = z.object({
 	client: z.object({
-		first_name: z.string().optional(),
-		last_name: z.string().optional(),
-		gender: z.enum(Gender).optional(),
-		measurement_unit: z.enum(MeasurementUnit).optional(),
-		phone_number: z.string().optional(),
-		email: z.string().email().optional().or(z.literal("")),
-		shoulder_width: z.string().optional(),
-		bust_chest: z.string().optional(),
-		round_underbust: z.string().optional(),
-		neck_circumference: z.string().optional(),
-		armhole_circumference: z.string().optional(),
-		arm_length_full: z.string().optional(),
-		arm_length_three_quarter: z.string().optional(),
-		sleeve_length: z.string().optional(),
-		round_sleeve_bicep: z.string().optional(),
-		elbow_circumference: z.string().optional(),
-		wrist_circumference: z.string().optional(),
-		top_length: z.string().optional(),
-		bust_point_nipple_to_nipple: z.string().optional(),
-		shoulder_to_bust_point: z.string().optional(),
-		shoulder_to_waist: z.string().optional(),
-		round_chest_upper_bust: z.string().optional(),
-		back_width: z.string().optional(),
-		back_length: z.string().optional(),
-		tommy_waist: z.string().optional(),
-		waist: z.string().optional(),
-		high_hip: z.string().optional(),
-		hip_full: z.string().optional(),
-		lap_thigh: z.string().optional(),
-		knee_circumference: z.string().optional(),
-		calf_circumference: z.string().optional(),
-		ankle_circumference: z.string().optional(),
-		skirt_length: z.string().optional(),
-		trouser_length_outseam: z.string().optional(),
-		inseam: z.string().optional(),
-		crotch_depth: z.string().optional(),
-		waist_to_hip: z.string().optional(),
-		waist_to_floor: z.string().optional(),
-		slit_height: z.string().optional(),
-		bust_apex_to_waist: z.string().optional(),
+		first_name: z.string().min(1, "First name is required"),
+		last_name: z.string().min(1, "Last name is required"),
+		gender: z.enum(Gender, {
+			error: "Please select a valid gender",
+		}),
+		measurement_unit: z.enum(MeasurementUnit, {
+			error: "Please select a valid measurement unit",
+		}),
+		phone_number: z.string().optional().nullable(),
+		email: z.email().optional().or(z.literal("")).nullable(),
+		shoulder_width: z.string().optional().nullable(),
+		bust_chest: z.string().optional().nullable(),
+		round_underbust: z.string().optional().nullable(),
+		neck_circumference: z.string().optional().nullable(),
+		armhole_circumference: z.string().optional().nullable(),
+		arm_length_full: z.string().optional().nullable(),
+		arm_length_three_quarter: z.string().optional().nullable(),
+		sleeve_length: z.string().optional().nullable(),
+		round_sleeve_bicep: z.string().optional().nullable(),
+		elbow_circumference: z.string().optional().nullable(),
+		wrist_circumference: z.string().optional().nullable(),
+		top_length: z.string().optional().nullable(),
+		bust_point_nipple_to_nipple: z.string().optional().nullable(),
+		shoulder_to_bust_point: z.string().optional().nullable(),
+		shoulder_to_waist: z.string().optional().nullable(),
+		round_chest_upper_bust: z.string().optional().nullable(),
+		back_width: z.string().optional().nullable(),
+		back_length: z.string().optional().nullable(),
+		tommy_waist: z.string().optional().nullable(),
+		waist: z.string().optional().nullable(),
+		high_hip: z.string().optional().nullable(),
+		hip_full: z.string().optional().nullable(),
+		lap_thigh: z.string().optional().nullable(),
+		knee_circumference: z.string().optional().nullable(),
+		calf_circumference: z.string().optional().nullable(),
+		ankle_circumference: z.string().optional().nullable(),
+		skirt_length: z.string().optional().nullable(),
+		trouser_length_outseam: z.string().optional().nullable(),
+		inseam: z.string().optional().nullable(),
+		crotch_depth: z.string().optional().nullable(),
+		waist_to_hip: z.string().optional().nullable(),
+		waist_to_floor: z.string().optional().nullable(),
+		slit_height: z.string().optional().nullable(),
+		bust_apex_to_waist: z.string().optional().nullable(),
+		custom_fields: z
+			.record(z.string(), z.string().optional())
+			.optional()
+			.nullable(),
 	}),
 });
 
@@ -241,3 +251,55 @@ export interface GetAllClientsParams {
 	sort_by?: "a-z" | "z-a" | "last_updated";
 	include_trashed?: boolean;
 }
+
+export interface MeasurementFieldType {
+	id: string;
+	title: string;
+	female_only?: boolean;
+}
+
+export const Measurements: {
+	upper_measurements: MeasurementFieldType[];
+	lower_measurements: MeasurementFieldType[];
+} = {
+	upper_measurements: [
+		{ id: "shoulder_width", title: "Shoulder Width" },
+		{ id: "bust_chest", title: "Bust / Chest" },
+		{ id: "round_underbust", title: "Round Underbust" },
+		{ id: "neck_circumference", title: "Neck Circumference" },
+		{ id: "armhole_circumference", title: "Armhole / Arm Circumference" },
+		{ id: "arm_length_full_three_quarter", title: "Arm Length (Full & ¾)" },
+		{ id: "sleeve_length", title: "Sleeve Length" },
+		{ id: "round_sleeve_bicep", title: "Round Sleeve / Bicep" },
+		{ id: "elbow_circumference", title: "Elbow Circumference" },
+		{ id: "wrist_circumference", title: "Wrist Circumference" },
+		{ id: "top_length", title: "Top Length / Blouse Length" },
+		{
+			id: "bust_point_nipple_to_nipple",
+			title: "Bust Point (Nipple to Nipple)",
+		},
+		{ id: "shoulder_to_bust_point", title: "Shoulder to Bust Point" },
+		{ id: "shoulder_to_waist", title: "Shoulder to Waist" },
+		{ id: "round_chest_upper_bust", title: "Round Chest / Upper Bust" },
+		{ id: "back_width", title: "Back Width" },
+		{ id: "back_length", title: "Back Length" },
+		{ id: "tommy_waist", title: "Tommy / Waist" },
+		{ id: "bust_apex_to_waist", title: "Bust Apex to Waist" },
+	],
+	lower_measurements: [
+		{ id: "waist", title: "Waist" },
+		{ id: "high_hip", title: "High Hip" },
+		{ id: "hip_full", title: "Hip / Full Hip" },
+		{ id: "lap_thigh", title: "Lap / Thigh" },
+		{ id: "knee_circumference", title: "Knee Circumference" },
+		{ id: "calf_circumference", title: "Calf Circumference" },
+		{ id: "ankle_circumference", title: "Ankle Circumference" },
+		{ id: "skirt_length", title: "Skirt Length" },
+		{ id: "trouser_length_outseam", title: "Trouser Length / Outseam" },
+		{ id: "inseam", title: "Inseam" },
+		{ id: "crotch_depth", title: "Crotch Depth" },
+		{ id: "waist_to_hip", title: "Waist to Hip" },
+		{ id: "waist_to_floor", title: "Waist to Floor" },
+		{ id: "slit_height", title: "Slit Height", female_only: true },
+	],
+};

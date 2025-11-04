@@ -90,15 +90,16 @@ export const useUpdateClient = () => {
   return useMutation<UpdateClientResponse, AxiosError<{ error: string }>, { id: string; payload: UpdateClientPayload }>({
     mutationFn: ({ id, payload }) => CLIENTS_API.UPDATE(id, payload),
     onSuccess: (data, variables) => {
-      toast.success("Client updated successfully!");
+      // toast.success("Client updated successfully!");
 
       // Update the specific client detail in cache
-      queryClient.setQueryData<GetClientResponse>(clientsQueryKeys.detail(variables.id), (oldData) => {
+      queryClient.setQueryData<GetClientResponse | undefined>(clientsQueryKeys.detail(variables.id), (oldData) => {
         if (!oldData) return oldData;
         return {
           ...oldData,
           data: {
-            client: data.data.client,
+            ...data.data,
+            data: data.data,
           },
         };
       });
@@ -113,7 +114,7 @@ export const useUpdateClient = () => {
     },
     onError: (error) => {
       console.error("Error updating client:", error);
-      toast.error("Failed to update client");
+      // toast.error("Failed to update client");
     },
   });
 };

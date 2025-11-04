@@ -3,8 +3,8 @@ import { useEffect, useRef } from "preact/hooks";
 
 import { cn } from "@/lib/utils";
 
-const Tabs = ["details", "orders", "measurements"] as const;
-export type AddClientsTab = (typeof Tabs)[number];
+export const ClientTabs = ["details", "orders", "measurements"] as const;
+export type AddClientsTab = (typeof ClientTabs)[number];
 
 type AddClientsTabProps = {
   tab: AddClientsTab;
@@ -12,13 +12,13 @@ type AddClientsTabProps = {
   setActiveTab: (tab: AddClientsTab) => void;
 };
 
-export const AddClientsTabs = (props: { activeTab: AddClientsTab; setActiveTab: (tab: AddClientsTab) => void }) => {
+export const AddClientsTabs = (props: { activeTab: AddClientsTab; setActiveTab: (tab: AddClientsTab) => void; editTabs?: (typeof ClientTabs)[number] }) => {
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const indicatorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!indicatorRef.current || tabRefs.current.length === 0) return;
-    const activeIndex = Tabs.indexOf(props.activeTab);
+    const activeIndex = ClientTabs.indexOf(props.activeTab);
     const activeTabEl = tabRefs.current[activeIndex];
     if (!activeTabEl) return;
 
@@ -29,8 +29,8 @@ export const AddClientsTabs = (props: { activeTab: AddClientsTab; setActiveTab: 
   return (
     <div class="relative border-b-2 border-b-line-700">
       <ul class="flex items-center gap-4">
-        {Tabs.map((tab, index) => (
-          <AddClientsTab
+        {ClientTabs.map((tab, index) => (
+          <ClientsTab
             key={tab}
             tab={tab}
             activeTab={props.activeTab}
@@ -46,7 +46,7 @@ export const AddClientsTabs = (props: { activeTab: AddClientsTab; setActiveTab: 
   );
 };
 
-const AddClientsTab = forwardRef(({ tab, activeTab, setActiveTab }: AddClientsTabProps, ref: Ref<HTMLButtonElement>) => (
+export const ClientsTab = forwardRef(({ tab, activeTab, setActiveTab }: AddClientsTabProps, ref: Ref<HTMLButtonElement>) => (
   <button
     ref={ref}
     type="button"

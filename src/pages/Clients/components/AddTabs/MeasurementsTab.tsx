@@ -5,11 +5,12 @@ import { Drawer } from "@/components/ui/drawer";
 import { Icon } from "@iconify/react";
 import { signal } from "@preact/signals";
 import { useFormContext, Controller } from "react-hook-form";
-import { MeasurementUnit, type CreateClientPayload, type GenderType } from "@/api/http/v1/clients/clients.types";
+import { type MeasurementFieldType, Measurements, MeasurementUnit, type CreateClientPayload, type GenderType } from "@/api/http/v1/clients/clients.types";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
+import { EditingClientSignal } from "../../view-client";
 
-interface MeasurementSignalType {
+export interface MeasurementSignalType {
   id: string;
   title: string;
   is_upper: boolean;
@@ -17,7 +18,7 @@ interface MeasurementSignalType {
   gender: "male" | "female";
 }
 
-interface MeasurementDrawerSignalTypes {
+export interface MeasurementDrawerSignalTypes {
   measurement?: MeasurementSignalType;
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
@@ -127,7 +128,7 @@ export const MeasurementsTab = () => {
   );
 };
 
-const MeasurementItem = (props: { fields: MeasurementFieldType[]; is_upper?: boolean; is_custom?: boolean; gender?: GenderType }) => {
+export const MeasurementItem = (props: { fields: MeasurementFieldType[]; is_upper?: boolean; is_custom?: boolean; gender?: GenderType; disabled?: boolean }) => {
   const { watch } = useFormContext<CreateClientPayload>();
   return (
     <AccordionContent className="pt-4">
@@ -165,13 +166,16 @@ const MeasurementItem = (props: { fields: MeasurementFieldType[]; is_upper?: boo
                       } as MeasurementSignalType);
                       measurementDrawerSignal.value.setIsOpen(true);
                     }}
-                    class="flex items-center gap-1 border-b border-b-line py-2"
+                    class="flex items-center justify-between gap-1 border-b border-b-line py-2 disabled:cursor-not-allowed"
+                    disabled={!EditingClientSignal.value.isEditing}
                   >
                     <p class="font-medium text-base capitalize">{field.title}</p>
-                    <span class="size-4">
-                      <Icon icon="lucide:chevron-right" className="size-4" />
-                    </span>
-                    <p class="font-medium text-base">{fieldValue}</p>
+
+                    {fieldValue && (
+                      <p class="bg-secondary px-1 py-1 font-medium text-base text-black leading-4">
+                        {fieldValue} {watch("client.measurement_unit") === "inches" ? "in" : watch("client.measurement_unit") === "centimeters" ? "cm" : ""}
+                      </p>
+                    )}
                   </button>
                 );
               })}
@@ -182,7 +186,7 @@ const MeasurementItem = (props: { fields: MeasurementFieldType[]; is_upper?: boo
   ) as any;
 };
 
-const MeasurementDrawer = () => {
+export const MeasurementDrawer = () => {
   const { control, setValue, watch } = useFormContext<CreateClientPayload>();
   const currentMeasurement = measurementDrawerSignal.value.measurement;
 
@@ -284,50 +288,4 @@ const MeasurementDrawer = () => {
       </div>
     </Drawer>
   );
-};
-
-interface MeasurementFieldType {
-  id: string;
-  title: string;
-  female_only?: boolean;
-}
-
-const Measurements: { upper_measurements: MeasurementFieldType[]; lower_measurements: MeasurementFieldType[] } = {
-  upper_measurements: [
-    { id: "shoulder_width", title: "Shoulder Width" },
-    { id: "bust_chest", title: "Bust / Chest" },
-    { id: "round_underbust", title: "Round Underbust" },
-    { id: "neck_circumference", title: "Neck Circumference" },
-    { id: "armhole_circumference", title: "Armhole / Arm Circumference" },
-    { id: "arm_length_full_three_quarter", title: "Arm Length (Full & ¾)" },
-    { id: "sleeve_length", title: "Sleeve Length" },
-    { id: "round_sleeve_bicep", title: "Round Sleeve / Bicep" },
-    { id: "elbow_circumference", title: "Elbow Circumference" },
-    { id: "wrist_circumference", title: "Wrist Circumference" },
-    { id: "top_length", title: "Top Length / Blouse Length" },
-    { id: "bust_point_nipple_to_nipple", title: "Bust Point (Nipple to Nipple)" },
-    { id: "shoulder_to_bust_point", title: "Shoulder to Bust Point" },
-    { id: "shoulder_to_waist", title: "Shoulder to Waist" },
-    { id: "round_chest_upper_bust", title: "Round Chest / Upper Bust" },
-    { id: "back_width", title: "Back Width" },
-    { id: "back_length", title: "Back Length" },
-    { id: "tommy_waist", title: "Tommy / Waist" },
-    { id: "bust_apex_to_waist", title: "Bust Apex to Waist" },
-  ],
-  lower_measurements: [
-    { id: "waist", title: "Waist" },
-    { id: "high_hip", title: "High Hip" },
-    { id: "hip_full", title: "Hip / Full Hip" },
-    { id: "lap_thigh", title: "Lap / Thigh" },
-    { id: "knee_circumference", title: "Knee Circumference" },
-    { id: "calf_circumference", title: "Calf Circumference" },
-    { id: "ankle_circumference", title: "Ankle Circumference" },
-    { id: "skirt_length", title: "Skirt Length" },
-    { id: "trouser_length_outseam", title: "Trouser Length / Outseam" },
-    { id: "inseam", title: "Inseam" },
-    { id: "crotch_depth", title: "Crotch Depth" },
-    { id: "waist_to_hip", title: "Waist to Hip" },
-    { id: "waist_to_floor", title: "Waist to Floor" },
-    { id: "slit_height", title: "Slit Height", female_only: true },
-  ],
 };
