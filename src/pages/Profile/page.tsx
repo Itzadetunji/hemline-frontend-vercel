@@ -2,7 +2,7 @@ import { useGetUserProfile } from "@/api/http/v1/users/users.hooks";
 import { headerContentSignal, selectingSignal } from "@/layout/Header";
 import { Icon } from "@iconify/react";
 import { useLayoutEffect, useState } from "preact/hooks";
-import { ProfileTab, ProfileTabs } from "./components/ProfileTabs";
+import { type ProfileTab, ProfileTabs } from "./components/ProfileTabs";
 import { Account } from "./components/Account";
 import { CustomFields } from "./components/CustomFields";
 

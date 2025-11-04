@@ -64,17 +64,21 @@ export const Folders = () => {
               <Icon icon="material-symbols-light:delete-outline-sharp" className="h-5 w-5 text-destructive" />
             </button>
           )} */}
-          <button class="min-h-5 min-w-5 p-1" type="button" onClick={() => setShowSelectFolder(true)}>
-            <Icon icon="iconoir:upload" className="h-4 w-4 text-black" />
-          </button>
-          <a href="/gallery/folders">
-            <li class="relative min-h-5 min-w-5 p-1">
-              <Icon icon="bi:folder" className="h-4 w-4 text-black" />
-              <p class="-top-0.5 -right-0.5 absolute grid min-h-3.5 min-w-3.5 place-content-center rounded-full bg-primary text-[0.625rem] text-white leading-0">
-                {getUserProfile.data?.data.user.total_folders || 0}
-              </p>
-            </li>
-          </a>
+          {!selectingSignal.value.isSelecting && (
+            <>
+              <button class="min-h-5 min-w-5 p-1" type="button" onClick={() => setShowSelectFolder(true)}>
+                <Icon icon="iconoir:upload" className="h-4 w-4 text-black" />
+              </button>
+              <a href="/gallery/folders">
+                <li class="relative min-h-5 min-w-5 p-1">
+                  <Icon icon="bi:folder" className="h-4 w-4 text-black" />
+                  <p class="-top-0.5 -right-0.5 absolute grid min-h-3.5 min-w-3.5 place-content-center rounded-full bg-primary text-[0.625rem] text-white leading-0">
+                    {getUserProfile.data?.data.user.total_folders || 0}
+                  </p>
+                </li>
+              </a>
+            </>
+          )}
         </>
       ),
     };
