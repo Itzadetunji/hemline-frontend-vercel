@@ -69,7 +69,7 @@ export const Folders = () => {
               <button class="min-h-5 min-w-5 p-1" type="button" onClick={() => setShowSelectFolder(true)}>
                 <Icon icon="iconoir:upload" className="h-4 w-4 text-black" />
               </button>
-              <a href="/gallery/folders">
+              <a href="/gallery">
                 <li class="relative min-h-5 min-w-5 p-1">
                   <Icon icon="bi:folder" className="h-4 w-4 text-black" />
                   <p class="-top-0.5 -right-0.5 absolute grid min-h-3.5 min-w-3.5 place-content-center rounded-full bg-primary text-[0.625rem] text-white leading-0">
@@ -147,10 +147,10 @@ const NoFolders = (props: Mainprops) => {
             <h2 class="text-2xl leading-0">Folder is empty</h2>
             <p class="max-w-8/10 text-center font-medium text-grey-500 text-sm">Create a folder by selecting from your uploaded works</p>
           </div>
-          <button class="flex items-center gap-2 py-2" type="button" onClick={() => props.setShowSelectFolder?.(true)}>
+          <a class="flex items-center gap-2 py-2" href="/gallery" onClick={() => props.setShowSelectFolder?.(true)}>
             <p class="font-medium text-sm">Upload</p>
             <Icon icon="si:add-duotone" className="h-5 w-5 text-black" />
-          </button>
+          </a>
         </div>
       </div>
     );
