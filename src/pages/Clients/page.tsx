@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { useDebounce } from "@/hooks/useDebounce";
 import { headerContentSignal, selectingSignal } from "@/layout/Header";
 import { ClientSkeleton } from "./components/ClientSkeleton";
+import { cn } from "@/lib/utils";
 
 export const Clients = () => {
   const getUserProfile = useGetUserProfile();
@@ -46,7 +47,11 @@ export const Clients = () => {
   }, []);
 
   return (
-    <div class="flex flex-1 flex-col gap-10 px-4 pb-24">
+    <div
+      class={cn("flex flex-1 flex-col gap-4 px-4 pb-24", {
+        "pt-6": isLoading,
+      })}
+    >
       {!isLoading && allClients.length === 0 && <NoClients />}
 
       {!isLoading && allClients.length > 0 && (

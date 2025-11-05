@@ -15,10 +15,15 @@ import { cn } from "@/lib/utils";
 import { AddToFolderBar } from "./components/AddToFolderBar";
 import { SingleGallery } from "./components/SingleGallery";
 import { UploadImages, type UploadImagesHandle } from "./components/UploadImages";
+import { useInfiniteGetClients } from "@/api/http/v1/clients/clients.hooks";
+import { useInfiniteGetOrders } from "@/api/http/v1/orders/orders.hooks";
 
 export const Gallery = () => {
   // const [galleryLayout, setGalleryLayout] = useState<"fancy" | "grid">("fancy");
   const getUserProfile = useGetUserProfile();
+  useInfiniteGetClients();
+  useInfiniteGetOrders();
+
   const [currentSelectedImage, setCurrentSelectedImage] = useState<GalleryImageType | undefined>(undefined);
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [addToFolder, setAddToFolder] = useState<boolean>(false);

@@ -6,8 +6,8 @@ import { useEffect, useRef, useState, type Dispatch, type StateUpdater } from "p
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
-import { useInfiniteGetOrders, useMarkOrderAsDone, useMarkOrderAsPending, useUpdateOrder } from "@/api/http/v1/orders/orders.hooks";
-import { UpdateOrderSchema, type OrderAttributes, type UpdateOrderPayload } from "@/api/http/v1/orders/orders.types";
+import { useCreateOrder, useInfiniteGetOrders, useMarkOrderAsDone, useMarkOrderAsPending, useUpdateOrder } from "@/api/http/v1/orders/orders.hooks";
+import { CreateOrderPayload, CreateOrderSchema, UpdateOrderSchema, type OrderAttributes, type UpdateOrderPayload } from "@/api/http/v1/orders/orders.types";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -19,6 +19,8 @@ import { exportOrdersToCSV, OrdersActionBar } from "../../orders/components/Orde
 export const EditOrdersTab = () => {
   const { params } = useRoute();
   const client_id = params.client_id as string;
+
+  const [addingNewOrder, setAddingNewOrder] = useState(false);
 
   const getInfiniteOrdersQuery = useInfiniteGetOrders({ client_id });
 
@@ -60,20 +62,46 @@ export const EditOrdersTab = () => {
           "flex-1": !getInfiniteOrdersQuery.isLoading,
         })}
       >
-        <div class="flex flex-col">
-          <p class="font-medium text-base">Deliverables</p>
-          <p class="text-grey text-sm">Add details about the client&apos;s request</p>
-        </div>
+        {!getInfiniteOrdersQuery.isLoading && !!allOrders.length && (
+          <div class="flex flex-1 flex-col gap-4">
+            <div class="flex flex-col gap-4">
+              <div class="flex flex-col">
+                <p class="font-medium text-base">Deliverables</p>
+                <p class="text-grey text-sm">Add details about the client&apos;s request</p>
+              </div>
+              {!addingNewOrder && (
+                <Button class="h-fit w-fit gap-1.5 px-3 py-1.5 text-black" variant="secondary" type="button" onClick={() => setAddingNewOrder(true)}>
+                  <p>Add Item</p>
+                  <span class="size-4.5">
+                    <Icon icon="si:add-duotone" className="size-4.5" />
+                  </span>
+                </Button>
+              )}
+            </div>
+            <div class="flex flex-col gap-5">
+              {addingNewOrder && <AddNewOrderItem setAddingNewOrder={setAddingNewOrder} />}
+              <ul class="flex flex-col gap-6">
+                {allOrders.map((order) => {
+                  const isLastItem = order.id === lastOrder.id;
 
-        {!getInfiniteOrdersQuery.isLoading && (
-          <div class="flex flex-col gap-5">
-            <ul class="mt-7 flex flex-col gap-6">
-              {allOrders.map((order) => {
-                const isLastItem = order.id === lastOrder.id;
-
-                return <OrdersListItem key={order.id} order={order} allOrders={allOrders} isLastItem={isLastItem} observerRef={isLastItem ? observerTarget : undefined} />;
-              })}
-            </ul>
+                  return <OrdersListItem key={order.id} order={order} allOrders={allOrders} isLastItem={isLastItem} observerRef={isLastItem ? observerTarget : undefined} />;
+                })}
+              </ul>
+            </div>
+          </div>
+        )}
+        {!getInfiniteOrdersQuery.isLoading && !allOrders.length && !addingNewOrder && (
+          <div class="flex flex-1 flex-col items-stretch">
+            <div class="flex flex-1 flex-col items-center justify-center gap-4">
+              <div class="flex flex-col items-center gap-4">
+                <h2 class="text-2xl leading-0">No Deliverables</h2>
+                <p class="max-w-8/10 text-center font-medium text-grey-500 text-sm">Add details about the client&apos;s request</p>
+              </div>
+              <Button class="flex items-center gap-2 py-2" type="button" onClick={() => setAddingNewOrder(true)} variant="ghost">
+                <p class="font-medium text-sm">Add Order</p>
+                <Icon icon="si:add-duotone" className="h-5 w-5 text-black" />
+              </Button>
+            </div>
           </div>
         )}
       </div>
@@ -249,6 +277,7 @@ const EditableOrderItem = (props: { order: OrderAttributes; setIsEditing: Dispat
           // location.route("/clients");
         },
         onError: (error) => {
+          toast.error("Order could not be updated");
           console.error("Client creation error:", error);
         },
       }
@@ -267,12 +296,6 @@ const EditableOrderItem = (props: { order: OrderAttributes; setIsEditing: Dispat
         <Label class="flex flex-col items-stretch gap-1">
           <div class="flex items-center justify-between">
             <p class="font-medium text-sm">Item Name</p>
-            {/* <Button class="h-fit w-fit gap-2 p-0 text-grey" variant="ghost" type="button" onClick={() => remove(index)}>
-            <span class="size-4">
-              <Icon icon="ix:cancel" />
-            </span>
-            <p>Delete</p>
-          </Button> */}
           </div>
           <Controller
             name="order.item"
@@ -385,6 +408,176 @@ const EditableOrderItem = (props: { order: OrderAttributes; setIsEditing: Dispat
           Cancel
         </Button>
         <Button class="flex-1" disabled={!formMethods.formState.isDirty || updateOrderMutation.isPending} type="submit">
+          Save
+        </Button>
+      </ul>
+    </form>
+  );
+};
+
+const AddNewOrderItem = (props: { setAddingNewOrder: Dispatch<StateUpdater<boolean>> }) => {
+  const { params } = useRoute();
+  const client_id = params.client_id as string;
+
+  const createOrderMutation = useCreateOrder();
+
+  const formMethods = useForm<CreateOrderPayload>({
+    resolver: zodResolver(CreateOrderSchema) as any,
+    defaultValues: {
+      order: {
+        client_id: client_id,
+      },
+    },
+  });
+
+  const onSubmit = async (payload: CreateOrderPayload) => {
+    await createOrderMutation.mutateAsync(
+      {
+        clientId: client_id,
+        payload,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Order created successfully!");
+          props.setAddingNewOrder(false);
+        },
+        onError: (error) => {
+          console.error("Client creation error:", error);
+        },
+      }
+    );
+  };
+
+  const handleSubmit = (e: Event) => {
+    e.preventDefault();
+    formMethods.handleSubmit(onSubmit)(e as any);
+  };
+
+  return (
+    <form class="flex flex-col gap-6 border-line-700 border-y py-5" onSubmit={handleSubmit}>
+      <div class="flex flex-col gap-6">
+        {/* Item Name */}
+        <Label class="flex flex-col items-stretch gap-1">
+          <div class="flex items-center justify-between">
+            <p class="font-medium text-sm">Item Name</p>
+            {/* <Button class="h-fit w-fit gap-2 p-0 text-grey" variant="ghost" type="button" onClick={() => props.setAddingNewOrder(false)}>
+              <span class="size-4">
+                <Icon icon="ix:cancel" />
+              </span>
+              <p>Remove</p>
+            </Button> */}
+          </div>
+          <Controller
+            name="order.item"
+            control={formMethods.control}
+            render={({ field: itemField }) =>
+              (
+                <div class="flex flex-col gap-1.5">
+                  <input
+                    {...itemField}
+                    placeholder="blue senator"
+                    class="flex min-h-10.5 flex-1 items-center gap-3.5 border border-line-700 px-3 text-sm placeholder:text-grey-400"
+                  />
+                  {formMethods.formState.errors.order?.item && <p class="text-red-500 text-xs">{formMethods.formState.errors.order?.item?.message}</p>}
+                </div>
+              ) as any
+            }
+          />
+        </Label>
+
+        {/* Quantity */}
+        <Label class="flex w-fit border border-line-700">
+          <p class="border-line-700 border-r py-1.5 pr-2.5 pl-1">Quantity</p>
+          <Controller
+            name="order.quantity"
+            control={formMethods.control}
+            render={({ field: quantityField }) =>
+              (
+                <div class="flex items-center gap-2 pr-2 text-grey">
+                  <button
+                    type="button"
+                    class="min-h-4.5 min-w-4.5"
+                    onClick={() => {
+                      const currentValue = quantityField.value || 1;
+                      if (currentValue > 1) {
+                        quantityField.onChange(currentValue - 1);
+                      }
+                    }}
+                  >
+                    <Icon icon="material-symbols:remove-rounded" className="size-4.5" />
+                  </button>
+                  <p class="font-medium text-black text-sm">{quantityField.value || 1}</p>
+                  <button
+                    type="button"
+                    class="min-h-4.5 min-w-4.5"
+                    onClick={() => {
+                      const currentValue = quantityField.value || 1;
+                      quantityField.onChange(currentValue + 1);
+                    }}
+                  >
+                    <Icon icon="si:add-duotone" className="size-4.5" />
+                  </button>
+                </div>
+              ) as any
+            }
+          />
+        </Label>
+
+        {/* Notes */}
+        <Label class="flex flex-col items-stretch gap-4">
+          <p class="font-medium text-sm leading-0">My Notes</p>
+          <Controller
+            name="order.notes"
+            control={formMethods.control}
+            render={({ field: notesField }) =>
+              (
+                <div class="flex flex-col gap-1.5">
+                  <textarea
+                    {...notesField}
+                    placeholder="The client want it to be fitted and the trousers should be very long and fitted"
+                    class="flex min-h-20 flex-1 items-center gap-3.5 border border-line-700 px-3 py-3 text-sm placeholder:text-grey-400"
+                  />
+                  {formMethods.formState.errors.order?.notes && <p class="text-red-500 text-xs">{formMethods.formState.errors.order?.notes?.message}</p>}
+                </div>
+              ) as any
+            }
+          />
+        </Label>
+
+        {/* Due Date */}
+        <Label class="flex flex-col items-stretch gap-4">
+          <p class="font-medium text-sm leading-0">Due Date</p>
+          <Controller
+            name="order.due_date"
+            control={formMethods.control}
+            render={({ field }) => {
+              return (
+                <div class="flex flex-col gap-1.5">
+                  <div class="relative">
+                    <button
+                      type="button"
+                      class="flex min-h-10.5 w-full items-center gap-3.5 border border-line-700 px-3 text-left text-sm placeholder:text-grey-400"
+                      onClick={(e) => {
+                        const input = e.currentTarget.nextElementSibling as HTMLInputElement;
+                        input?.showPicker();
+                      }}
+                    >
+                      {formatDateForOrderDueDate(field.value)}
+                    </button>
+                    <input {...field} type="date" class="pointer-events-none absolute inset-0 opacity-0" />
+                  </div>
+                  {formMethods.formState.errors.order?.due_date && <p class="text-red-500 text-xs">{formMethods.formState.errors.order?.due_date.message}</p>}
+                </div>
+              ) as any;
+            }}
+          />
+        </Label>
+      </div>
+      <ul class="flex items-center justify-between gap-4">
+        <Button class="flex-1" type="button" onClick={() => props.setAddingNewOrder(false)} disabled={createOrderMutation.isPending}>
+          Cancel
+        </Button>
+        <Button class="flex-1" disabled={!formMethods.formState.isDirty || createOrderMutation.isPending} type="submit">
           Save
         </Button>
       </ul>
