@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { clearEmail, setEmail } from "@/stores/authStore";
-import { userStore } from "@/stores/userStore";
+import { userSignal, userStore } from "@/stores/userStore";
 import { USERS_API } from "./users.api";
 import type { GetUserProfileResponse, OnboardingFormData, OnboardingUserResponse, RequestMagicLinkPayload, VerifyMagicCodePayload } from "./users.types";
 
@@ -76,7 +76,7 @@ export const useVeriftMagicCode = () => {
         token: data.data.token,
         user: data.data.user,
       });
-
+      console.log(userSignal.value);
       // Update the query cache directly with the new user data
       queryClient.setQueryData<GetUserProfileResponse>(usersQuerykeys.all, data);
 
