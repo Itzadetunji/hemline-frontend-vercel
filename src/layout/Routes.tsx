@@ -6,13 +6,13 @@ import { SignUp } from "@/pages/Auth/SignUp/page";
 import { AddClients } from "@/pages/Clients/add-clients";
 import { Orders } from "@/pages/Clients/orders/page";
 import { Clients } from "@/pages/Clients/page";
+import { ViewClient } from "@/pages/Clients/view-client";
 import { Folders } from "@/pages/Folders/page";
 import { PublicFolderGallery } from "@/pages/Folders/public-single-folder";
 import { SingleFolderGallery } from "@/pages/Folders/single-folder";
 import { Gallery } from "@/pages/Gallery/page";
 import { Profile } from "@/pages/Profile/page";
 import { ProtectedRoute } from "./ProtectedRoute";
-import { ViewClient } from "@/pages/Clients/view-client";
 
 export const Routes = () => {
   return (
@@ -20,29 +20,22 @@ export const Routes = () => {
       <ErrorBoundary>
         {/* Protected Routes - Require Authentication */}
 
-        {import.meta.env.MODE === "development" ? (
-          <Router>
-            <ProtectedRoute path="/" component={Gallery} />
-            <Route path="/sign-up" component={SignUp} />
-            <Route path="/sign-in" component={SignIn} />
-            <ProtectedRoute path="/onboarding" component={Onboarding} />
-            <ProtectedRoute path="/gallery" component={Gallery} />
-            <ProtectedRoute path="/gallery/folders" component={Folders} />
-            <ProtectedRoute path="/gallery/folders/:folder_id" component={SingleFolderGallery} />
-            <Route path="/folders/:public_id" component={PublicFolderGallery} />
-            <ProtectedRoute path="/clients" component={Clients} />
-            <ProtectedRoute path="/clients/add" component={AddClients} />
-            <ProtectedRoute path="/clients/orders" component={Orders} />
-            <ProtectedRoute path="/clients/:client_id" component={ViewClient} />
-            <ProtectedRoute path="/profile" component={Profile} />
-            <ProtectedRoute path="/onboarding" component={Onboarding} />
-          </Router>
-        ) : (
-          <Router>
-            <Route path="/" component={ComingSoon} />
-            <Route path="/" component={ComingSoon} />
-          </Router>
-        )}
+        <Router>
+          <ProtectedRoute path="/" component={Gallery} />
+          <Route path="/sign-up" component={SignUp} />
+          <Route path="/sign-in" component={SignIn} />
+          <ProtectedRoute path="/onboarding" component={Onboarding} />
+          <ProtectedRoute path="/gallery" component={Gallery} />
+          <ProtectedRoute path="/gallery/folders" component={Folders} />
+          <ProtectedRoute path="/gallery/folders/:folder_id" component={SingleFolderGallery} />
+          <Route path="/folders/:public_id" component={PublicFolderGallery} />
+          <ProtectedRoute path="/clients" component={Clients} />
+          <ProtectedRoute path="/clients/add" component={AddClients} />
+          <ProtectedRoute path="/clients/orders" component={Orders} />
+          <ProtectedRoute path="/clients/:client_id" component={ViewClient} />
+          <ProtectedRoute path="/profile" component={Profile} />
+          <ProtectedRoute path="/onboarding" component={Onboarding} />
+        </Router>
 
         {/* Public Routes - Redirect if already authenticated */}
       </ErrorBoundary>
@@ -50,7 +43,7 @@ export const Routes = () => {
   );
 };
 
-const ComingSoon = () => {
+export const ComingSoon = () => {
   return (
     <div class="flex h-screen flex-1 flex-col p-4">
       <ul class="flex items-center gap-4">

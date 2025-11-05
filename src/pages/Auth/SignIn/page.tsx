@@ -1,7 +1,7 @@
 import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Icon } from "@iconify/react";
-import type { JSX } from "preact";
+import type { TargetedSubmitEvent } from "preact";
 
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -9,6 +9,7 @@ import { type RequestMagicLinkPayload, RequestMagicLinkPayloadSchema } from "@/a
 import { useGetMagicLink } from "@/api/http/v1/users/users.hooks";
 import { emailSignal, setEmail } from "@/stores/authStore";
 import { VerifyEmail } from "../components/VerifyEmail";
+import toast from "react-hot-toast";
 
 export const SignIn = () => {
   const formMethods = useForm<RequestMagicLinkPayload>({
@@ -22,10 +23,13 @@ export const SignIn = () => {
       onSuccess: () => {
         setEmail(payload.email);
       },
+      onError: (error) => {
+        toast.error(error.response?.data.errors?.[0] ?? "An error occurred while requesting the magic link.");
+      },
     });
   };
 
-  const handleSubmit = (e: JSX.TargetedSubmitEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: TargetedSubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     formMethods.handleSubmit(onSubmit)(e as any);
   };

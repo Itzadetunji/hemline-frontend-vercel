@@ -27,7 +27,7 @@ export const useLogout = () => {
 };
 
 export const useGetMagicLink = () => {
-  return useMutation<{ message: string }, AxiosError, RequestMagicLinkPayload>({
+  return useMutation<{ message: string }, AxiosError<{ error: string; errors?: string[] }>, RequestMagicLinkPayload>({
     mutationFn: USERS_API.GET_MAGIC_LINK,
   });
 };
