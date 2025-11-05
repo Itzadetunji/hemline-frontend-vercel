@@ -60,7 +60,7 @@ export const Header = () => {
                   />
                 </>
               ) : (
-                <div class="size-9 rounded-full bg-primary text-2xl text-white">
+                <div class="grid size-9 place-content-center rounded-full bg-primary text-center font-medium text-white text-xl">
                   {getUserProfile.data?.data.user && getInitials(getUserProfile.data?.data.user.business_name ?? getUserProfile.data?.data.user.full_name)}
                 </div>
               )}
