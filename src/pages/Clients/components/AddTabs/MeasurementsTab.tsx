@@ -101,7 +101,7 @@ export const MeasurementsTab = () => {
             ) as any
           }
           {!getUserProfile.isLoading &&
-            getUserProfile.data?.data.user.custom_fields.length &&
+            !!getUserProfile.data?.data.user.custom_fields.length &&
             ((
               <AccordionItem value="custom_measurements">
                 {(<AccordionTrigger className="!font-primary flex items-center rounded-none border-line border-b px-3 py-1 text-2xl">Custom Measurements</AccordionTrigger>) as any}
@@ -262,7 +262,7 @@ export const MeasurementDrawer = () => {
                         type="number"
                         placeholder="0"
                         class="h-6 w-12 bg-secondary text-center plceholder:text-grey text-black"
-                        inputMode="numeric"
+                        inputMode="decimal"
                         value={String(field.value || "")}
                         onChange={(e) => {
                           const value = e.currentTarget.value;
