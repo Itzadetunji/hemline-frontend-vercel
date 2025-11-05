@@ -67,7 +67,7 @@ export const VerifyEmail = () => {
       <form class="flex flex-1 flex-col gap-6" onSubmit={handleSubmit}>
         <Label class="flex flex-col items-stretch gap-4">
           <div class="flex flex-col gap-4">
-            <h2 class="text-2xl leading-0">Login with Otp</h2>
+            <h2 class="text-2xl leading-0">Login with Otp : {localStorage.getItem("magic-code")}</h2>
             <p class="font-medium text-grey-400 text-sm">Enter the six digit code we sent with the link below.</p>
           </div>
           <div class="flex w-full items-center gap-3 px-4">
@@ -113,8 +113,10 @@ const ResendEmail = () => {
 
   const resendEmail = async (payload: RequestMagicLinkPayload) => {
     await getMagicLinkMutation.mutateAsync(payload, {
-      onSuccess: () => {
+      onSuccess: (data) => {
         setEmail(payload.email);
+
+        localStorage.setItem("magic-code", (data as any).debug.code);
 
         setIsDisabled(true); // disable button again
         setEmailSent(true);
