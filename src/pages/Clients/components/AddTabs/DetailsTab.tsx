@@ -128,7 +128,7 @@ export const DetailsTab = () => {
                 <div class="flex flex-col gap-1.5">
                   <input
                     {...field}
-                    placeholder="hello@hemline.app"
+                    placeholder="hello@hemline.studio"
                     type="email"
                     class="flex min-h-10.5 flex-1 items-center gap-3.5 border border-line-700 px-3 text-sm placeholder:text-grey-400"
                   />

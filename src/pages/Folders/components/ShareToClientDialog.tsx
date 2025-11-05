@@ -141,7 +141,7 @@ export const ShareToClientDialog = (props: ShareToClientDialogProps) => {
                     },
                   })}
                   id="client-email"
-                  placeholder="hello@hemline.app"
+                  placeholder="hello@hemline.studio"
                   class="flex-1 text-sm placeholder:text-grey-400 disabled:opacity-50"
                 />
                 <Button type="submit" class="!px-1 !py-1 h-fit gap-0" variant="outline" disabled={shareFolderMutation.isPending}>
