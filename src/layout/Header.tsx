@@ -1,11 +1,11 @@
-import { signal } from "@preact/signals";
 import { Icon } from "@iconify/react";
+import { signal } from "@preact/signals";
 
 import { useGetUserProfile, useLogout } from "@/api/http/v1/users/users.hooks";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useImageCache } from "@/hooks/useImageCache";
-import { cn } from "@/lib/utils";
+import { cn, getInitials } from "@/lib/utils";
 
 // Signal for header content that can be accessed anywhere
 interface headerContentSignalType {
@@ -48,7 +48,7 @@ export const Header = () => {
         <Popover>
           <PopoverTrigger asChild>
             <li class="relative size-9 overflow-hidden rounded-full">
-              {getUserProfile.data?.data.user.business_image && (
+              {getUserProfile.data?.data.user.business_image ? (
                 <>
                   {loading && <Skeleton class="absolute inset-0 size-9 h-full w-full rounded-full" />}
 
@@ -59,6 +59,10 @@ export const Header = () => {
                     crossOrigin="anonymous"
                   />
                 </>
+              ) : (
+                <div class="size-9 rounded-full bg-primary text-2xl text-white">
+                  {getUserProfile.data?.data.user && getInitials(getUserProfile.data?.data.user.business_name ?? getUserProfile.data?.data.user.full_name)}
+                </div>
               )}
             </li>
           </PopoverTrigger>
