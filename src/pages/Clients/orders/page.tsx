@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useDebounce } from "@/hooks/useDebounce";
 import { headerContentSignal, selectingSignal } from "@/layout/Header";
 import { cn } from "@/lib/utils";
+import { useLocation } from "preact-iso";
 import { DeleteOrders, deleteOrdersSignal } from "./components/DeleteOrders";
 import { exportOrdersToCSV, OrdersActionBar } from "./components/OrdersActionBar";
 
@@ -193,7 +194,7 @@ const OrdersList = (props: { orders: OrderAttributes[]; hasNextPage: boolean; is
   );
 };
 
-const OrdersSkeleton = () => {
+export const OrdersSkeleton = () => {
   return (
     <div class="relative flex flex-col gap-3.5 border border-line-700 p-3">
       <div class="flex items-center justify-between border-line-700 border-b pb-3">
@@ -217,17 +218,7 @@ const OrdersListItem = (props: { order: OrderAttributes; allOrders: OrderAttribu
   const [isChecked, setIsChecked] = useState(props.order.is_done);
   const markAsDoneMutation = useMarkOrderAsDone();
   const markAsPendingMutation = useMarkOrderAsPending();
-
-  // Format the date in the requested format: "Tue, Oct 7 2025"
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat("en-US", {
-      weekday: "short",
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    }).format(date);
-  };
+  const location = useLocation();
 
   const handleCheckboxChange = async (e: Event) => {
     const target = e.target as HTMLInputElement;
@@ -262,6 +253,10 @@ const OrdersListItem = (props: { order: OrderAttributes; allOrders: OrderAttribu
     deleteOrdersSignal.value.setIsOpen(true);
   };
 
+  const handleEdit = () => {
+    location.route(`/clients/${props.order.client_id}?tab=orders`, true);
+  };
+
   const handleExportSingleOrder = () => {
     exportOrdersToCSV(props.allOrders, [props.order.id]);
   };
@@ -288,7 +283,7 @@ const OrdersListItem = (props: { order: OrderAttributes; allOrders: OrderAttribu
             </PopoverTrigger>
             <PopoverContent className="flex w-40 flex-col items-stretch rounded-sm border-line-400 bg-white/70 drop-shadow-[0.6px_0.8px_9px_rgba(0,0,0,0,95)] backdrop-blur-lg">
               <ul class="flex flex-col gap-3">
-                <button type="button" class="flex cursor-pointer items-center justify-between gap-2 hover:bg-secondary">
+                <button type="button" class="flex cursor-pointer items-center justify-between gap-2 hover:bg-secondary" onClick={handleEdit}>
                   <p class="font-medium text-sm">Edit</p>
                   <div class="min-w-5 p-1">
                     <Icon icon="iconoir:edit" className="h-4 w-4 text-black" />
@@ -317,10 +312,10 @@ const OrdersListItem = (props: { order: OrderAttributes; allOrders: OrderAttribu
             {props.order.item} x{props.order.quantity}
           </p>
         </div>
-        <li class="text-grey text-sm">Added: {formatDate(props.order.created_at)}</li>
+        <li class="text-grey text-sm">Added: {formatDateForOrderDueDate(props.order.created_at)}</li>
         {props.order.due_date && (
           <li class={cn("text-sm", props.order.overdue ? "text-destructive" : "text-grey")}>
-            Due: {formatDate(props.order.due_date)} {props.order.overdue && "(Overdue)"}
+            Due: {formatDateForOrderDueDate(props.order.due_date)} {props.order.overdue && "(Overdue)"}
           </li>
         )}
         {props.order.notes && <li class="text-grey text-sm">Notes: {props.order.notes}</li>}
@@ -345,7 +340,7 @@ const OrdersListItem = (props: { order: OrderAttributes; allOrders: OrderAttribu
   );
 };
 
-const handleSelectOrderChange = (e: Event, order_id: string) => {
+export const handleSelectOrderChange = (e: Event, order_id: string) => {
   const target = e.target as HTMLInputElement;
   const currentSelected = deleteOrdersSignal.value.orderIds;
 
@@ -362,4 +357,16 @@ const handleSelectOrderChange = (e: Event, order_id: string) => {
       orderIds: currentSelected.filter((id) => id !== order_id),
     };
   }
+};
+
+// Format the date in the requested format: "Tue, Oct 7 2025"
+export const formatDateForOrderDueDate = (dateString?: string) => {
+  if (!dateString) return "Select Date";
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(date);
 };

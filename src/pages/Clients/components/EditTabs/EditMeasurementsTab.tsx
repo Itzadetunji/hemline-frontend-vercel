@@ -1,4 +1,3 @@
-import { signal } from "@preact/signals";
 import { useRoute } from "preact-iso";
 import { Controller, useFormContext } from "react-hook-form";
 
@@ -10,23 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { EditingClientSignal } from "../../view-client";
-import { MeasurementDrawer, type MeasurementDrawerSignalTypes, MeasurementItem } from "../AddTabs/MeasurementsTab";
-
-const EditMeasurementDrawerSignal = signal<MeasurementDrawerSignalTypes>({
-  isOpen: false,
-  setIsOpen: (isOpen) => {
-    EditMeasurementDrawerSignal.value = {
-      ...EditMeasurementDrawerSignal.value,
-      isOpen,
-    };
-  },
-  setMeasurement: (measurement) => {
-    EditMeasurementDrawerSignal.value = {
-      ...EditMeasurementDrawerSignal.value,
-      measurement,
-    };
-  },
-});
+import { MeasurementDrawer, MeasurementItem } from "../AddTabs/MeasurementsTab";
 
 export const EditMeasurementsTab = () => {
   const { params } = useRoute();
@@ -80,7 +63,7 @@ export const EditMeasurementsTab = () => {
                     placeholder="Select measurement unit"
                     icon={null}
                     maxItems={1}
-                    disabled={!EditingClientSignal.value.isEditing}
+                    disabled={formMethods.formState.isSubmitting}
                   />
                   {formMethods.formState.errors.client?.measurement_unit && <p class="text-red-500 text-xs">{formMethods.formState.errors.client.measurement_unit.message}</p>}
                 </div>
@@ -126,25 +109,16 @@ export const EditMeasurementsTab = () => {
               </AccordionItem>
             ) as any)}
         </Accordion>
-        {EditingClientSignal.value.isEditing ? (
+
+        {!formMethods.formState.isSubmitSuccessful && formMethods.formState.isDirty && (
           <ul class="flex items-center gap-4">
-            <Button class="mt-7 h-9.5 flex-1" type="button" onClick={onCancel}>
+            <Button class="mt-7 h-9.5 flex-1" type="button" onClick={onCancel} disabled={formMethods.formState.isSubmitting}>
               Cancel
             </Button>
-            <Button class="mt-7 h-9.5 flex-1" type="submit" disabled={!formMethods.formState.isDirty}>
+            <Button class="mt-7 h-9.5 flex-1" type="submit" disabled={!formMethods.formState.isDirty || formMethods.formState.isSubmitting}>
               Save
             </Button>
           </ul>
-        ) : (
-          <Button
-            class="mt-7 h-9.5"
-            type="button"
-            onClick={() => {
-              EditingClientSignal.value.setIsEditing(true);
-            }}
-          >
-            Edit
-          </Button>
         )}
       </div>
 

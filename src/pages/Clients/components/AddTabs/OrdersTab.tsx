@@ -12,7 +12,7 @@ export const OrdersTab = () => {
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "orders",
+    name: "client.orders",
   });
 
   const handleAddItem = () => {
@@ -20,6 +20,16 @@ export const OrdersTab = () => {
       item: "",
       quantity: 1,
       notes: "",
+    });
+  };
+
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return "Select date";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
     });
   };
 
@@ -46,7 +56,7 @@ export const OrdersTab = () => {
                     </Button>
                   </div>
                   <Controller
-                    name={`orders.${index}.item`}
+                    name={`client.orders.${index}.item`}
                     control={control}
                     render={({ field: itemField }) =>
                       (
@@ -56,7 +66,7 @@ export const OrdersTab = () => {
                             placeholder="blue senator"
                             class="flex min-h-10.5 flex-1 items-center gap-3.5 border border-line-700 px-3 text-sm placeholder:text-grey-400"
                           />
-                          {errors.orders?.[index]?.item && <p class="text-red-500 text-xs">{errors.orders[index]?.item?.message}</p>}
+                          {errors.client?.orders?.[index]?.item && <p class="text-red-500 text-xs">{errors.client.orders[index]?.item?.message}</p>}
                         </div>
                       ) as any
                     }
@@ -67,7 +77,7 @@ export const OrdersTab = () => {
                 <Label class="flex w-fit border border-line-700">
                   <p class="border-line-700 border-r py-1.5 pr-2.5 pl-1">Quantity</p>
                   <Controller
-                    name={`orders.${index}.quantity`}
+                    name={`client.orders.${index}.quantity`}
                     control={control}
                     render={({ field: quantityField }) =>
                       (
@@ -105,7 +115,7 @@ export const OrdersTab = () => {
                 <Label class="flex flex-col items-stretch gap-4">
                   <p class="font-medium text-sm leading-0">My Notes</p>
                   <Controller
-                    name={`orders.${index}.notes`}
+                    name={`client.orders.${index}.notes`}
                     control={control}
                     render={({ field: notesField }) =>
                       (
@@ -115,10 +125,39 @@ export const OrdersTab = () => {
                             placeholder="The client want it to be fitted and the trousers should be very long and fitted"
                             class="flex min-h-20 flex-1 items-center gap-3.5 border border-line-700 px-3 py-3 text-sm placeholder:text-grey-400"
                           />
-                          {errors.orders?.[index]?.notes && <p class="text-red-500 text-xs">{errors.orders[index]?.notes?.message}</p>}
+                          {errors.client?.orders?.[index]?.notes && <p class="text-red-500 text-xs">{errors.client.orders[index]?.notes?.message}</p>}
                         </div>
                       ) as any
                     }
+                  />
+                </Label>
+
+                {/* Due Date */}
+                <Label class="flex flex-col items-stretch gap-4">
+                  <p class="font-medium text-sm leading-0">Due Date</p>
+                  <Controller
+                    name={`client.orders.${index}.due_date`}
+                    control={control}
+                    render={({ field }) => {
+                      return (
+                        <div class="flex flex-col gap-1.5">
+                          <div class="relative">
+                            <button
+                              type="button"
+                              class="flex min-h-10.5 w-full items-center gap-3.5 border border-line-700 px-3 text-left text-sm placeholder:text-grey-400"
+                              onClick={(e) => {
+                                const input = e.currentTarget.nextElementSibling as HTMLInputElement;
+                                input?.showPicker();
+                              }}
+                            >
+                              {formatDate(field.value)}
+                            </button>
+                            <input {...field} type="date" class="pointer-events-none absolute inset-0 opacity-0" />
+                          </div>
+                          {errors.client?.orders?.[index]?.due_date && <p class="text-red-500 text-xs">{errors.client.orders[index]?.due_date?.message}</p>}
+                        </div>
+                      ) as any;
+                    }}
                   />
                 </Label>
               </li>

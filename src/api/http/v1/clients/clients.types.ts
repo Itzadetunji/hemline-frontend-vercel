@@ -173,10 +173,10 @@ export const CreateClientSchema = z.object({
 		slit_height: z.string().optional(),
 		bust_apex_to_waist: z.string().optional(),
 		custom_fields: z.record(z.string(), z.string().optional()).optional(),
+		orders: z
+			.array(OrderSchema.omit({ client_id: true, is_done: true }))
+			.optional(),
 	}),
-	orders: z
-		.array(OrderSchema.omit({ client_id: true, is_done: true }))
-		.optional(),
 });
 
 export type CreateClientPayload = z.infer<typeof CreateClientSchema>;

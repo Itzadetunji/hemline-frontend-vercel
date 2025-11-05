@@ -4,14 +4,16 @@ import { useGetUserProfile } from "@/api/http/v1/users/users.hooks";
 import { headerContentSignal, selectingSignal } from "@/layout/Header";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Icon } from "@iconify/react";
-import { useLocation, useRoute } from "preact-iso";
+import { signal } from "@preact/signals";
+import { useRoute } from "preact-iso";
 import { useLayoutEffect, useState } from "preact/hooks";
 import { FormProvider, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { AddClientsTabs, type AddClientsTab } from "./components/AddTabs/AddClientsTabs";
 import { EditDetailsTab } from "./components/EditTabs/EditDetailsTab";
 import { EditMeasurementsTab } from "./components/EditTabs/EditMeasurementsTab";
-import toast from "react-hot-toast";
-import { signal } from "@preact/signals";
+import { EditOrdersTab } from "./components/EditTabs/EditOrdersTab";
+import { useInfiniteGetOrders } from "@/api/http/v1/orders/orders.hooks";
 
 interface EditingClientSignalProps {
   isEditing: boolean;
@@ -30,12 +32,14 @@ export const EditingClientSignal = signal<EditingClientSignalProps>({
 
 export const ViewClient = () => {
   const [activeTab, setActiveTab] = useState<AddClientsTab>("details");
-  const { params } = useRoute();
+
+  const { params, query } = useRoute();
 
   const getUserProfile = useGetUserProfile();
   const updateClientMutation = useUpdateClient();
 
   const getClientQuery = useGetClient(params.client_id as string);
+  useInfiniteGetOrders({ client_id: params.client_id });
 
   const formMethods = useForm<UpdateClientPayload>({
     resolver: zodResolver(UpdateClientSchema) as any,
@@ -97,11 +101,11 @@ export const ViewClient = () => {
       ...headerContentSignal.value,
       showHeader: true,
       title: () => (
-        <div class="-ml-2 flex items-center" onClick={() => console.log(formMethods.getValues())}>
+        <div class="-ml-2 flex items-center">
           <a href="/clients" class="size-6">
             <Icon icon="fluent:chevron-left-24-regular" fontSize={24} />
-          </a>{" "}
-          <h1 class="text-3xl text-black">{getClientQuery.data?.data.data.attributes.first_name}</h1>{" "}
+          </a>
+          <h1 class="text-3xl text-black">{getClientQuery.data?.data.data.attributes.first_name}</h1>
         </div>
       ),
       tab: "clients",
@@ -121,35 +125,36 @@ export const ViewClient = () => {
         </>
       ),
     };
+
+    if (query.tab) setActiveTab(query.tab as AddClientsTab);
   }, []);
 
   useLayoutEffect(() => {
-    if (getClientQuery.data) {
-      formMethods.reset({
-        client: {
-          ...(getClientQuery.data.data.data.attributes as UpdateClientPayload["client"]),
-          custom_fields:
-            getClientQuery.data?.data.data.attributes.custom_fields?.reduce(
-              (acc, field) => {
-                acc[field.key] = field.value;
-                return acc;
-              },
-              {} as Record<string, string>
-            ) || {},
-        },
-      });
-      headerContentSignal.value = {
-        ...headerContentSignal.value,
-        title: () => (
-          <div class="-ml-2 flex items-center" onClick={() => console.log(formMethods.getValues(), formMethods.formState.errors)}>
-            <a href="/clients" class="size-6">
-              <Icon icon="fluent:chevron-left-24-regular" fontSize={24} />
-            </a>{" "}
-            <h1 class="text-3xl text-black">{getClientQuery.data?.data.data.attributes.first_name}</h1>{" "}
-          </div>
-        ),
-      };
-    }
+    if (!getClientQuery.data) return;
+    formMethods.reset({
+      client: {
+        ...(getClientQuery.data.data.data.attributes as UpdateClientPayload["client"]),
+        custom_fields:
+          getClientQuery.data?.data.data.attributes.custom_fields?.reduce(
+            (acc, field) => {
+              acc[field.id] = field.value;
+              return acc;
+            },
+            {} as Record<string, string>
+          ) || {},
+      },
+    });
+    headerContentSignal.value = {
+      ...headerContentSignal.value,
+      title: () => (
+        <div class="-ml-2 flex items-center">
+          <a href="/clients" class="size-6">
+            <Icon icon="fluent:chevron-left-24-regular" fontSize={24} />
+          </a>{" "}
+          <h1 class="text-3xl text-black">{getClientQuery.data?.data.data.attributes.first_name}</h1>{" "}
+        </div>
+      ),
+    };
   }, [getClientQuery.data]);
 
   return (
@@ -166,6 +171,7 @@ export const ViewClient = () => {
             ) : (
               <>
                 {activeTab === "details" && <EditDetailsTab />}
+                {activeTab === "orders" && <EditOrdersTab />}
                 {activeTab === "measurements" && <EditMeasurementsTab />}
               </>
             )}

@@ -1,12 +1,12 @@
+import { useRoute } from "preact-iso";
+import { Controller, useFormContext } from "react-hook-form";
+
 import { useGetClient } from "@/api/http/v1/clients/clients.hooks";
-import type { CreateClientPayload, UpdateClientPayload } from "@/api/http/v1/clients/clients.types";
+import type { UpdateClientPayload } from "@/api/http/v1/clients/clients.types";
 import { Gender, MeasurementUnit } from "@/api/http/v1/clients/clients.types";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
-import { useRoute } from "preact-iso";
-import { useState } from "preact/hooks";
-import { Controller, useFormContext } from "react-hook-form";
 import { EditingClientSignal } from "../../view-client";
 
 export const EditDetailsTab = () => {
@@ -145,7 +145,7 @@ export const EditDetailsTab = () => {
                 <div class="flex flex-col gap-1.5">
                   <input
                     {...field}
-                    placeholder="+234 123 456 7890"
+                    value={field.value ?? ""}
                     class="flex min-h-10.5 flex-1 items-center gap-3.5 border border-line-700 px-3 text-sm placeholder:text-grey-400 disabled:cursor-not-allowed disabled:opacity-50"
                     disabled={!EditingClientSignal.value.isEditing}
                   />
@@ -165,7 +165,7 @@ export const EditDetailsTab = () => {
                 <div class="flex flex-col gap-1.5">
                   <input
                     {...field}
-                    placeholder="hello@hemline.app"
+                    value={field.value ?? ""}
                     type="email"
                     class="flex min-h-10.5 flex-1 items-center gap-3.5 border border-line-700 px-3 text-sm placeholder:text-grey-400 disabled:cursor-not-allowed disabled:opacity-50"
                     disabled={!EditingClientSignal.value.isEditing}

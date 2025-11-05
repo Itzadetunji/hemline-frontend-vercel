@@ -1,14 +1,13 @@
+import { Measurements, MeasurementUnit, type CreateClientPayload, type GenderType, type MeasurementFieldType } from "@/api/http/v1/clients/clients.types";
 import { useGetUserProfile } from "@/api/http/v1/users/users.hooks";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Drawer } from "@/components/ui/drawer";
-import { Icon } from "@iconify/react";
-import { signal } from "@preact/signals";
-import { useFormContext, Controller } from "react-hook-form";
-import { type MeasurementFieldType, Measurements, MeasurementUnit, type CreateClientPayload, type GenderType } from "@/api/http/v1/clients/clients.types";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
-import { EditingClientSignal } from "../../view-client";
+import { Icon } from "@iconify/react";
+import { signal } from "@preact/signals";
+import { Controller, useFormContext } from "react-hook-form";
 
 export interface MeasurementSignalType {
   id: string;
@@ -167,7 +166,6 @@ export const MeasurementItem = (props: { fields: MeasurementFieldType[]; is_uppe
                       measurementDrawerSignal.value.setIsOpen(true);
                     }}
                     class="flex items-center justify-between gap-1 border-b border-b-line py-2 disabled:cursor-not-allowed"
-                    disabled={!EditingClientSignal.value.isEditing}
                   >
                     <p class="font-medium text-base capitalize">{field.title}</p>
 

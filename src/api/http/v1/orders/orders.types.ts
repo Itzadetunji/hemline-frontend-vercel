@@ -136,4 +136,5 @@ export interface GetAllOrdersParams {
 	search?: string;
 	sort_by?: "a-z" | "z-a" | "last_updated" | "due_date_asc" | "due_date_desc";
 	status?: "pending" | "completed" | "overdue" | "upcoming";
+	client_id?: string;
 }

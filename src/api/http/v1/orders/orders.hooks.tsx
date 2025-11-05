@@ -33,10 +33,10 @@ export const useGetOrders = (clientId: string, params?: GetAllOrdersParams & { e
   });
 };
 
-export const useInfiniteGetOrders = (params?: GetAllOrdersParams & { enabled: boolean }) => {
+export const useInfiniteGetOrders = (params?: GetAllOrdersParams & { enabled?: boolean }) => {
   return useInfiniteQuery<ListOrdersResponse, AxiosError>({
     queryKey: [...ordersQueryKeys.lists(), params],
-    queryFn: ({ pageParam = 1 }) => ORDERS_API.GET_ALL({ ...params, page: pageParam as number, per_page: params?.per_page }),
+    queryFn: ({ pageParam = 1 }) => ORDERS_API.GET_ALL({ ...params, page: pageParam as number, per_page: 10 }),
     getNextPageParam: (lastPage) => {
       const currentPage = lastPage.data.pagination.current_page;
       const totalPages = lastPage.data.pagination.total_pages;
@@ -77,10 +77,10 @@ export const useCreateOrder = () => {
 export const useUpdateOrder = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<UpdateOrderResponse, AxiosError<{ error: string }>, { clientId: string; orderId: string; payload: UpdateOrderPayload }>({
-    mutationFn: ({ clientId, orderId, payload }) => ORDERS_API.UPDATE(clientId, orderId, payload),
+  return useMutation<UpdateOrderResponse, AxiosError<{ error: string }>, { orderId: string; payload: UpdateOrderPayload }>({
+    mutationFn: ({ orderId, payload }) => ORDERS_API.UPDATE(orderId, payload),
     onSuccess: (data, variables) => {
-      toast.success("Order updated successfully!");
+      // toast.success("Order updated successfully!");
 
       // Update the specific order detail in cache
       queryClient.setQueryData<GetOrderResponse>(ordersQueryKeys.detail(variables.orderId), (oldData) => {
@@ -103,7 +103,7 @@ export const useUpdateOrder = () => {
     },
     onError: (error) => {
       console.error("Error updating order:", error);
-      toast.error("Failed to update order");
+      // toast.error("Failed to update order");
     },
   });
 };

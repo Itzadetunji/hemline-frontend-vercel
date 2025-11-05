@@ -20,7 +20,7 @@ export const AddClients = () => {
   const createClientMutation = useCreateClient();
 
   const formMethods = useForm<CreateClientPayload>({
-    resolver: zodResolver(CreateClientSchema) as any,
+    resolver: zodResolver(CreateClientSchema),
     defaultValues: {
       client: {
         first_name: "",
@@ -30,8 +30,8 @@ export const AddClients = () => {
         phone_number: "",
         email: "",
         custom_fields: {},
+        orders: [],
       },
-      orders: [],
     },
     mode: "onChange",
   });
@@ -72,7 +72,7 @@ export const AddClients = () => {
       ...headerContentSignal.value,
       showHeader: true,
       title: () => (
-        <div class="-ml-2 flex items-center" onClick={() => console.log(formMethods.getValues())}>
+        <div class="-ml-2 flex items-center">
           <a href="/clients" class="size-6">
             <Icon icon="fluent:chevron-left-24-regular" fontSize={24} />
           </a>{" "}

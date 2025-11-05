@@ -2,6 +2,7 @@ import { forwardRef, type Ref } from "preact/compat";
 import { useEffect, useRef } from "preact/hooks";
 
 import { cn } from "@/lib/utils";
+import { useLocation, useRoute } from "preact-iso";
 
 export const ClientTabs = ["details", "orders", "measurements"] as const;
 export type AddClientsTab = (typeof ClientTabs)[number];
@@ -46,15 +47,28 @@ export const AddClientsTabs = (props: { activeTab: AddClientsTab; setActiveTab: 
   );
 };
 
-export const ClientsTab = forwardRef(({ tab, activeTab, setActiveTab }: AddClientsTabProps, ref: Ref<HTMLButtonElement>) => (
-  <button
-    ref={ref}
-    type="button"
-    class={cn("flex items-center gap-2 border-transparent border-b-2 px-2 py-2.5 text-grey-500 capitalize transition-colors", {
-      "text-black": activeTab === tab,
-    })}
-    onClick={() => setActiveTab(tab)}
-  >
-    <p class="leading-1">{tab.split("_").join(" ")}</p>
-  </button>
-));
+export const ClientsTab = forwardRef(({ tab, activeTab, setActiveTab }: AddClientsTabProps, ref: Ref<HTMLButtonElement>) => {
+  const location = useLocation();
+  const { params } = useRoute();
+
+  const changeRoute = () => {
+    setActiveTab(tab);
+
+    if (location.path !== "/clients/add") {
+      location.route(`/clients/${params.client_id}?tab=${tab}`, true);
+    }
+  };
+
+  return (
+    <button
+      ref={ref}
+      type="button"
+      class={cn("flex items-center gap-2 border-transparent border-b-2 px-2 py-2.5 text-grey-500 capitalize transition-colors", {
+        "text-black": activeTab === tab,
+      })}
+      onClick={changeRoute}
+    >
+      <p class="leading-1">{tab.split("_").join(" ")}</p>
+    </button>
+  );
+});

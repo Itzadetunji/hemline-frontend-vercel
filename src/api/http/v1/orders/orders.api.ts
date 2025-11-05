@@ -17,8 +17,7 @@ const ORDERS_ENDPOINTS = {
 	create: (clientId: string) => `/clients/${clientId}/orders`,
 	createGeneral: "/orders",
 	show: (clientId: string, orderId: string) => `/${clientId}/orders/${orderId}`,
-	update: (clientId: string, orderId: string) =>
-		`/${clientId}/orders/${orderId}`,
+	update: (orderId: string) => `/orders/${orderId}`,
 	delete: (orderId: string) => `/orders/${orderId}`,
 	bulkDelete: "/orders/bulk_delete",
 	markAsDone: (orderId: string) => `/orders/${orderId}/mark_done`,
@@ -50,12 +49,11 @@ export const ORDERS_API = {
 			.then((res) => res.data),
 
 	UPDATE: async (
-		clientId: string,
 		orderId: string,
 		data: UpdateOrderPayload
 	): Promise<UpdateOrderResponse> =>
 		await $http
-			.patch(ORDERS_ENDPOINTS.update(clientId, orderId), data)
+			.patch(ORDERS_ENDPOINTS.update(orderId), data)
 			.then((res) => res.data),
 
 	DELETE: async (orderId: string): Promise<DeleteOrderResponse> =>
