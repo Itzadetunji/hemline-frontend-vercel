@@ -43,6 +43,8 @@ export const SignIn = () => {
         <img src="/assets/brand/logo.svg" class="size-9" alt="Brand Logo" />
         <div class="flex flex-col gap-6">
           <h1 class="text-5xl leading-10.5">Welcome back</h1>
+          <h1 class="text-5xl leading-10.5">{import.meta.env.VITE_API_BASE_URL}</h1>
+          <h1 class="text-5xl leading-10.5">{import.meta.env.VITE_CLIENT_URL}Welcome back</h1>
           <p class="text-grey-400 text-sm">Sign in to see your saved works and measurements.</p>
         </div>
       </div>
