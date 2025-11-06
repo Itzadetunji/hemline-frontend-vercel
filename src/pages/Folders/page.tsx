@@ -92,11 +92,15 @@ export const Folders = () => {
     <div class="flex flex-1 flex-col gap-10 px-4 pb-8">
       <ul class="flex items-center justify-between gap-4">
         <Button class="!p-0 flex w-fit items-center gap-2" variant="ghost" onClick={() => setStep(1)}>
-          <Icon icon="material-symbols-light:help-outline-rounded" className="text-black" fontSize={16} />
+          <span class="size-4">
+            <Icon icon="material-symbols-light:help-outline-rounded" className="text-black" fontSize={16} />
+          </span>
           <p class="font-medium text-sm">What is a folder?</p>
         </Button>
         <Button class="!p-0 flex w-fit items-center gap-2" variant="ghost" onClick={() => setShowSelectFolder(true)}>
-          <Icon icon="si:add-duotone" className="size-4" />
+          <span class="size-4">
+            <Icon icon="si:add-duotone" className="size-4" />
+          </span>
           <p class="text-sm">Create New Folder</p>
         </Button>
       </ul>

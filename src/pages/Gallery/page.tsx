@@ -118,11 +118,15 @@ export const Gallery = () => {
     <div class="flex flex-1 flex-col pb-8">
       <ul class="flex items-center justify-between gap-4 px-4">
         <Button class="!p-0 flex w-fit items-center gap-2" variant="ghost">
-          <Icon icon="streamline-ultimate:layout" className="text-black" />
+          <span class="size-4">
+            <Icon icon="streamline-ultimate:layout" className="text-black" />
+          </span>
           <p class="font-medium text-sm">Change Layout</p>
         </Button>
         <Button class="!p-0 flex w-fit items-center gap-2" variant="ghost" onClick={() => uploadImagesRef.current?.triggerUpload()}>
-          <Icon icon="si:add-duotone" className="size-4" />
+          <span class="size-4">
+            <Icon icon="si:add-duotone" className="size-4" />
+          </span>
           <p class="font-medium text-sm">Upload</p>
         </Button>
       </ul>
