@@ -1,18 +1,19 @@
-import { type Dispatch, type StateUpdater, useLayoutEffect, useState } from "preact/hooks";
-
-import { headerContentSignal, selectingSignal } from "@/layout/Header";
 import { Icon } from "@iconify/react";
-import { Button } from "@/components/ui/button";
-import { userSignal } from "@/stores/userStore";
+import { useLocation } from "preact-iso";
+import { type Dispatch, type StateUpdater, useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
+
+import { useInfiniteGetFolders } from "@/api/http/v1/gallery/folders/folders.hooks";
 import type { Folder } from "@/api/http/v1/gallery/folders/folders.types";
-import { useGetFolders } from "@/api/http/v1/gallery/folders/folders.hooks";
 import { useGetUserProfile } from "@/api/http/v1/users/users.hooks";
+import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Skeleton } from "@/components/ui/skeleton";
+import { headerContentSignal, selectingSignal } from "@/layout/Header";
+import { cn } from "@/lib/utils";
+import { userSignal } from "@/stores/userStore";
 import { DeleteFolderDialog } from "./components/DeleteFolderDialog";
 import { EditFolderDialog } from "./components/EditFolderDialog";
 import { SelectFolderType } from "./components/SelectFolderType";
-import { cn } from "@/lib/utils";
-import { useLocation } from "preact-iso";
 import { ShareToClientDialog } from "./components/ShareToClientDialog";
 
 export const Folders = () => {
@@ -23,7 +24,10 @@ export const Folders = () => {
   const [shareClientDialog, showShareClientDialog] = useState(false);
   const [selectedFolder, setSelectedFolder] = useState<Folder | null>(null);
   const getUserProfile = useGetUserProfile();
-  const getFoldersQuery = useGetFolders();
+  const { data, isLoading, isFetchingNextPage, isFetching, hasNextPage, fetchNextPage } = useInfiniteGetFolders(20);
+
+  // Flatten all pages into a single array of folders
+  const allFolders = data?.pages.flatMap((page) => page.data) ?? [];
 
   useLayoutEffect(() => {
     selectingSignal.value = {
@@ -66,9 +70,9 @@ export const Folders = () => {
           )} */}
           {!selectingSignal.value.isSelecting && (
             <>
-              <button class="min-h-5 min-w-5 p-1" type="button" onClick={() => setShowSelectFolder(true)}>
+              {/* <button class="min-h-5 min-w-5 p-1" type="button" onClick={() => setShowSelectFolder(true)}>
                 <Icon icon="iconoir:upload" className="h-4 w-4 text-black" />
-              </button>
+              </button> */}
               <a href="/gallery">
                 <li class="relative min-h-5 min-w-5 p-1">
                   <Icon icon="bi:folder" className="h-4 w-4 text-black" />
@@ -86,12 +90,18 @@ export const Folders = () => {
 
   return (
     <div class="flex flex-1 flex-col gap-10 px-4 pb-8">
-      <button class="flex items-center gap-2" type="button" onClick={() => setStep(1)}>
-        <Icon icon="material-symbols-light:help-outline-rounded" className="text-black" fontSize={16} />
-        <p class="font-medium text-sm">What is a folder?</p>
-      </button>
-      {userSignal.value?.user?.total_folders === 0 && <NoFolders step={step} setStep={setStep} setShowSelectFolder={setShowSelectFolder} />}
-      {Boolean(userSignal.value?.user?.total_folders) && (
+      <ul class="flex items-center justify-between gap-4">
+        <Button class="!p-0 flex w-fit items-center gap-2" variant="ghost" onClick={() => setStep(1)}>
+          <Icon icon="material-symbols-light:help-outline-rounded" className="text-black" fontSize={16} />
+          <p class="font-medium text-sm">What is a folder?</p>
+        </Button>
+        <Button class="!p-0 flex w-fit items-center gap-2" variant="ghost" onClick={() => setShowSelectFolder(true)}>
+          <Icon icon="si:add-duotone" className="size-4" />
+          <p class="text-sm">Create New Folder</p>
+        </Button>
+      </ul>
+      {!isLoading && allFolders.length === 0 && <NoFolders step={step} setStep={setStep} setShowSelectFolder={setShowSelectFolder} />}
+      {!isLoading && allFolders.length > 0 && (
         <AllFolders
           step={step}
           setStep={setStep}
@@ -99,8 +109,15 @@ export const Folders = () => {
           setShowRenameDialog={setShowRenameDialog}
           setSelectedFolder={setSelectedFolder}
           showShareClientDialog={showShareClientDialog}
+          allFolders={allFolders}
+          hasNextPage={hasNextPage}
+          isFetchingNextPage={isFetchingNextPage}
+          fetchNextPage={fetchNextPage}
+          isFetching={isFetching}
         />
       )}
+
+      {isFetching && !isFetchingNextPage && <FoldersSkeleton />}
 
       {/* Delete Dialog */}
       {showDeleteDialog && <DeleteFolderDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog} selectedFolder={selectedFolder} />}
@@ -109,15 +126,14 @@ export const Folders = () => {
       {showRenameDialog && selectedFolder && <EditFolderDialog open={showRenameDialog} onOpenChange={setShowRenameDialog} folder={selectedFolder} />}
 
       {/* Select Folder Type Dialog */}
-      {showRenameDialog && selectedFolder && (
-        <SelectFolderType
-          isOpen={showSelectFolder}
-          onClose={() => {
-            setShowSelectFolder(false);
-            getFoldersQuery.refetch();
-          }}
-        />
-      )}
+
+      <SelectFolderType
+        isOpen={showSelectFolder}
+        onClose={() => {
+          setShowSelectFolder(false);
+        }}
+      />
+
       {shareClientDialog && selectedFolder && <ShareToClientDialog folder={selectedFolder} open={shareClientDialog} onOpenChange={showShareClientDialog} />}
     </div>
   );
@@ -131,6 +147,11 @@ interface Mainprops {
   setSelectedFolder?: Dispatch<StateUpdater<Folder | null>>;
   setShowSelectFolder?: Dispatch<StateUpdater<boolean>>;
   showShareClientDialog?: Dispatch<StateUpdater<boolean>>;
+  allFolders?: Folder[];
+  hasNextPage?: boolean;
+  isFetchingNextPage?: boolean;
+  fetchNextPage?: () => void;
+  isFetching?: boolean;
 }
 
 const NoFolders = (props: Mainprops) => {
@@ -200,26 +221,81 @@ const FOLDER_BENEFITS = [
   },
 ];
 
-interface FolderCardProps {
-  folder: Folder;
+const AllFolders = (props: Mainprops) => {
+  if (props.step === 1) return <FoldersStep1 step={props.step} setStep={props.setStep} />;
+
+  if (props.step === 2)
+    return (
+      <>
+        {selectingSignal.value.isSelecting && <DeleteManyBar setSelectedFolder={props.setSelectedFolder} setShowDeleteDialog={props.setShowDeleteDialog} />}
+        <FoldersList
+          folders={props.allFolders || []}
+          hasNextPage={props.hasNextPage || false}
+          isFetchingNextPage={props.isFetchingNextPage || false}
+          fetchNextPage={
+            props.fetchNextPage ||
+            (() => {
+              /* no-op */
+            })
+          }
+          isFetching={props.isFetching || false}
+          setShowDeleteDialog={props.setShowDeleteDialog}
+          setShowRenameDialog={props.setShowRenameDialog}
+          setSelectedFolder={props.setSelectedFolder}
+          showShareClientDialog={props.showShareClientDialog}
+        />
+      </>
+    );
+};
+
+interface FoldersListProps {
+  folders: Folder[];
+  hasNextPage: boolean;
+  isFetchingNextPage: boolean;
+  isFetching: boolean;
+  fetchNextPage: () => void;
   setShowDeleteDialog?: Dispatch<StateUpdater<boolean>>;
   setShowRenameDialog?: Dispatch<StateUpdater<boolean>>;
   setSelectedFolder?: Dispatch<StateUpdater<Folder | null>>;
   showShareClientDialog?: Dispatch<StateUpdater<boolean>>;
 }
 
-const AllFolders = (props: Mainprops) => {
-  const getFoldersQuery = useGetFolders();
-  if (props.step === 1) return <FoldersStep1 step={props.step} setStep={props.setStep} />;
+const FoldersList = (props: FoldersListProps) => {
+  const observerTarget = useRef<HTMLButtonElement>(null);
 
-  if (props.step === 2)
-    return (
-      getFoldersQuery.data &&
-      getFoldersQuery.data.data.length > 0 && (
-        <>
-          {selectingSignal.value.isSelecting && <DeleteManyBar setSelectedFolder={props.setSelectedFolder} setShowDeleteDialog={props.setShowDeleteDialog} />}
-          <div class="grid grid-cols-3 gap-8">
-            {getFoldersQuery.data.data.map((folder) => (
+  // Intersection Observer for infinite scroll
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && props.hasNextPage && !props.isFetchingNextPage) {
+          props.fetchNextPage();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    const currentTarget = observerTarget.current;
+    if (currentTarget) {
+      observer.observe(currentTarget);
+    }
+
+    return () => {
+      if (currentTarget) {
+        observer.unobserve(currentTarget);
+      }
+    };
+  }, [props.hasNextPage, props.isFetchingNextPage, props.fetchNextPage]);
+
+  // Get the last folder to attach the observer
+  const lastFolder = props.folders[props.folders.length - 1];
+
+  return (
+    <>
+      {!props.isFetching && props.folders.length > 0 && (
+        <div class="grid grid-cols-3 gap-8">
+          {props.folders.map((folder) => {
+            const isLastItem = folder.id === lastFolder?.id;
+            return (
               <FolderCard
                 key={folder.id}
                 folder={folder}
@@ -227,13 +303,44 @@ const AllFolders = (props: Mainprops) => {
                 setShowRenameDialog={props.setShowRenameDialog}
                 setSelectedFolder={props.setSelectedFolder}
                 showShareClientDialog={props.showShareClientDialog}
+                isLastItem={isLastItem}
+                observerRef={isLastItem ? observerTarget : undefined}
               />
-            ))}
-          </div>
-        </>
-      )
-    );
+            );
+          })}
+        </div>
+      )}
+      {props.isFetchingNextPage && <FoldersSkeleton />}
+    </>
+  );
 };
+
+export const FoldersSkeleton = () => {
+  return (
+    <div class="grid grid-cols-3 gap-8">
+      <div class="flex flex-col items-center gap-1">
+        <Skeleton class="h-15.5 w-17.25 rounded-xs" />
+        <div class="flex w-full flex-col items-center gap-1">
+          <Skeleton class="h-4 w-12.5 rounded-xs" />
+          <div class="flex items-center gap-3">
+            <Skeleton class="h-3 w-8 rounded-xs" />
+            <Skeleton class="size-4 rounded-full" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+interface FolderCardProps {
+  folder: Folder;
+  setShowDeleteDialog?: Dispatch<StateUpdater<boolean>>;
+  setShowRenameDialog?: Dispatch<StateUpdater<boolean>>;
+  setSelectedFolder?: Dispatch<StateUpdater<Folder | null>>;
+  showShareClientDialog?: Dispatch<StateUpdater<boolean>>;
+  isLastItem?: boolean;
+  observerRef?: { current: HTMLButtonElement | null };
+}
 
 const FolderCard = (props: FolderCardProps) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -274,6 +381,7 @@ const FolderCard = (props: FolderCardProps) => {
         location.route(`/gallery/folders/${props.folder.id}`);
       }}
       type="button"
+      ref={props.isLastItem ? props.observerRef : null}
     >
       <div class="relative cursor-pointer overflow-hidden">
         <img src={`/assets/folder-icons/folder-${folderIconNumber}.png`} alt={props.folder.name} class="h-15.5 w-17.25" />

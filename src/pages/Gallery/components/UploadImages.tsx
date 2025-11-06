@@ -4,6 +4,8 @@ import { forwardRef } from "preact/compat";
 
 import { AddToFolder } from "@/components/AddToFolder";
 import { useUploadImages } from "@/api/http/v1/gallery/gallery.hooks";
+import toast from "react-hot-toast";
+import { Button } from "@/components/ui/button";
 
 export interface UploadImagesHandle {
   triggerUpload: () => void;
@@ -53,6 +55,7 @@ export const UploadImages = forwardRef<UploadImagesHandle, UploadImagesProps>((_
 
         setHasUploaded(true);
       } catch (error) {
+        toast.error("Failed to upload images.");
         console.error("Upload failed:", error);
       }
 
@@ -80,7 +83,9 @@ export const UploadImages = forwardRef<UploadImagesHandle, UploadImagesProps>((_
               <>
                 <div class="flex items-center gap-2 border-r border-r-line-500 pr-2">
                   <p class="leading-0">Uploading</p>
-                  <Icon icon="iconoir:upload" className="h-4 w-4 text-black" />
+                  <span class="size-4">
+                    <Icon icon="iconoir:upload" className="h-4 w-4 text-black" />
+                  </span>
                 </div>
 
                 <div class="flex items-center gap-1.5">
@@ -103,9 +108,17 @@ export const UploadImages = forwardRef<UploadImagesHandle, UploadImagesProps>((_
             {hasUploaded && (
               <>
                 <div class="flex items-center gap-2">
-                  <button type="button" onClick={() => setHasUploaded(false)}>
+                  <Button
+                    variant="ghost"
+                    type="button"
+                    class="size-4 p-0"
+                    onClick={() => {
+                      setHasUploaded(false);
+                      setProgressSuccess(false);
+                    }}
+                  >
                     <Icon icon="ix:cancel" fontSize={14} />
-                  </button>
+                  </Button>
                   <p class="text-grey-500 text-sm">+{totalFiles} Uploaded</p>
                 </div>
 

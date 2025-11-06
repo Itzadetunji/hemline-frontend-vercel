@@ -19,23 +19,22 @@ interface AddToFolderProps {
 export const AddToFolder = (props: AddToFolderProps) => {
   const [addToNewFolder, setAddToNewFolder] = useState(false);
   const [addToExistingFolder, setAddToExistingFolder] = useState(false);
-
+  console.log(addToNewFolder, addToExistingFolder);
   return (
     <>
       <Dialog
         open={props.addToFolder}
         onOpenChange={(newValue) => {
-          props.onClose?.();
+          if (newValue) return props.onClose?.();
+          console.log("here");
           props.setAddToFolder(newValue);
         }}
       >
         {props.showAddFolderButton &&
           ((
-            <DialogTrigger asChild>
-              <button class="flex items-center gap-1.5 bg-secondary-500 px-3 py-1.5" type="button">
-                <p class="leading-09">Add To Folder</p>
-                <Icon icon="si:add-duotone" />
-              </button>
+            <DialogTrigger onClick={() => props.setAddToFolder(true)} class="flex items-center gap-1.5 bg-secondary-500 px-3 py-1.5 leading-09">
+              <p>Add To Folder</p>
+              <Icon icon="si:add-duotone" />
             </DialogTrigger>
           ) as any)}
         <DialogContent showClose={false} class="flex flex-col gap-8">

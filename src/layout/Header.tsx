@@ -68,7 +68,7 @@ export const Header = () => {
           </PopoverTrigger>
           <PopoverContent className="!top-14 !right-124 mr-4 flex w-40 flex-col items-stretch rounded-sm border-line-400 bg-white/70 drop-shadow-[0.6px_0.8px_9px_rgba(0,0,0,0,95)] backdrop-blur-lg">
             <ul class="flex flex-col gap-3">
-              <a href="/profile" class="flex cursor-pointer items-center justify-between gap-2 text-grey-500 hover:bg-secondary">
+              <a href="/profile" class="flex cursor-pointer items-center justify-between gap-2 text-grey-500">
                 <p class="font-medium text-sm">Profile</p>
                 <div class="min-w-5 p-1">
                   <Icon icon="hugeicons:user-02" className="h-4 w-4 text-black" />
@@ -76,7 +76,7 @@ export const Header = () => {
               </a>
               <button
                 type="button"
-                class="flex cursor-pointer items-center justify-between gap-2 text-destructive hover:bg-secondary"
+                class="flex cursor-pointer items-center justify-between gap-2 text-destructive"
                 onClick={() => logoutMutation.mutate()}
                 disabled={logoutMutation.isPending}
               >

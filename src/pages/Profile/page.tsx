@@ -7,7 +7,7 @@ import { Account } from "./components/Account";
 import { CustomFields } from "./components/CustomFields";
 
 export const Profile = () => {
-  const [activeTab, setActiveTab] = useState<ProfileTab>("custom_fields");
+  const [activeTab, setActiveTab] = useState<ProfileTab>("account");
   const getUserProfile = useGetUserProfile();
 
   useLayoutEffect(() => {

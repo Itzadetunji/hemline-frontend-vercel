@@ -17,6 +17,7 @@ import { SingleGallery } from "./components/SingleGallery";
 import { UploadImages, type UploadImagesHandle } from "./components/UploadImages";
 import { useInfiniteGetClients } from "@/api/http/v1/clients/clients.hooks";
 import { useInfiniteGetOrders } from "@/api/http/v1/orders/orders.hooks";
+import { Button } from "@/components/ui/button";
 
 export const Gallery = () => {
   // const [galleryLayout, setGalleryLayout] = useState<"fancy" | "grid">("fancy");
@@ -115,10 +116,16 @@ export const Gallery = () => {
 
   return (
     <div class="flex flex-1 flex-col pb-8">
-      <button class="flex items-center gap-2 px-4" type="button">
-        <Icon icon="streamline-ultimate:layout" className="text-black" />
-        <p class="font-medium text-sm">Change Layout</p>
-      </button>
+      <ul class="flex items-center justify-between gap-4 px-4">
+        <Button class="!p-0 flex w-fit items-center gap-2" variant="ghost">
+          <Icon icon="streamline-ultimate:layout" className="text-black" />
+          <p class="font-medium text-sm">Change Layout</p>
+        </Button>
+        <Button class="!p-0 flex w-fit items-center gap-2" variant="ghost" onClick={() => uploadImagesRef.current?.triggerUpload()}>
+          <Icon icon="si:add-duotone" className="size-4" />
+          <p class="font-medium text-sm">Upload</p>
+        </Button>
+      </ul>
       {isLoading && (
         <ul class="mt-4 grid grid-cols-[auto_auto_auto] gap-1">
           {Array.from({ length: 12 }).map((_, i) => (
@@ -216,7 +223,7 @@ const GalleryImage = (props: {
         ) : (
           <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
             <PopoverTrigger asChild>
-              <button class="absolute top-3 left-2" type="button">
+              <button class="absolute top-0 left-0 pt-3 pl-2" type="button">
                 <Icon icon="pepicons-pencil:dots-x" className={iconColor} />
               </button>
             </PopoverTrigger>
@@ -244,7 +251,7 @@ const GalleryImage = (props: {
                     props.setCurrentSelectedImage(props.image);
                   }}
                 >
-                  <p class="font-medium text-sm">Add Details</p>
+                  <p class="font-medium text-sm">View Details</p>
                   <div class="min-w-5 p-1">
                     <Icon icon="iconamoon:screen-full-light" className="h-4 w-4 text-black" />
                   </div>
@@ -284,6 +291,10 @@ const GalleryImage = (props: {
           alt={props.image.file_name}
           onLoad={handleImageLoad}
           class={cn("h-full w-full object-cover transition-opacity duration-300", loading ? "opacity-0" : "opacity-100")}
+          onClick={() => {
+            setIsPopoverOpen(false);
+            props.setCurrentSelectedImage(props.image);
+          }}
           crossOrigin="anonymous"
         />
       </div>

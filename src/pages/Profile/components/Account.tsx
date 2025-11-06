@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Icon } from "@iconify/react";
 import { signal } from "@preact/signals";
-import type { JSX } from "preact";
+import type { TargetedSubmitEvent } from "preact";
 import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -38,7 +38,7 @@ export const Account = () => {
     mode: "onChange",
   });
 
-  const handleSubmit = (e: JSX.TargetedSubmitEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: TargetedSubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     formMethods.handleSubmit(onSubmit)(e as any);
   };
@@ -51,6 +51,10 @@ export const Account = () => {
         setIsEditing(false);
         profileNavbarSignal.value = {
           showNavbar: false,
+        };
+        headerContentSignal.value = {
+          ...headerContentSignal.value,
+          showNavbar: true,
         };
         if (typeof window !== "undefined") {
           localStorage.setItem("theme", payload.theme);
@@ -67,6 +71,10 @@ export const Account = () => {
     setIsEditing(true);
     profileNavbarSignal.value = {
       showNavbar: true,
+    };
+    headerContentSignal.value = {
+      ...headerContentSignal.value,
+      showNavbar: false,
     };
   };
 
@@ -85,6 +93,10 @@ export const Account = () => {
     setIsEditing(false);
     profileNavbarSignal.value = {
       showNavbar: false,
+    };
+    headerContentSignal.value = {
+      ...headerContentSignal.value,
+      showNavbar: true,
     };
   };
 
@@ -268,7 +280,7 @@ export const Account = () => {
                       <div class="flex flex-col gap-2">
                         <div class="flex h-10.5 items-center gap-2 border border-line-700 px-3">
                           <Icon icon="solar:phone-linear" fontSize="18" />
-                          <input {...field} placeholder="123 Main St, City, State" class="flex-1 text-sm placeholder:text-grey-400" disabled={!isEditing} />
+                          <input {...field} placeholder="070896043564" class="flex-1 text-sm placeholder:text-grey-400" disabled={!isEditing} />
                           {!isEditing && (
                             <button type="button" onClick={onEdit}>
                               <Icon icon="iconoir:edit" fontSize="18" className="flex-shrink-0" />

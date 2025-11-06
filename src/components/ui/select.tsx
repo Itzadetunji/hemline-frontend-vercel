@@ -134,34 +134,64 @@ export const Select = ({
             <div class="px-3 py-2 text-grey-400 text-sm">No options available</div>
           ) : (
             <ul>
-              {options.map((option) => {
-                const isSelected = value.includes(option.value);
-                const isDisabled = !isSelected && value.length >= maxItems;
+              {maxItems === 1
+                ? options.map((option) => {
+                    const isSelected = value.includes(option.value);
+                    const isDisabled = !isSelected && value.length >= maxItems;
 
-                return (
-                  <li key={option.value}>
-                    <label
-                      class={cn(
-                        "flex cursor-pointer items-center justify-between gap-3 px-3 py-2 transition-colors hover:bg-secondary",
-                        {
-                          "cursor-not-allowed opacity-50": isDisabled,
-                          "bg-secondary/50": isSelected,
-                        },
-                        itemClassName
-                      )}
-                    >
-                      <span class="flex-1 text-sm">{option.label}</span>
-                      <input
-                        type="checkbox"
-                        checked={isSelected}
-                        onChange={() => handleOptionToggle(option.value)}
-                        disabled={isDisabled}
-                        class="size-4 cursor-pointer accent-primary"
-                      />
-                    </label>
-                  </li>
-                );
-              })}
+                    return (
+                      <li key={option.value}>
+                        <label
+                          class={cn(
+                            "flex cursor-pointer items-center justify-between gap-3 px-3 py-2 transition-colors hover:bg-secondary",
+                            {
+                              "cursor-not-allowed opacity-50": isDisabled,
+                              "bg-secondary/50": isSelected,
+                            },
+                            itemClassName
+                          )}
+                        >
+                          <span class="flex-1 text-sm">{option.label}</span>
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={() => {
+                              onChange([option.value]);
+                            }}
+                            class="size-4 cursor-pointer accent-primary"
+                          />
+                        </label>
+                      </li>
+                    );
+                  })
+                : options.map((option) => {
+                    const isSelected = value.includes(option.value);
+                    const isDisabled = !isSelected && value.length >= maxItems;
+
+                    return (
+                      <li key={option.value}>
+                        <label
+                          class={cn(
+                            "flex cursor-pointer items-center justify-between gap-3 px-3 py-2 transition-colors hover:bg-secondary",
+                            {
+                              "cursor-not-allowed opacity-50": isDisabled,
+                              "bg-secondary/50": isSelected,
+                            },
+                            itemClassName
+                          )}
+                        >
+                          <span class="flex-1 text-sm">{option.label}</span>
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={() => handleOptionToggle(option.value)}
+                            disabled={isDisabled}
+                            class="size-4 cursor-pointer accent-primary"
+                          />
+                        </label>
+                      </li>
+                    );
+                  })}
             </ul>
           )}
         </div>

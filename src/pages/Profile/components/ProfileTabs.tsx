@@ -53,12 +53,12 @@ const ProfileTab = forwardRef(({ tab, activeTab, setActiveTab, icon }: ProfileTa
   <button
     ref={ref}
     type="button"
-    class={cn("flex items-center gap-2 border-transparent border-b-2 text-grey-500 capitalize transition-colors", {
+    class={cn("flex items-center gap-2 border-transparent border-b-2 py-1 pl-1 text-grey-500 capitalize transition-colors", {
       "text-black": activeTab === tab,
     })}
     onClick={() => setActiveTab(tab)}
   >
-    <div class="grid min-h-6 min-w-6 place-content-center p-1">
+    <div class="grid size-5 place-content-center">
       <Icon icon={icon} className="h-5 w-5" />
     </div>
     <p class="leading-1">{tab.split("_").join(" ")}</p>

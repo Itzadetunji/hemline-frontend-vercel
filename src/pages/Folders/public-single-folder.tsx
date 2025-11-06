@@ -205,7 +205,7 @@ const FolderGalleryImage = (props: {
       ) : (
         <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
           <PopoverTrigger asChild>
-            <button class="absolute top-3 left-2" type="button">
+            <button class="absolute top-0 left-0 pt-3 pl-2" type="button">
               <Icon icon="pepicons-pencil:dots-x" className={iconColor} />
             </button>
           </PopoverTrigger>
@@ -242,6 +242,10 @@ const FolderGalleryImage = (props: {
         alt={props.image.file_name}
         onLoad={handleImageLoad}
         class={cn("h-full w-full object-cover transition-opacity duration-300", loading ? "opacity-0" : "opacity-100")}
+        onClick={() => {
+          setIsPopoverOpen(false);
+          props.setCurrentSelectedImage(props.image);
+        }}
         crossOrigin="anonymous"
       />
     </div>

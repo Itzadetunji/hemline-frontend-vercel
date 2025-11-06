@@ -73,7 +73,6 @@ export const AddToNewFolder = (props: AddToNewFolderProps) => {
       open={props.addToNewFolder}
       onOpenChange={(open) => {
         if (createFolderMutation.isPending) return;
-        props.setAddToNewFolder(open);
         if (!open) reset();
       }}
     >
