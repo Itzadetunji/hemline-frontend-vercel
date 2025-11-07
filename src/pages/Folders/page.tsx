@@ -68,6 +68,7 @@ export const Folders = () => {
               <Icon icon="material-symbols-light:delete-outline-sharp" className="h-5 w-5 text-destructive" />
             </button>
           )} */}
+
           {!selectingSignal.value.isSelecting && (
             <>
               {/* <button class="min-h-5 min-w-5 p-1" type="button" onClick={() => setShowSelectFolder(true)}>
