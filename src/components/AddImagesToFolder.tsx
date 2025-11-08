@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 import { preloadImages, useImageCache } from "@/hooks/useImageCache";
 import toast from "react-hot-toast";
 import { userSignal } from "@/stores/userStore";
-import { Folder } from "@/api/http/v1/gallery/folders/folders.types";
+import type { Folder } from "@/api/http/v1/gallery/folders/folders.types";
 
 interface AddImagesToFolderProps {
   isOpen: boolean;

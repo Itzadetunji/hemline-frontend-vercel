@@ -19,7 +19,7 @@ export const ProtectedRoute = (props: any) => {
 
   if (getUserProfile.isPending)
     return (
-      <div class="flex min-h-screen items-center justify-center">
+      <div class="flex min-h-[100dvh] items-center justify-center">
         <img src="/assets/brand/logo.svg" class="animate-pulse" alt="Brand Logo" />
       </div>
     );
@@ -35,7 +35,7 @@ export const ProtectedRoute = (props: any) => {
   }
 
   return (
-    <main class="flex min-h-screen flex-col items-stretch">
+    <main class="flex min-h-[100dvh] flex-col items-stretch">
       <Header />
       <div class="flex flex-1 flex-col">
         <Route {...props} />

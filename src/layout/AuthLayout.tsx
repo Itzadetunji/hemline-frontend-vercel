@@ -26,7 +26,7 @@ export const AuthLayout = ({ children, redirectTo = "/sign-in" }: AuthLayoutProp
   // Show loading or nothing while redirect is happening
   if (!isUserAuthenticated) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-[100dvh] items-center justify-center">
         <div className="text-center">
           <p className="text-gray-600">Redirecting to login...</p>
         </div>
@@ -36,7 +36,7 @@ export const AuthLayout = ({ children, redirectTo = "/sign-in" }: AuthLayoutProp
 
   if (isUserAuthenticated) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-[100dvh] items-center justify-center">
         <div className="text-center">
           <p className="text-gray-600">Redirecting...</p>
         </div>

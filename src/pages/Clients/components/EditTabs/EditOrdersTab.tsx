@@ -7,7 +7,7 @@ import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
 import { useCreateOrder, useInfiniteGetOrders, useMarkOrderAsDone, useMarkOrderAsPending, useUpdateOrder } from "@/api/http/v1/orders/orders.hooks";
-import { CreateOrderPayload, CreateOrderSchema, UpdateOrderSchema, type OrderAttributes, type UpdateOrderPayload } from "@/api/http/v1/orders/orders.types";
+import { type CreateOrderPayload, CreateOrderSchema, UpdateOrderSchema, type OrderAttributes, type UpdateOrderPayload } from "@/api/http/v1/orders/orders.types";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";

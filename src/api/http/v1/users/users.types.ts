@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CustomFieldType } from "../custom_fields/custom_fields.types";
+import type { CustomFieldType } from "../custom_fields/custom_fields.types";
 
 export const VerifyMagicCodeSchema = z.object({
 	code: z.union([

@@ -13,6 +13,8 @@ import { SingleFolderGallery } from "@/pages/Folders/single-folder";
 import { Gallery } from "@/pages/Gallery/page";
 import { Profile } from "@/pages/Profile/page";
 import { ProtectedRoute } from "./ProtectedRoute";
+import { TermsAndConditions } from "@/pages/TermsAndConditions/page";
+import { PrivacyPolicy } from "@/pages/PrivacyPolicy/page";
 
 export const Routes = () => {
   return (
@@ -35,6 +37,8 @@ export const Routes = () => {
           <ProtectedRoute path="/clients/:client_id" component={ViewClient} />
           <ProtectedRoute path="/profile" component={Profile} />
           <ProtectedRoute path="/onboarding" component={Onboarding} />
+          <Route path="/privacy-policy" component={PrivacyPolicy} />
+          <Route path="/terms-and-conditions" component={TermsAndConditions} />
         </Router>
 
         {/* Public Routes - Redirect if already authenticated */}
@@ -45,7 +49,7 @@ export const Routes = () => {
 
 export const ComingSoon = () => {
   return (
-    <div class="flex h-screen flex-1 flex-col p-4">
+    <div class="flex h-[100dvh] flex-1 flex-col p-4">
       <ul class="flex items-center gap-4">
         <img src="/assets/brand/logo.svg" class="size-8" alt="Brand Logo" />
         <h1 class="max-w-[10ch] truncate pr-1 text-3xl text-black">Hemline</h1>

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { GalleryImageType } from "../gallery.types";
-import { SkillChoicesType } from "../../users/users.types";
+import type { SkillChoicesType } from "../../users/users.types";
 
 // Folder Color Type
 export type FolderColor = {

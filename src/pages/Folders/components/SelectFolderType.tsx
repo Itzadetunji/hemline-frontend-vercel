@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react";
-import { Dispatch, StateUpdater, useState } from "preact/hooks";
+import { type Dispatch, type StateUpdater, useState } from "preact/hooks";
 
 import { useInfiniteGetGalleries } from "@/api/http/v1/gallery/gallery.hooks";
 import type { GalleryImageType } from "@/api/http/v1/gallery/gallery.types";
@@ -135,7 +135,7 @@ const SelectImages = (props: SelectImagesProps) => {
       }}
       className="flex flex-1 flex-col gap-8 overflow-y-auto px-4 py-6"
     >
-      <div class="flex flex-col gap-8 flex-1">
+      <div class="flex flex-1 flex-col gap-8">
         <div class="relative flex items-center justify-center">
           <button
             type="button"
