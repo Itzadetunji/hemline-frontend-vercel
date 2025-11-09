@@ -15,14 +15,15 @@ import type {
   UpdateOrderResponse,
   GetAllOrdersParams,
 } from "./orders.types";
+import { createQueryKey } from "@/lib/queryClient";
 
 export const ordersQueryKeys = {
-  all: ["orders"] as const,
-  lists: () => [...ordersQueryKeys.all, "list"] as const,
-  list: (clientId: string, params?: { page?: number; per_page?: number }) => [...ordersQueryKeys.lists(), clientId, params] as const,
-  details: () => [...ordersQueryKeys.all, "detail"] as const,
-  detail: (orderId: string) => [...ordersQueryKeys.details(), orderId] as const,
-  infinite: (params?: GetAllOrdersParams) => [...ordersQueryKeys.lists(), "infinite", params],
+  all: createQueryKey(["orders"]),
+  lists: () => createQueryKey([...ordersQueryKeys.all, "list"]),
+  list: (clientId: string, params?: { page?: number; per_page?: number }) => createQueryKey([...ordersQueryKeys.lists(), clientId, params]),
+  details: () => createQueryKey([...ordersQueryKeys.all, "detail"]),
+  detail: (orderId: string) => createQueryKey([...ordersQueryKeys.details(), orderId]),
+  infinite: (params?: GetAllOrdersParams) => createQueryKey([...ordersQueryKeys.lists(), "infinite", params]),
 } as const;
 
 export const useGetOrders = (clientId: string, params?: GetAllOrdersParams & { enabled: boolean }) => {

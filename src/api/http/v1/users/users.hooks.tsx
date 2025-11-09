@@ -8,18 +8,27 @@ import { clearEmail, setEmail } from "@/stores/authStore";
 import { userSignal, userStore } from "@/stores/userStore";
 import { USERS_API } from "./users.api";
 import type { GetUserProfileResponse, OnboardingFormData, OnboardingUserResponse, RequestMagicLinkPayload, VerifyMagicCodePayload } from "./users.types";
+import { createQueryKey } from "@/lib/queryClient";
 
 export const useLogout = () => {
+  const queryClient = useQueryClient();
   const logoutMutation = useMutation({
     mutationFn: USERS_API.LOGOUT,
+    onMutate: () =>
+      toast.loading("Logging out", {
+        id: "log-out",
+      }),
   });
 
   useEffect(() => {
     if (logoutMutation.data || logoutMutation.error) {
-      toast.success("Logged out successfully!");
+      toast.success("Logged out successfully!", { id: "log-out" });
+
       clearEmail();
       userStore.logout();
       localStorage.clear();
+
+      queryClient.invalidateQueries();
     }
   }, [logoutMutation.data, logoutMutation.error]);
 
@@ -171,5 +180,5 @@ export const useUpdateBusinessImage = () => {
 };
 
 export const usersQuerykeys = {
-  all: ["user-profile"] as const,
+  all: createQueryKey(["user-profile"]),
 } as const;

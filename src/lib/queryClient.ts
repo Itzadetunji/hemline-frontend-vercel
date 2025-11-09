@@ -1,3 +1,4 @@
+import { userSignal } from "@/stores/userStore";
 import { QueryClient } from "@tanstack/react-query";
 
 export const queryClient = new QueryClient({
@@ -9,3 +10,9 @@ export const queryClient = new QueryClient({
     },
   },
 });
+
+export const createQueryKey = (data: any) => {
+  const userId = userSignal.value?.user?.id;
+
+  return [userId, data] as const;
+};

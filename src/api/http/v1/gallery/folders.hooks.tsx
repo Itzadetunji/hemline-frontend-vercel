@@ -18,16 +18,18 @@ import type {
   UpdateFolderPayload,
   UpdateFolderResponse,
 } from "./folders/folders.types";
+import { createQueryKey } from "@/lib/queryClient";
+import { galleryQueryKeys } from "./gallery.hooks";
 
 // Query keys factory
 const foldersQueryKeys = {
-  all: ["folders"] as const,
-  lists: () => [...foldersQueryKeys.all, "list"] as const,
-  list: (params?: PaginationParams) => [...foldersQueryKeys.lists(), params] as const,
-  details: () => [...foldersQueryKeys.all, "detail"] as const,
-  detail: (id: string) => [...foldersQueryKeys.details(), id] as const,
-  infinite: (perPage?: number) => [...foldersQueryKeys.lists(), "infinite", perPage] as const,
-  infiniteFolder: (id: string, perPage?: number) => [...foldersQueryKeys.detail(id), "infinite", perPage] as const,
+  all: createQueryKey(["folders"]),
+  lists: () => createQueryKey([...foldersQueryKeys.all, "list"]),
+  list: (params?: PaginationParams) => createQueryKey([...foldersQueryKeys.lists(), params]),
+  details: () => createQueryKey([...foldersQueryKeys.all, "detail"]),
+  detail: (id: string) => createQueryKey([...foldersQueryKeys.details(), id]),
+  infinite: (perPage?: number) => createQueryKey([...foldersQueryKeys.lists(), "infinite", perPage]),
+  infiniteFolder: (id: string, perPage?: number) => createQueryKey([...foldersQueryKeys.detail(id), "infinite", perPage]),
 } as const;
 
 // GET: Fetch all folders with pagination
@@ -169,7 +171,7 @@ export const useAddImagesToFolder = () => {
 
       // Invalidate gallery queries as images now have updated folder_ids
       queryClient.invalidateQueries({
-        queryKey: ["gallery"],
+        queryKey: galleryQueryKeys.all,
       });
     },
     onError: (error) => {
@@ -229,7 +231,7 @@ export const useRemoveImagesFromFolder = () => {
 
       // Invalidate gallery queries as images now have updated folder_ids
       queryClient.invalidateQueries({
-        queryKey: ["gallery"],
+        queryKey: galleryQueryKeys.all,
       });
     },
     onError: (error) => {
@@ -259,7 +261,7 @@ export const useDeleteFolder = () => {
 
       // Invalidate gallery queries as images may have updated folder_ids
       queryClient.invalidateQueries({
-        queryKey: ["gallery"],
+        queryKey: galleryQueryKeys.all,
       });
     },
     onError: (error) => {

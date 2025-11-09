@@ -14,14 +14,15 @@ import type {
   DeleteClientsPayload,
   GetAllClientsParams,
 } from "./clients.types";
+import { createQueryKey } from "@/lib/queryClient";
 
 export const clientsQueryKeys = {
-  all: ["clients"] as const,
-  lists: () => [...clientsQueryKeys.all, "list"] as const,
-  list: (params?: GetAllClientsParams) => [...clientsQueryKeys.lists(), params] as const,
-  details: () => [...clientsQueryKeys.all, "detail"] as const,
-  detail: (id: string) => [...clientsQueryKeys.details(), id] as const,
-  infinite: (params?: GetAllClientsParams) => [...clientsQueryKeys.lists(), "infinite", params] as const,
+  all: createQueryKey(["clients"]),
+  lists: () => createQueryKey([...clientsQueryKeys.all, "list"]),
+  list: (params?: GetAllClientsParams) => createQueryKey([...clientsQueryKeys.lists(), params]),
+  details: () => createQueryKey([...clientsQueryKeys.all, "detail"]),
+  detail: (id: string) => createQueryKey([...clientsQueryKeys.details(), id]),
+  infinite: (params?: GetAllClientsParams) => createQueryKey([...clientsQueryKeys.lists(), "infinite", params]),
 } as const;
 
 export const useGetClients = (params?: GetAllClientsParams & { enabled?: boolean }) => {

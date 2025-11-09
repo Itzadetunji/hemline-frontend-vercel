@@ -13,15 +13,16 @@ import type {
   UploadImagesResponse,
 } from "./gallery.types";
 import { usersQuerykeys } from "../users/users.hooks";
+import { createQueryKey } from "@/lib/queryClient";
 
 // Query keys factory
-const galleryQueryKeys = {
-  all: ["gallery"] as const,
-  lists: () => [...galleryQueryKeys.all, "list"] as const,
-  list: (params?: PaginationParams) => [...galleryQueryKeys.lists(), params] as const,
-  details: () => [...galleryQueryKeys.all, "detail"] as const,
-  detail: (id: string) => [...galleryQueryKeys.details(), id] as const,
-  infinite: (perPage?: number) => [...galleryQueryKeys.lists(), "infinite", perPage] as const,
+export const galleryQueryKeys = {
+  all: createQueryKey(["gallery"]),
+  lists: () => createQueryKey([...galleryQueryKeys.all, "list"]),
+  list: (params?: PaginationParams) => createQueryKey([...galleryQueryKeys.lists(), params]),
+  details: () => createQueryKey([...galleryQueryKeys.all, "detail"]),
+  detail: (id: string) => createQueryKey([...galleryQueryKeys.details(), id]),
+  infinite: (perPage?: number) => createQueryKey([...galleryQueryKeys.lists(), "infinite", perPage]),
 } as const;
 
 // GET: Fetch all gallery images with pagination
