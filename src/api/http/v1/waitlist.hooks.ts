@@ -20,10 +20,10 @@ export const useWaitlist = () => {
   });
 
   useEffect(() => {
-    if (addToWaitlistMutation.data) {
+    if (addToWaitlistMutation.isSuccess) {
       toast.success("Added you to the waitlist 🎉", { id: "wailist", duration: 5000 });
     }
-  }, [addToWaitlistMutation.data]);
+  }, [addToWaitlistMutation.isSuccess]);
 
   return addToWaitlistMutation;
 };
