@@ -103,6 +103,8 @@ export const useUploadImages = () => {
         });
       });
 
+      queryClient.invalidateQueries({ queryKey: galleryQueryKeys.infinite(), exact: false });
+
       // Reset progress after a delay
       setTimeout(() => setProgress(0), 2000);
     },
@@ -126,6 +128,8 @@ export const useUpdateGalleryImage = () => {
 
       // Update the specific image in cache
       queryClient.setQueryData<GetGalleryImageResponse>(galleryQueryKeys.detail(variables.id), response);
+
+      queryClient.invalidateQueries({ queryKey: galleryQueryKeys.infinite(), exact: false });
     },
     onError: (error) => {
       console.error("Error updating gallery image:", error);
@@ -157,6 +161,8 @@ export const useDeleteImages = () => {
       queryClient.invalidateQueries({
         queryKey: usersQuerykeys.all,
       });
+
+      queryClient.invalidateQueries({ queryKey: galleryQueryKeys.infinite(), exact: false });
     },
     onError: (error) => {
       console.error("Error deleting images:", error);

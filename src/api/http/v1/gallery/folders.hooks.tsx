@@ -118,6 +118,7 @@ export const useCreateFolder = () => {
       queryClient.invalidateQueries({
         queryKey: foldersQueryKeys.detail(data.data.id),
       });
+      queryClient.invalidateQueries({ queryKey: foldersQueryKeys.infinite(), exact: false });
     },
     onError: (error) => {
       console.error("Error creating folder:", error);
@@ -143,6 +144,7 @@ export const useUpdateFolder = () => {
       queryClient.invalidateQueries({
         queryKey: foldersQueryKeys.lists(),
       });
+      queryClient.invalidateQueries({ queryKey: foldersQueryKeys.infinite(), exact: false });
     },
     onError: (error) => {
       console.error("Error updating folder:", error);
@@ -173,6 +175,8 @@ export const useAddImagesToFolder = () => {
       queryClient.invalidateQueries({
         queryKey: galleryQueryKeys.all,
       });
+
+      queryClient.invalidateQueries({ queryKey: foldersQueryKeys.infinite(), exact: false });
     },
     onError: (error) => {
       console.error("Error adding images to folder:", error);

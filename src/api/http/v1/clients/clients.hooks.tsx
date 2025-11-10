@@ -77,6 +77,7 @@ export const useCreateClient = () => {
 
       // Invalidate and refetch clients list
       queryClient.invalidateQueries({ queryKey: clientsQueryKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: clientsQueryKeys.infinite(), exact: false });
     },
     onError: (error) => {
       console.error("Error creating client:", error);
@@ -112,6 +113,7 @@ export const useUpdateClient = () => {
       queryClient.invalidateQueries({
         queryKey: clientsQueryKeys.detail(variables.id),
       });
+      queryClient.invalidateQueries({ queryKey: clientsQueryKeys.infinite(), exact: false });
     },
     onError: (error) => {
       console.error("Error updating client:", error);
@@ -130,6 +132,7 @@ export const useBulkDeleteClients = () => {
 
       // Invalidate and refetch clients list
       queryClient.invalidateQueries({ queryKey: clientsQueryKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: clientsQueryKeys.infinite(), exact: false });
     },
     onError: (error) => {
       console.error("Error deleting clients:", error);

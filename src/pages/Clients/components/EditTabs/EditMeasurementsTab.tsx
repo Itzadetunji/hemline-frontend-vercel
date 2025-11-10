@@ -92,7 +92,7 @@ export const EditMeasurementsTab = () => {
             ) as any
           }
           {!getUserProfile.isLoading &&
-            getUserProfile.data?.data.user.custom_fields.length &&
+            !!getUserProfile.data?.data.user.custom_fields.length &&
             ((
               <AccordionItem value="custom_measurements">
                 {(<AccordionTrigger className="!font-primary flex items-center rounded-none border-line border-b px-3 py-1 text-2xl">Custom Measurements</AccordionTrigger>) as any}
@@ -120,6 +120,7 @@ export const EditMeasurementsTab = () => {
             </Button>
           </ul>
         )}
+        {console.log(formMethods.getValues(), formMethods.formState.errors)}
       </div>
 
       <MeasurementDrawer />

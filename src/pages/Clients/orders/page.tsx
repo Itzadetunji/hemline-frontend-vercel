@@ -92,10 +92,14 @@ export const Orders = () => {
       {!isLoading && allOrders.length === 0 && <NoOders />}
       <div
         class={cn("flex flex-col gap-6", {
-          "flex-1": !(getIniniteOrdersSearchQuery.isFetching || isFetching),
+          "flex-1": !(getIniniteOrdersSearchQuery.isFetching || isFetching) && allOrders.length !== 0,
         })}
       >
-        <Label class="flex flex-col items-stretch gap-4">
+        <Label
+          class={cn("flex flex-col items-stretch gap-4", {
+            hidden: allOrders.length === 0,
+          })}
+        >
           <div class="flex h-10.5 items-center gap-3.5 border border-line-700 px-3">
             <i className="size-4.5">
               <Icon icon="lucide:search" fontSize="18" />

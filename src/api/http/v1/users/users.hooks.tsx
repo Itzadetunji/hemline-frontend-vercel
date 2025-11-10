@@ -1,5 +1,5 @@
 import type { AxiosError } from "axios";
-import { useLocation } from "preact-iso";
+import { useLocation, useRoute } from "preact-iso";
 import { useEffect } from "preact/hooks";
 import toast from "react-hot-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -96,6 +96,46 @@ export const useVeriftMagicCode = () => {
     },
     onError: (error) => {
       console.error("Error verifying magic code:", error);
+    },
+  });
+};
+
+export const useVerifyMagicLink = () => {
+  const location = useLocation();
+  const { query } = useRoute();
+
+  const queryClient = useQueryClient();
+
+  const token = query.token as string;
+
+  return useMutation<GetUserProfileResponse, AxiosError<Record<string, any>>, string>({
+    mutationFn: () => USERS_API.VERIFY_MAGIC_LINK(token),
+    onSuccess: (data) => {
+      console.log("Magic link verified successfully:", data);
+
+      // Update the user store with the new user data
+      userStore.updateUser({
+        token: data.data.token,
+        user: data.data.user,
+      });
+      console.log(userSignal.value);
+      // Update the query cache directly with the new user data
+      queryClient.setQueryData<GetUserProfileResponse>(usersQuerykeys.all, data);
+
+      // Invalidate queries to trigger a refetch
+      queryClient.invalidateQueries({
+        queryKey: usersQuerykeys.all,
+      });
+    },
+    onError: (error) => {
+      console.error("Error verifying magic code:", error);
+      clearEmail();
+      userStore.logout();
+      localStorage.clear();
+
+      toast.error(error.response?.data.errors?.[0] ?? "Invalid or expired magic link");
+
+      location.route("/sign-in", true);
     },
   });
 };

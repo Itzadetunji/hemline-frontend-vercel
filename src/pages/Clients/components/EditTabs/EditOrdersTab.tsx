@@ -62,6 +62,8 @@ export const EditOrdersTab = () => {
           "flex-1": !getInfiniteOrdersQuery.isLoading,
         })}
       >
+        {addingNewOrder && !allOrders.length && <AddNewOrderItem setAddingNewOrder={setAddingNewOrder} />}
+
         {!getInfiniteOrdersQuery.isLoading && !!allOrders.length && (
           <div class="flex flex-1 flex-col gap-4">
             <div class="flex flex-col gap-4">
@@ -426,6 +428,7 @@ const AddNewOrderItem = (props: { setAddingNewOrder: Dispatch<StateUpdater<boole
     defaultValues: {
       order: {
         client_id: client_id,
+        quantity: 1,
       },
     },
   });
@@ -581,6 +584,7 @@ const AddNewOrderItem = (props: { setAddingNewOrder: Dispatch<StateUpdater<boole
           Save
         </Button>
       </ul>
+      {console.log(formMethods.formState.errors)}
     </form>
   );
 };

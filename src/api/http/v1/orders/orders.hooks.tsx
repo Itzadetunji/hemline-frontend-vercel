@@ -43,6 +43,7 @@ export const useInfiniteGetOrders = (params?: GetAllOrdersParams & { enabled?: b
       const totalPages = lastPage.data.pagination.total_pages;
       return currentPage < totalPages ? currentPage + 1 : undefined;
     },
+    enabled: params?.enabled ?? true,
     initialPageParam: 1,
   });
 };
@@ -66,6 +67,11 @@ export const useCreateOrder = () => {
       // Invalidate and refetch orders list for this client
       queryClient.invalidateQueries({
         queryKey: ordersQueryKeys.lists(),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ordersQueryKeys.infinite(),
+        exact: false,
       });
     },
     onError: (error) => {
@@ -101,6 +107,11 @@ export const useUpdateOrder = () => {
       queryClient.invalidateQueries({
         queryKey: ordersQueryKeys.detail(variables.orderId),
       });
+
+      queryClient.invalidateQueries({
+        queryKey: ordersQueryKeys.infinite(),
+        exact: false,
+      });
     },
     onError: (error) => {
       console.error("Error updating order:", error);
@@ -120,6 +131,11 @@ export const useDeleteOrder = () => {
       // Invalidate and refetch orders list
       queryClient.invalidateQueries({
         queryKey: ordersQueryKeys.lists(),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ordersQueryKeys.infinite(),
+        exact: false,
       });
     },
     onError: (error) => {
@@ -141,6 +157,11 @@ export const useBulkDeleteOrders = () => {
       queryClient.invalidateQueries({
         queryKey: ordersQueryKeys.lists(),
       });
+
+      queryClient.invalidateQueries({
+        queryKey: ordersQueryKeys.infinite(),
+        exact: false,
+      });
     },
     onError: (error) => {
       console.error("Error deleting orders:", error);
@@ -160,6 +181,11 @@ export const useCreateGeneralOrder = () => {
       // Invalidate and refetch orders list
       queryClient.invalidateQueries({
         queryKey: ordersQueryKeys.lists(),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ordersQueryKeys.infinite(),
+        exact: false,
       });
     },
     onError: (error) => {
@@ -209,8 +235,14 @@ export const useMarkOrderAsDone = () => {
       queryClient.invalidateQueries({
         queryKey: ordersQueryKeys.lists(),
       });
+
       queryClient.invalidateQueries({
         queryKey: ordersQueryKeys.detail(variables.orderId),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ordersQueryKeys.infinite(),
+        exact: false,
       });
     },
     onError: (error) => {
@@ -260,8 +292,14 @@ export const useMarkOrderAsPending = () => {
       queryClient.invalidateQueries({
         queryKey: ordersQueryKeys.lists(),
       });
+
       queryClient.invalidateQueries({
         queryKey: ordersQueryKeys.detail(variables.orderId),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ordersQueryKeys.infinite(),
+        exact: false,
       });
     },
     onError: (error) => {

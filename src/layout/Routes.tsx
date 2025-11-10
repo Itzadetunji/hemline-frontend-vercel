@@ -16,6 +16,7 @@ import { ProtectedRoute } from "./ProtectedRoute";
 import { TermsAndConditions } from "@/pages/TermsAndConditions/page";
 import { PrivacyPolicy } from "@/pages/PrivacyPolicy/page";
 import { LandingPage } from "@/pages/page";
+import { VerifyMagicLink } from "@/pages/VerifyMagicLink/page";
 
 export const Routes = () => {
   return (
@@ -28,6 +29,7 @@ export const Routes = () => {
           <ProtectedRoute path="/gallery" component={Gallery} />
           <Route path="/sign-up" component={SignUp} />
           <Route path="/sign-in" component={SignIn} />
+          <Route path="/verify-magic-link" component={VerifyMagicLink} />
           <ProtectedRoute path="/onboarding" component={Onboarding} />
           <ProtectedRoute path="/gallery" component={Gallery} />
           <ProtectedRoute path="/gallery/folders" component={Folders} />
