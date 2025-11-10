@@ -71,7 +71,15 @@ export const SignUp = () => {
         </div>
       </form>
       <p class="text-center text-grey-400 text-sm">
-        By continuing, you agree to our <br /> Terms of Service and Privacy Policy.
+        By continuing, you agree to our <br />{" "}
+        <a href="terms-and-conditions" class="underline" target="_blank" rel="noopener">
+          Terms of Service
+        </a>{" "}
+        and{" "}
+        <a href="privacy-policy" class="underline" target="_blank" rel="noopener">
+          Privacy Policy
+        </a>
+        .
       </p>
     </main>
   );
