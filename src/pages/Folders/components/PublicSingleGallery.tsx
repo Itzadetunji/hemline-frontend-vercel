@@ -80,17 +80,14 @@ export const PublicSingleGallery = (props: SingleGalleryProps) => {
               style={{ display: loading ? "none" : "block" }}
             />
           </div>
-          <div class="flex flex-1 flex-col justify-end gap-4 px-4">
-            <ul class="flex items-center justify-between gap-4">
-              <h2 class="text-2xl leading-5">Work Details</h2>
-            </ul>
-            <textarea
-              value={getGalleryQuery.data?.data.description}
-              class="max-h-32 flex-1 border border-line px-3 py-3.5 text-sm placeholder:text-grey-500"
-              placeholder="add some info about this work"
-              disabled
-            />
-          </div>
+          {getGalleryQuery.data?.data.description && (
+            <div class="flex flex-1 flex-col justify-end gap-4 px-4">
+              <ul class="flex items-center justify-between gap-4">
+                <h2 class="text-2xl leading-5">Work Details</h2>
+              </ul>
+              <div class="max-h-32 flex-1 px-3 py-3.5 text-sm">{getGalleryQuery.data?.data.description}</div>
+            </div>
+          )}
         </div>
       </div>
     </Drawer>
