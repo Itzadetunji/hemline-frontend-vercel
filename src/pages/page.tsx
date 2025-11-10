@@ -1,10 +1,42 @@
 import { Icon } from "@iconify/react";
+import { Controller, useForm, type SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { TargetedSubmitEvent } from "preact";
+import toast from "react-hot-toast";
 
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { HeroCarousel } from "./components/HeroCarousel";
+import { useWaitlist } from "@/api/http/v1/waitlist.hooks";
+import { type AddToWaitlistPayload, AddToWaitlistPayloadSchema } from "@/api/http/v1/waitlist.hooks";
+import { useRef } from "preact/hooks";
 
 export const LandingPage = () => {
+  const emailInputRef = useRef<HTMLInputElement>(null);
+
+  const formMethods = useForm<AddToWaitlistPayload>({
+    resolver: zodResolver(AddToWaitlistPayloadSchema),
+  });
+
+  const waitlistMutation = useWaitlist();
+
+  const onSubmit: SubmitHandler<AddToWaitlistPayload> = async (payload) => {
+    try {
+      await waitlistMutation.mutateAsync(payload);
+      formMethods.reset({
+        email: "",
+      });
+      emailInputRef.current?.blur();
+    } catch (error: any) {
+      toast.error(error.response?.data?.message ?? "An error occurred while joining the waitlist.");
+    }
+  };
+
+  const handleSubmit = (e: TargetedSubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    formMethods.handleSubmit(onSubmit)(e as any);
+  };
+
   return (
     <main class="flex flex-1 flex-col bg-white px-4 pt-6 pb-10 md:min-h-[100dvh] md:px-14">
       <nav class="flex items-center justify-between">
@@ -43,16 +75,24 @@ export const LandingPage = () => {
             <p class="px-10 max-sm:px-4 max-md:text-right">
               Save measurements, organize photos, and <br class="max-md:hidden" /> share collections — all in one simple space <br /> built for fashion designers.
             </p>
-            <form class="flex flex-wrap items-center justify-end gap-2">
-              <Label class="flex h-10.5 items-center gap-3.5 border border-line-700 px-3 max-md:h-8">
-                <i className="size-4.5">
-                  <Icon icon="fluent:mail-16-regular" fontSize="18" />
-                </i>
-                <input type="email" placeholder="hello@hemline.studio" class="flex-1 text-sm placeholder:text-grey-400" />
-              </Label>
+            <form class="flex flex-wrap items-center justify-end gap-2" onSubmit={handleSubmit}>
+              <div class="flex flex-col gap-1">
+                <Label class="flex h-10.5 items-center gap-3.5 border border-line-700 px-3 max-md:h-8">
+                  <i className="size-4.5">
+                    <Icon icon="fluent:mail-16-regular" fontSize="18" />
+                  </i>
+                  <Controller
+                    name="email"
+                    control={formMethods.control}
+                    render={({ field }) =>
+                      (<input {...field} ref={emailInputRef} type="email" placeholder="hello@hemline.studio" class="flex-1 text-sm placeholder:text-grey-400" />) as any
+                    }
+                  />
+                </Label>
+                {formMethods.formState.errors.email && <p class="text-red-500 text-xs">{formMethods.formState.errors.email.message}</p>}
+              </div>
 
-              <Button class="h-10.5 w-fit gap-3 max-md:h-8" type="submit">
-                {/* <Icon icon="solar:arrow-right-linear" fontSize="14" /> */}
+              <Button class="h-10.5 w-fit gap-3 max-md:h-8" type="submit" disabled={waitlistMutation.isPending}>
                 <p>Join Waitlist</p>
               </Button>
             </form>
