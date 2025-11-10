@@ -31,7 +31,7 @@ export const ProtectedRoute = (props: any) => {
   }
 
   if (userSignal.value?.user?.has_onboarded && location.path === "/onboarding") {
-    location.route("/", true);
+    location.route("/gallery", true);
   }
 
   return (

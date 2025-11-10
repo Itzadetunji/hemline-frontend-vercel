@@ -58,7 +58,7 @@ export const useGetUserProfile = () => {
         token: undefined,
       });
       setEmail("");
-      location.route("/", true);
+      location.route("/gallery", true);
     }
     if (getUserProfileQuery.status === "success") {
       // console.log("User profile fetched successfully:", getUserProfileQuery.data);

@@ -19,7 +19,7 @@ export const AuthLayout = ({ children, redirectTo = "/sign-in" }: AuthLayoutProp
       location.route(redirectTo);
     } else if (isUserAuthenticated) {
       // User is authenticated but trying to access auth pages - redirect to home
-      location.route("/");
+      location.route("/gallery");
     }
   }, [isUserAuthenticated, redirectTo, location]);
 

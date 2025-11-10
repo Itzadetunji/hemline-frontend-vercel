@@ -25,7 +25,7 @@ export const VerifyEmail = () => {
         console.log(data);
 
         // Navigate based on onboarding status
-        if (data.data.user.has_onboarded) location.route("/");
+        if (data.data.user.has_onboarded) location.route("/gallery");
         else location.route("/onboarding");
 
         clearEmail();

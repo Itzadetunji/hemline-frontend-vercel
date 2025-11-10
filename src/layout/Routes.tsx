@@ -23,7 +23,7 @@ export const Routes = () => {
         {/* Protected Routes - Require Authentication */}
 
         <Router>
-          <ProtectedRoute path="/" component={Gallery} />
+          <ProtectedRoute path="/gallery" component={Gallery} />
           <Route path="/sign-up" component={SignUp} />
           <Route path="/sign-in" component={SignIn} />
           <ProtectedRoute path="/onboarding" component={Onboarding} />

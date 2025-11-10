@@ -43,7 +43,7 @@ export const Onboarding = () => {
           localStorage.setItem("theme", payload.theme);
         }
         // Redirect to home after successful onboarding
-        location.route("/");
+        location.route("/gallery");
       },
       onError: (error) => {
         console.error("Onboarding error:", error);
