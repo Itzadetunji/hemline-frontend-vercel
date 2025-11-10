@@ -28,7 +28,9 @@ export const LandingPage = () => {
       });
       emailInputRef.current?.blur();
     } catch (error: any) {
-      toast.error(error.response?.data?.message ?? "An error occurred while joining the waitlist.");
+      toast.error(error.response?.data?.message ?? "An error occurred while joining the waitlist.", {
+        id: "wailist",
+      });
     }
   };
 
