@@ -85,7 +85,7 @@ export const PublicFolderGallery = () => {
             {getPublicFolderQuery.data?.data.user.business_image && <img src={getPublicFolderQuery.data?.data.user.business_image} alt="" class="size-16 object-cover" />}
             <div class="flex flex-col gap-3.5">
               <div class="flex flex-col gap-3.5">
-                <h2 class="!font-cormorant text-2xl leading-1">{getPublicFolderQuery.data?.data.user.business_name ?? getPublicFolderQuery.data?.data.user.full_name} </h2>
+                <h2 class="!font-primary text-2xl leading-1">{getPublicFolderQuery.data?.data.user.business_name ?? getPublicFolderQuery.data?.data.user.full_name} </h2>
                 <p class="font-medium text-grey-500 text-sm">{getPublicFolderQuery.data?.data.user.business_address}</p>
               </div>
               <div class="flex flex-col gap-2">

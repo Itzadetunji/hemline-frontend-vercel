@@ -25,6 +25,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "gsap": "^3.13.0",
     "http-status-codes": "^2.3.0",
     "preact": "^10.27.2",
     "preact-iso": "^2.11.0",

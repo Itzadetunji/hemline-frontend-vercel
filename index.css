@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Grenze+Gotisch:wght@100..900&family=Manrope:wght@200..800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Instrument+Serif:ital@0;1&family=Manrope:wght@200..800&display=swap");
 
 @import "tailwindcss";
 @import "tw-animate-css";
@@ -72,7 +72,7 @@
 	/* Font families */
 	--font-primary: "Cormorant Garamond", sans-serif;
 	--font-secondary: "Manrope", sans-serif;
-	--font-cormorant: "Cormorant Garamond", sans-serif;
+	--font-instrument: "Instrument Serif", serif;
 
 	/* Grey scale */
 	--color-grey: var(--grey);
@@ -112,6 +112,9 @@
 	--color-dark-700: var(--dark-700);
 	--color-dark-800: var(--dark-800);
 	--color-dark-900: var(--dark-900);
+
+	/* Black */
+	--color-black: var(--black);
 }
 
 :root {
@@ -218,12 +221,15 @@
 
 	--font-primary: "Cormorant Garamond", sans-serif;
 	--font-secondary: "Manrope", sans-serif;
+	--font-instrument: "Instrument Serif", serif;
 
 	/* Z-index layers */
 	--z-popover: 50;
 	--z-dialog: 60;
 	--z-toast: 70;
 	--z-tooltip: 80;
+
+	--black: #0a0a0a;
 }
 
 .dark {
@@ -339,6 +345,8 @@
 	--shade-700: #0b0b0b;
 	--shade-800: #090909;
 	--shade-900: #070707;
+
+	--black: #0a0a0a;
 }
 
 @layer base {

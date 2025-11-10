@@ -15,6 +15,7 @@ import { Profile } from "@/pages/Profile/page";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { TermsAndConditions } from "@/pages/TermsAndConditions/page";
 import { PrivacyPolicy } from "@/pages/PrivacyPolicy/page";
+import { LandingPage } from "@/pages/page";
 
 export const Routes = () => {
   return (
@@ -23,6 +24,7 @@ export const Routes = () => {
         {/* Protected Routes - Require Authentication */}
 
         <Router>
+          <Route path="/" component={LandingPage} />
           <ProtectedRoute path="/gallery" component={Gallery} />
           <Route path="/sign-up" component={SignUp} />
           <Route path="/sign-in" component={SignIn} />
