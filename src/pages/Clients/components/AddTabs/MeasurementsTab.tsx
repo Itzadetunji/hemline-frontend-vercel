@@ -129,6 +129,7 @@ export const MeasurementsTab = () => {
 
 export const MeasurementItem = (props: { fields: MeasurementFieldType[]; is_upper?: boolean; is_custom?: boolean; gender?: GenderType; disabled?: boolean }) => {
   const { watch } = useFormContext<CreateClientPayload>();
+  console.log(props.fields);
   return (
     <AccordionContent className="pt-4">
       {
@@ -146,7 +147,9 @@ export const MeasurementItem = (props: { fields: MeasurementFieldType[]; is_uppe
               })
               .map((field) => {
                 // Handle custom fields differently
-                const fieldPath = props.is_custom ? (`client.custom_fields.${field.id}` as any) : (`client.${field.id}` as `client.${keyof CreateClientPayload["client"]}`);
+                const fieldPath = props.is_custom
+                  ? (`client.custom_fields.${field.id}` as any)
+                  : (`client.measurements.${field.id}` as `client.measurements.${keyof CreateClientPayload["client"]}`);
 
                 const fieldValue = props.is_custom ? watch("client.custom_fields")?.[field.id] : watch(fieldPath);
 
@@ -189,6 +192,7 @@ export const MeasurementDrawer = () => {
   const currentMeasurement = measurementDrawerSignal.value.measurement;
 
   const handleClose = () => {
+    console.log(measurementDrawerSignal.value);
     measurementDrawerSignal.value.setIsOpen(false);
   };
 
@@ -253,7 +257,7 @@ export const MeasurementDrawer = () => {
               ) : (
                 <Controller
                   key={currentMeasurement.id}
-                  name={`client.${currentMeasurement.id}` as `client.${keyof CreateClientPayload["client"]}`}
+                  name={`client.measurements.${currentMeasurement.id}` as any}
                   control={control}
                   render={({ field }) =>
                     (
@@ -270,7 +274,7 @@ export const MeasurementDrawer = () => {
                         }}
                         onBlur={(e) => {
                           const value = e.currentTarget.value;
-                          setValue(`client.${currentMeasurement.id}` as `client.${keyof CreateClientPayload["client"]}`, value, {
+                          setValue(`client.measurements.${currentMeasurement.id}` as any, value as any, {
                             shouldValidate: true,
                             shouldDirty: true,
                           });

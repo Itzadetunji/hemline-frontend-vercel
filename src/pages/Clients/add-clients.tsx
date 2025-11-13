@@ -121,6 +121,7 @@ export const AddClients = () => {
       ),
     };
   }, []);
+
   return (
     <FormProvider {...formMethods}>
       {

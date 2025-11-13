@@ -20,40 +20,42 @@ export interface ClientAttributes {
   phone_number?: string;
   email?: string;
   in_trash: boolean;
-  shoulder_width?: string | null;
-  bust_chest?: string | null;
-  round_underbust?: string | null;
-  neck_circumference?: string | null;
-  armhole_circumference?: string | null;
-  arm_length_full?: string | null;
-  arm_length_three_quarter?: string | null;
-  sleeve_length?: string | null;
-  round_sleeve_bicep?: string | null;
-  elbow_circumference?: string | null;
-  wrist_circumference?: string | null;
-  top_length?: string | null;
-  bust_point_nipple_to_nipple?: string | null;
-  shoulder_to_bust_point?: string | null;
-  shoulder_to_waist?: string | null;
-  round_chest_upper_bust?: string | null;
-  back_width?: string | null;
-  back_length?: string | null;
-  tommy_waist?: string | null;
-  waist?: string | null;
-  high_hip?: string | null;
-  hip_full?: string | null;
-  lap_thigh?: string | null;
-  knee_circumference?: string | null;
-  calf_circumference?: string | null;
-  ankle_circumference?: string | null;
-  skirt_length?: string | null;
-  trouser_length_outseam?: string | null;
-  inseam?: string | null;
-  crotch_depth?: string | null;
-  waist_to_hip?: string | null;
-  waist_to_floor?: string | null;
-  slit_height?: string | null;
-  bust_apex_to_waist?: string | null;
+  measurements: {
+    shoulder_width?: string | null;
+    bust_chest?: string | null;
+    round_underbust?: string | null;
+    neck_circumference?: string | null;
+    armhole_circumference?: string | null;
+    arm_length_full?: string | null;
+    arm_length_three_quarter?: string | null;
+    sleeve_length?: string | null;
+    round_sleeve_bicep?: string | null;
+    elbow_circumference?: string | null;
+    wrist_circumference?: string | null;
+    top_length?: string | null;
+    bust_point_nipple_to_nipple?: string | null;
+    shoulder_to_bust_point?: string | null;
+    shoulder_to_waist?: string | null;
+    round_chest_upper_bust?: string | null;
+    back_width?: string | null;
+    back_length?: string | null;
+    tommy_waist?: string | null;
+    waist?: string | null;
+    high_hip?: string | null;
+    hip_full?: string | null;
+    lap_thigh?: string | null;
+    knee_circumference?: string | null;
+    calf_circumference?: string | null;
+    ankle_circumference?: string | null;
+    skirt_length?: string | null;
+    trouser_length_outseam?: string | null;
+    inseam?: string | null;
+    crotch_depth?: string | null;
+    waist_to_hip?: string | null;
+    waist_to_floor?: string | null;
+    slit_height?: string | null;
+    bust_apex_to_waist?: string | null;
+  };
   custom_fields?: any[];
   orders?: OrderAttributes[];
   total_orders?: number;
@@ -139,39 +141,43 @@ export const CreateClientSchema = z.object({
     }),
     phone_number: z.string().optional(),
     email: z.email().optional().or(z.literal("")),
-    shoulder_width: z.string().optional(),
-    bust_chest: z.string().optional(),
-    round_underbust: z.string().optional(),
-    neck_circumference: z.string().optional(),
-    armhole_circumference: z.string().optional(),
-    arm_length_full_three_quarter: z.string().optional(),
-    sleeve_length: z.string().optional(),
-    round_sleeve_bicep: z.string().optional(),
-    elbow_circumference: z.string().optional(),
-    wrist_circumference: z.string().optional(),
-    top_length: z.string().optional(),
-    bust_point_nipple_to_nipple: z.string().optional(),
-    shoulder_to_bust_point: z.string().optional(),
-    shoulder_to_waist: z.string().optional(),
-    round_chest_upper_bust: z.string().optional(),
-    back_width: z.string().optional(),
-    back_length: z.string().optional(),
-    tommy_waist: z.string().optional(),
-    waist: z.string().optional(),
-    high_hip: z.string().optional(),
-    hip_full: z.string().optional(),
-    lap_thigh: z.string().optional(),
-    knee_circumference: z.string().optional(),
-    calf_circumference: z.string().optional(),
-    ankle_circumference: z.string().optional(),
-    skirt_length: z.string().optional(),
-    trouser_length_outseam: z.string().optional(),
-    inseam: z.string().optional(),
-    crotch_depth: z.string().optional(),
-    waist_to_hip: z.string().optional(),
-    waist_to_floor: z.string().optional(),
-    slit_height: z.string().optional(),
-    bust_apex_to_waist: z.string().optional(),
+    measurements: z
+      .object({
+        shoulder_width: z.string().optional(),
+        bust_chest: z.string().optional(),
+        round_underbust: z.string().optional(),
+        neck_circumference: z.string().optional(),
+        armhole_circumference: z.string().optional(),
+        arm_length_full_three_quarter: z.string().optional(),
+        sleeve_length: z.string().optional(),
+        round_sleeve_bicep: z.string().optional(),
+        elbow_circumference: z.string().optional(),
+        wrist_circumference: z.string().optional(),
+        top_length: z.string().optional(),
+        bust_point_nipple_to_nipple: z.string().optional(),
+        shoulder_to_bust_point: z.string().optional(),
+        shoulder_to_waist: z.string().optional(),
+        round_chest_upper_bust: z.string().optional(),
+        back_width: z.string().optional(),
+        back_length: z.string().optional(),
+        tommy_waist: z.string().optional(),
+        waist: z.string().optional(),
+        high_hip: z.string().optional(),
+        hip_full: z.string().optional(),
+        lap_thigh: z.string().optional(),
+        knee_circumference: z.string().optional(),
+        calf_circumference: z.string().optional(),
+        ankle_circumference: z.string().optional(),
+        skirt_length: z.string().optional(),
+        trouser_length_outseam: z.string().optional(),
+        inseam: z.string().optional(),
+        crotch_depth: z.string().optional(),
+        waist_to_hip: z.string().optional(),
+        waist_to_floor: z.string().optional(),
+        slit_height: z.string().optional(),
+        bust_apex_to_waist: z.string().optional(),
+      })
+      .optional(),
     custom_fields: z.record(z.string(), z.string().optional()).optional(),
     orders: z.array(OrderSchema.omit({ client_id: true, is_done: true })).optional(),
   }),
@@ -193,40 +199,44 @@ export const UpdateClientSchema = z.object({
     }),
     phone_number: z.string().optional().nullable(),
     email: z.email().optional().or(z.literal("")).nullable(),
-    shoulder_width: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    bust_chest: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    round_underbust: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    neck_circumference: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    armhole_circumference: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    arm_length_full: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    arm_length_three_quarter: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    sleeve_length: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    round_sleeve_bicep: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    elbow_circumference: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    wrist_circumference: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    top_length: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    bust_point_nipple_to_nipple: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    shoulder_to_bust_point: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    shoulder_to_waist: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    round_chest_upper_bust: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    back_width: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    back_length: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    tommy_waist: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    waist: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    high_hip: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    hip_full: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    lap_thigh: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    knee_circumference: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    calf_circumference: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    ankle_circumference: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    skirt_length: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    trouser_length_outseam: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    inseam: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    crotch_depth: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    waist_to_hip: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    waist_to_floor: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    slit_height: UpdateClientSchemaStringOrNumber.optional().nullable(),
-    bust_apex_to_waist: UpdateClientSchemaStringOrNumber.optional().nullable(),
+    measurements: z
+      .object({
+        shoulder_width: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        bust_chest: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        round_underbust: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        neck_circumference: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        armhole_circumference: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        arm_length_full: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        arm_length_three_quarter: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        sleeve_length: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        round_sleeve_bicep: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        elbow_circumference: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        wrist_circumference: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        top_length: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        bust_point_nipple_to_nipple: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        shoulder_to_bust_point: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        shoulder_to_waist: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        round_chest_upper_bust: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        back_width: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        back_length: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        tommy_waist: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        waist: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        high_hip: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        hip_full: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        lap_thigh: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        knee_circumference: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        calf_circumference: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        ankle_circumference: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        skirt_length: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        trouser_length_outseam: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        inseam: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        crotch_depth: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        waist_to_hip: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        waist_to_floor: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        slit_height: UpdateClientSchemaStringOrNumber.optional().nullable(),
+        bust_apex_to_waist: UpdateClientSchemaStringOrNumber.optional().nullable(),
+      })
+      .optional(),
     custom_fields: z.record(z.string(), UpdateClientSchemaStringOrNumber.optional()).optional().nullable(),
   }),
 });
