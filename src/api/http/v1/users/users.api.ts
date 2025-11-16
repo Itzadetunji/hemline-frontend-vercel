@@ -1,7 +1,7 @@
 import $http from "../../xhr";
 import type { GetUserProfileResponse, OnboardingFormData, OnboardingUserResponse, RequestMagicLinkPayload, VerifyMagicCodePayload } from "./users.types";
 
-const USERS_ENDPOINTS = {
+export const USERS_ENDPOINTS = {
   getUserProfile: "/auth/profile",
   getMagicLink: "/auth/request_magic_link",
   verifyMagicCode: "/auth/verify_code",
@@ -9,6 +9,7 @@ const USERS_ENDPOINTS = {
   updateUserProfile: "/users/profile",
   updateBusinessImage: "/users/business_image",
   logout: "/auth/logout",
+  refreshToken: "/auth/refresh",
 } as const;
 
 export const USERS_API = {
@@ -31,6 +32,8 @@ export const USERS_API = {
         },
       })
       .then((res) => res.data),
+
+  REFRESH_TOKEN: async (): Promise<OnboardingUserResponse> => await $http.post(USERS_ENDPOINTS.refreshToken).then((res) => res.data),
 
   UPDATE_USER_PROFILE: async (data: OnboardingFormData): Promise<OnboardingUserResponse> => await $http.patch(USERS_ENDPOINTS.updateUserProfile, data).then((res) => res.data),
 

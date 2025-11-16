@@ -55,7 +55,7 @@ export const useGetUserProfile = () => {
       userStore.updateUser({
         user: null,
         theme: window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light",
-        token: undefined,
+        access_token: undefined,
       });
       setEmail("");
       location.route("/gallery", true);
@@ -63,7 +63,7 @@ export const useGetUserProfile = () => {
     if (getUserProfileQuery.status === "success") {
       // console.log("User profile fetched successfully:", getUserProfileQuery.data);
       userStore.updateUser({
-        token: getUserProfileQuery.data.data.token,
+        access_token: getUserProfileQuery.data.data.access_token,
         user: getUserProfileQuery.data.data.user,
       });
     }
@@ -82,7 +82,7 @@ export const useVeriftMagicCode = () => {
 
       // Update the user store with the new user data
       userStore.updateUser({
-        token: data.data.token,
+        access_token: data.data.access_token,
         user: data.data.user,
       });
       console.log(userSignal.value);
@@ -115,7 +115,7 @@ export const useVerifyMagicLink = () => {
 
       // Update the user store with the new user data
       userStore.updateUser({
-        token: data.data.token,
+        access_token: data.data.access_token,
         user: data.data.user,
       });
       console.log(userSignal.value);
@@ -150,7 +150,7 @@ export const useUpdateUserProfile = () => {
 
       // Update the user store with the new user data
       userStore.updateUser({
-        user: data.data,
+        user: data.data.user,
       });
 
       // Update the query cache directly with the new user data
@@ -161,7 +161,7 @@ export const useUpdateUserProfile = () => {
           ...oldData,
           data: {
             ...oldData.data,
-            user: data.data,
+            user: data.data.user,
           },
         };
       });
@@ -185,7 +185,7 @@ export const useUpdateBusinessImage = () => {
     onSuccess: (data) => {
       // Update the user store with the new user data
       userStore.updateUser({
-        user: data.data,
+        user: data.data.user,
       });
 
       toast.success("Business image updated successfully!", {
@@ -200,7 +200,7 @@ export const useUpdateBusinessImage = () => {
           ...oldData,
           data: {
             ...oldData.data,
-            user: data.data,
+            user: data.data.user,
           },
         };
       });

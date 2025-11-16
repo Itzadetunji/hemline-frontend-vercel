@@ -18,7 +18,7 @@ export const isAuthenticated = computed(() => {
   // Check if we have a valid user object with required properties
   const userStore = userSignal.value;
   console.log(userStore);
-  if (!userStore?.user || !userStore?.token) {
+  if (!userStore?.user || !userStore?.access_token) {
     console.log(userStore);
     return false;
   }
