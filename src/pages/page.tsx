@@ -46,14 +46,14 @@ export const LandingPage = () => {
           <img src="/assets/brand/logo.svg" alt="Logo" class="size-9" />
           <h1 class="text-2xl text-black">HEMLINE</h1>
         </div>
-        {/* <ul class="flex items-center gap-3">
+        <ul class="flex items-center gap-3">
           <Button asChild class="border-line" variant="outline">
             <a href="/sign-in">Log in</a>
           </Button>
           <Button asChild class="" variant="secondary">
-            <a href="/sign-up">Sign Up</a>
+            <a href="/sign-up">Sign up free</a>
           </Button>
-        </ul> */}
+        </ul>
       </nav>
       <div class="flex flex-1 flex-col items-stretch justify-between gap-10 pt-10 md:pt-30">
         <div class="flex flex-[0.7] items-stretch justify-between gap-10 font-light text-4xl max-md:flex-col md:text-5xl">
