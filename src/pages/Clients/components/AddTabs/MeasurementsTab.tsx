@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Icon } from "@iconify/react";
 import { signal } from "@preact/signals";
+import { useEffect, useRef } from "preact/hooks";
 import { Controller, useFormContext } from "react-hook-form";
 
 export interface MeasurementSignalType {
@@ -191,10 +192,20 @@ export const MeasurementDrawer = () => {
   const { control, setValue, watch } = useFormContext<CreateClientPayload>();
   const currentMeasurement = measurementDrawerSignal.value.measurement;
 
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
   const handleClose = () => {
     console.log(measurementDrawerSignal.value);
     measurementDrawerSignal.value.setIsOpen(false);
   };
+
+  useEffect(() => {
+    if (measurementDrawerSignal.value.isOpen) {
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
+    }
+  }, [measurementDrawerSignal.value.isOpen]);
 
   return (
     <Drawer
@@ -219,7 +230,7 @@ export const MeasurementDrawer = () => {
             />
           )}
           <div class="flex w-1/2 flex-col items-center gap-2.5 border-line-700 border-t pt-2">
-            <p class="font-medium text-black text-sm">{currentMeasurement?.title}</p>
+            <p class="text-center font-medium text-black text-sm">{currentMeasurement?.title}</p>
             {currentMeasurement &&
               (currentMeasurement.is_custom ? (
                 <Controller
@@ -233,6 +244,7 @@ export const MeasurementDrawer = () => {
                         placeholder="0"
                         class="h-6 w-12 bg-secondary text-center plceholder:text-grey text-black"
                         inputMode="numeric"
+                        ref={inputRef}
                         value={String(field.value || "")}
                         onChange={(e) => {
                           const value = e.currentTarget.value;
@@ -268,6 +280,7 @@ export const MeasurementDrawer = () => {
                         class="h-6 w-12 bg-secondary text-center plceholder:text-grey text-black"
                         inputMode="decimal"
                         value={String(field.value || "")}
+                        ref={inputRef}
                         onChange={(e) => {
                           const value = e.currentTarget.value;
                           field.onChange(value);

@@ -40,7 +40,7 @@ export const EditDetailsTab = () => {
       </div>
       <ul class="mt-7 flex flex-col gap-6">
         <div class="flex items-start justify-between gap-4">
-          <div className="flex flex-col gap-1">
+          <div className="flex min-w-0 flex-1 flex-col gap-1">
             <Label class="flex min-w-0 flex-1 flex-col items-stretch gap-4">
               <p class="font-medium text-sm leading-0">First Name</p>
               <Controller
@@ -52,7 +52,7 @@ export const EditDetailsTab = () => {
                       <input
                         {...field}
                         placeholder="First Name"
-                        class="flex min-h-10.5 flex-1 items-center gap-3.5 border border-line-700 px-3 text-sm placeholder:text-grey-400 disabled:cursor-not-allowed disabled:opacity-50"
+                        class="flex min-h-10.5 flex-1 items-center gap-3.5 border border-line-700 px-3 text-sm placeholder:text-grey-400 focus:outline focus:outline-primary disabled:cursor-not-allowed disabled:opacity-50"
                         disabled={!EditingClientSignal.value.isEditing}
                       />
                     </div>
@@ -62,7 +62,7 @@ export const EditDetailsTab = () => {
             </Label>
             {formMethods.formState.errors.client?.first_name && <p class="text-destructive text-xs">{formMethods.formState.errors.client.first_name.message}</p>}
           </div>
-          <div className="flex flex-col gap-1">
+          <div className="flex min-w-0 flex-1 flex-col gap-1">
             <Label class="flex min-w-0 flex-1 flex-col items-stretch gap-4">
               <p class="font-medium text-sm leading-0">Last Name</p>
               <Controller
@@ -74,7 +74,7 @@ export const EditDetailsTab = () => {
                       <input
                         {...field}
                         placeholder="Last Name"
-                        class="flex min-h-10.5 flex-1 items-center gap-3.5 border border-line-700 px-3 text-sm placeholder:text-grey-400 disabled:cursor-not-allowed disabled:opacity-50"
+                        class="flex min-h-10.5 flex-1 items-center gap-3.5 border border-line-700 px-3 text-sm placeholder:text-grey-400 focus:outline focus:outline-primary disabled:cursor-not-allowed disabled:opacity-50"
                         disabled={!EditingClientSignal.value.isEditing}
                       />
                     </div>
@@ -159,7 +159,7 @@ export const EditDetailsTab = () => {
                     <input
                       {...field}
                       value={field.value ?? ""}
-                      class="flex min-h-10.5 flex-1 items-center gap-3.5 border border-line-700 px-3 text-sm placeholder:text-grey-400 disabled:cursor-not-allowed disabled:opacity-50"
+                      class="flex min-h-10.5 flex-1 items-center gap-3.5 border border-line-700 px-3 text-sm placeholder:text-grey-400 focus:outline focus:outline-primary disabled:cursor-not-allowed disabled:opacity-50"
                       disabled={!EditingClientSignal.value.isEditing}
                     />
                   </div>
@@ -182,7 +182,7 @@ export const EditDetailsTab = () => {
                       {...field}
                       value={field.value ?? ""}
                       type="email"
-                      class="flex min-h-10.5 flex-1 items-center gap-3.5 border border-line-700 px-3 text-sm placeholder:text-grey-400 disabled:cursor-not-allowed disabled:opacity-50"
+                      class="flex min-h-10.5 flex-1 items-center gap-3.5 border border-line-700 px-3 text-sm placeholder:text-grey-400 focus:outline focus:outline-primary disabled:cursor-not-allowed disabled:opacity-50"
                       disabled={!EditingClientSignal.value.isEditing}
                     />
                   </div>

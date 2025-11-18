@@ -295,27 +295,27 @@ const EditableOrderItem = (props: { order: OrderAttributes; setIsEditing: Dispat
     <form class="flex flex-col gap-6 border-line-700 border-y py-5" onSubmit={handleSubmit}>
       <div class="flex flex-col gap-6">
         {/* Item Name */}
-        <Label class="flex flex-col items-stretch gap-1">
-          <div class="flex items-center justify-between">
-            <p class="font-medium text-sm">Item Name</p>
-          </div>
-          <Controller
-            name="order.item"
-            control={formMethods.control}
-            render={({ field: itemField }) =>
-              (
-                <div class="flex flex-col gap-1.5">
+        <div class="flex flex-col gap-1">
+          <Label class="flex flex-col items-stretch gap-1">
+            <div class="flex items-center justify-between">
+              <p class="font-medium text-sm">Item Name</p>
+            </div>
+            <Controller
+              name="order.item"
+              control={formMethods.control}
+              render={({ field: itemField }) =>
+                (
                   <input
                     {...itemField}
-                    placeholder="blue senator"
-                    class="flex min-h-10.5 flex-1 items-center gap-3.5 border border-line-700 px-3 text-sm placeholder:text-grey-400"
+                    placeholder="Blue senator"
+                    class="flex min-h-10.5 flex-1 items-center gap-3.5 border border-line-700 px-3 text-sm placeholder:text-grey-400 focus:outline focus:outline-primary"
                   />
-                  {formMethods.formState.errors.order?.item && <p class="text-destructive text-xs">{formMethods.formState.errors.order?.item?.message}</p>}
-                </div>
-              ) as any
-            }
-          />
-        </Label>
+                ) as any
+              }
+            />
+          </Label>
+          {formMethods.formState.errors.order?.item && <p class="text-destructive text-xs">{formMethods.formState.errors.order?.item?.message}</p>}
+        </div>
 
         {/* Quantity */}
         <Label class="flex w-fit border border-line-700">
@@ -388,7 +388,7 @@ const EditableOrderItem = (props: { order: OrderAttributes; setIsEditing: Dispat
                   <div class="relative">
                     <button
                       type="button"
-                      class="flex min-h-10.5 w-full items-center gap-3.5 border border-line-700 px-3 text-left text-sm placeholder:text-grey-400"
+                      class="flex min-h-10.5 w-full items-center gap-3.5 border border-line-700 px-3 text-left text-sm placeholder:text-grey-400 focus:outline focus:outline-primary"
                       onClick={(e) => {
                         const input = e.currentTarget.nextElementSibling as HTMLInputElement;
                         input?.showPicker();
@@ -478,7 +478,7 @@ const AddNewOrderItem = (props: { setAddingNewOrder: Dispatch<StateUpdater<boole
                 <div class="flex flex-col gap-1.5">
                   <input
                     {...itemField}
-                    placeholder="blue senator"
+                    placeholder="Blue senator"
                     class="flex min-h-10.5 flex-1 items-center gap-3.5 border border-line-700 px-3 text-sm placeholder:text-grey-400"
                   />
                   {formMethods.formState.errors.order?.item && <p class="text-destructive text-xs">{formMethods.formState.errors.order?.item?.message}</p>}
@@ -538,7 +538,7 @@ const AddNewOrderItem = (props: { setAddingNewOrder: Dispatch<StateUpdater<boole
                   <textarea
                     {...notesField}
                     placeholder="The client want it to be fitted and the trousers should be very long and fitted"
-                    class="flex min-h-20 flex-1 items-center gap-3.5 border border-line-700 px-3 py-3 text-sm placeholder:text-grey-400"
+                    class="flex min-h-20 flex-1 items-center gap-3.5 border border-line-700 px-3 py-3 text-sm placeholder:text-grey-400 focus:outline focus:outline-primary"
                   />
                   {formMethods.formState.errors.order?.notes && <p class="text-destructive text-xs">{formMethods.formState.errors.order?.notes?.message}</p>}
                 </div>

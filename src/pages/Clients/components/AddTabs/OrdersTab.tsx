@@ -45,33 +45,33 @@ export const OrdersTab = () => {
             {fields.map((field, index) => (
               <li key={field.id} class="flex flex-col gap-6 border-b border-b-line-700 pb-5 last:border-b-0 last:pb-0">
                 {/* Item Name */}
-                <Label class="flex flex-col items-stretch gap-4">
-                  <div class="flex items-center justify-between">
-                    <p class="font-medium text-sm leading-0">Item {index + 1}</p>
-                    <Button class="h-fit w-fit gap-2 p-0 text-grey" variant="ghost" type="button" onClick={() => remove(index)}>
-                      <span class="size-4">
-                        <Icon icon="ix:cancel" />
-                      </span>
-                      <p>Remove</p>
-                    </Button>
-                  </div>
-                  <Controller
-                    name={`client.orders.${index}.item`}
-                    control={control}
-                    render={({ field: itemField }) =>
-                      (
-                        <div class="flex flex-col gap-1.5">
+                <div class="flex flex-col gap-1">
+                  <Label class="flex flex-col items-stretch gap-1">
+                    <div class="flex items-center justify-between">
+                      <p class="flex-1 font-medium text-sm">Item {index + 1}</p>
+                      <Button class="h-fit w-fit gap-2 p-0 text-grey" variant="ghost" type="button" onClick={() => remove(index)}>
+                        <span class="size-4">
+                          <Icon icon="ix:cancel" />
+                        </span>
+                        <p>Remove</p>
+                      </Button>
+                    </div>
+                    <Controller
+                      name={`client.orders.${index}.item`}
+                      control={control}
+                      render={({ field: itemField }) =>
+                        (
                           <input
                             {...itemField}
-                            placeholder="blue senator"
-                            class="flex min-h-10.5 flex-1 items-center gap-3.5 border border-line-700 px-3 text-sm placeholder:text-grey-400"
+                            placeholder="Blue senator"
+                            class="flex min-h-10.5 flex-1 items-center gap-3.5 border border-line-700 px-3 text-sm placeholder:text-grey-400 focus:outline focus:outline-primary"
                           />
-                          {errors.client?.orders?.[index]?.item && <p class="text-destructive text-xs">{errors.client.orders[index]?.item?.message}</p>}
-                        </div>
-                      ) as any
-                    }
-                  />
-                </Label>
+                        ) as any
+                      }
+                    />
+                  </Label>
+                  {errors.client?.orders?.[index]?.item && <p class="text-destructive text-xs">{errors.client.orders[index]?.item?.message}</p>}
+                </div>
 
                 {/* Quantity */}
                 <Label class="flex w-fit border border-line-700">
@@ -123,7 +123,7 @@ export const OrdersTab = () => {
                           <textarea
                             {...notesField}
                             placeholder="The client want it to be fitted and the trousers should be very long and fitted"
-                            class="flex min-h-20 flex-1 items-center gap-3.5 border border-line-700 px-3 py-3 text-sm placeholder:text-grey-400"
+                            class="flex min-h-20 flex-1 items-center gap-3.5 border border-line-700 px-3 py-3 text-sm placeholder:text-grey-400 focus:outline focus:outline-primary"
                           />
                           {errors.client?.orders?.[index]?.notes && <p class="text-destructive text-xs">{errors.client.orders[index]?.notes?.message}</p>}
                         </div>
@@ -144,7 +144,7 @@ export const OrdersTab = () => {
                           <div class="relative">
                             <button
                               type="button"
-                              class="flex min-h-10.5 w-full items-center gap-3.5 border border-line-700 px-3 text-left text-sm placeholder:text-grey-400"
+                              class="flex min-h-10.5 w-full items-center gap-3.5 border border-line-700 px-3 text-left text-sm placeholder:text-grey-400 focus:outline focus:outline-primary"
                               onClick={(e) => {
                                 const input = e.currentTarget.nextElementSibling as HTMLInputElement;
                                 input?.showPicker();

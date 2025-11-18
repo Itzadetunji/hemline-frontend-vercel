@@ -17,21 +17,19 @@ export const DetailsTab = () => {
       <ul class="mt-7 flex flex-col gap-6">
         <div class="flex items-start justify-between gap-4">
           {/* First Name */}
-          <div class="flex flex-col gap-1">
-            <Label class="flex min-w-0 flex-1 flex-col items-stretch gap-4 focus-within:outline focus-within:outline-primary">
+          <div class="flex min-w-0 flex-1 flex-col gap-1">
+            <Label class="flex min-w-0 flex-1 flex-col items-stretch gap-4">
               <p class="font-medium text-sm leading-0">First Name</p>
               <Controller
                 name="client.first_name"
                 control={formMethods.control}
                 render={({ field }) =>
                   (
-                    <div class="flex flex-col gap-1.5">
-                      <input
-                        {...field}
-                        placeholder="First Name"
-                        class="flex min-h-10.5 flex-1 items-center gap-3.5 border border-line-700 px-3 text-sm outline-none placeholder:text-grey-400"
-                      />
-                    </div>
+                    <input
+                      {...field}
+                      placeholder="First Name"
+                      class="flex min-h-10.5 flex-1 items-center gap-3.5 border border-line-700 px-3 text-sm placeholder:text-grey-400 focus:outline focus:outline-primary"
+                    />
                   ) as any
                 }
               />
@@ -40,26 +38,24 @@ export const DetailsTab = () => {
           </div>
 
           {/* Last Name */}
-          <div class="flex flex-col gap-1">
-            <Label class="flex min-w-0 flex-1 flex-col items-stretch gap-4 focus-within:outline focus-within:outline-primary">
+          <div class="flex min-w-0 flex-1 flex-col gap-1">
+            <Label class="flex min-w-0 flex-1 flex-col items-stretch gap-4">
               <p class="font-medium text-sm leading-0">Last Name</p>
               <Controller
                 name="client.last_name"
                 control={formMethods.control}
                 render={({ field }) =>
                   (
-                    <div class="flex flex-col gap-1.5">
-                      <input
-                        {...field}
-                        placeholder="Last Name"
-                        class="flex min-h-10.5 flex-1 items-center gap-3.5 border border-line-700 px-3 text-sm outline-none placeholder:text-grey-400"
-                      />
-                    </div>
+                    <input
+                      {...field}
+                      placeholder="Last Name"
+                      class="flex min-h-10.5 flex-1 items-center gap-3.5 border border-line-700 px-3 text-sm placeholder:text-grey-400 focus:outline focus:outline-primary"
+                    />
                   ) as any
                 }
               />
-              {formMethods.formState.errors.client?.last_name && <p class="text-destructive text-xs">{formMethods.formState.errors.client.last_name.message}</p>}
             </Label>
+            {formMethods.formState.errors.client?.last_name && <p class="text-destructive text-xs">{formMethods.formState.errors.client.last_name.message}</p>}
           </div>
         </div>
 
@@ -123,20 +119,18 @@ export const DetailsTab = () => {
 
         {/* Phone Number */}
         <div class="flex flex-col gap-1">
-          <Label class="flex flex-col items-stretch gap-4 focus-within:outline focus-within:outline-primary">
+          <Label class="flex flex-col items-stretch gap-4">
             <p class="font-medium text-sm leading-0">Phone Number</p>
             <Controller
               name="client.phone_number"
               control={formMethods.control}
               render={({ field }) =>
                 (
-                  <div class="flex flex-col gap-1.5">
-                    <input
-                      {...field}
-                      placeholder="+234 123 456 7890"
-                      class="flex min-h-10.5 flex-1 items-center gap-3.5 border border-line-700 px-3 text-sm outline-none placeholder:text-grey-400"
-                    />
-                  </div>
+                  <input
+                    {...field}
+                    placeholder="+234 123 456 7890"
+                    class="flex min-h-10.5 flex-1 items-center gap-3.5 border border-line-700 px-3 text-sm placeholder:text-grey-400 focus:outline focus:outline-primary"
+                  />
                 ) as any
               }
             />
@@ -146,21 +140,19 @@ export const DetailsTab = () => {
 
         {/* Email */}
         <div class="flex flex-col gap-1">
-          <Label class="flex flex-col items-stretch gap-4 focus-within:outline focus-within:outline-primary">
+          <Label class="flex flex-col items-stretch gap-4">
             <p class="font-medium text-sm leading-0">Email</p>
             <Controller
               name="client.email"
               control={formMethods.control}
               render={({ field }) =>
                 (
-                  <div class="flex flex-col gap-1.5">
-                    <input
-                      {...field}
-                      placeholder="hello@hemline.studio"
-                      type="email"
-                      class="flex min-h-10.5 flex-1 items-center gap-3.5 border border-line-700 px-3 text-sm outline-none placeholder:text-grey-400"
-                    />
-                  </div>
+                  <input
+                    {...field}
+                    placeholder="hello@hemline.studio"
+                    type="email"
+                    class="flex min-h-10.5 flex-1 items-center gap-3.5 border border-line-700 px-3 text-sm placeholder:text-grey-400 focus:outline focus:outline-primary"
+                  />
                 ) as any
               }
             />
