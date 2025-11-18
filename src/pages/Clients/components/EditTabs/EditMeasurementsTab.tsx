@@ -65,7 +65,7 @@ export const EditMeasurementsTab = () => {
                     maxItems={1}
                     disabled={formMethods.formState.isSubmitting}
                   />
-                  {formMethods.formState.errors.client?.measurement_unit && <p class="text-red-500 text-xs">{formMethods.formState.errors.client.measurement_unit.message}</p>}
+                  {formMethods.formState.errors.client?.measurement_unit && <p class="text-destructive text-xs">{formMethods.formState.errors.client.measurement_unit.message}</p>}
                 </div>
               ) as any
             }

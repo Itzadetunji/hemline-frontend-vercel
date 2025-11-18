@@ -107,14 +107,14 @@ const ThereAreClients = (props: { clients: ClientData[]; hasNextPage: boolean; i
       </ul>
 
       <Label class="flex flex-col items-stretch gap-4">
-        <div class="flex h-10.5 items-center gap-3.5 border border-line-700 px-3">
+        <div class="flex h-10.5 items-center gap-3.5 border border-line-700 px-3 focus-within:outline focus-within:outline-primary">
           <i className="size-4.5">
             <Icon icon="lucide:search" fontSize="18" />
           </i>
           <input
             type="text"
             placeholder="Name, Email, Phone Number"
-            class="flex-1 text-sm placeholder:text-grey-400"
+            class="flex-1 text-sm outline-none placeholder:text-grey-400"
             value={searchTerm}
             onInput={(e: Event) => setSearchTerm((e.currentTarget as HTMLInputElement).value)}
           />

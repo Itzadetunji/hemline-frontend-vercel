@@ -88,7 +88,13 @@ export const useUploadImages = () => {
 
       // Invalidate all gallery lists to refetch with new images
       queryClient.invalidateQueries({
+        queryKey: galleryQueryKeys.infinite(),
+        exact: false,
+      });
+
+      queryClient.invalidateQueries({
         queryKey: galleryQueryKeys.lists(),
+        exact: false,
       });
 
       queryClient.invalidateQueries({

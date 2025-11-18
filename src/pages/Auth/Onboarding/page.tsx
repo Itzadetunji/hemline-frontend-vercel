@@ -140,11 +140,11 @@ const OnboardingStep1 = (props: OnboardingStepProps) => {
               render={({ field }) =>
                 (
                   <div class="flex flex-col gap-2">
-                    <div class="flex h-10.5 items-center gap-2 border border-line-700 px-3">
+                    <div class="flex h-10.5 items-center gap-2 border border-line-700 px-3 focus-within:outline focus-within:outline-primary">
                       <Icon icon="hugeicons:user-02" fontSize="18" className="flex-shrink-0" />
-                      <input {...field} placeholder="John" class="min-w-0 flex-1 text-sm placeholder:text-grey-400" />
+                      <input {...field} placeholder="John" class="min-w-0 flex-1 text-sm outline-none placeholder:text-grey-400" />
                     </div>
-                    {errors.first_name && <p class="text-red-500 text-xs">{errors.first_name.message}</p>}
+                    {errors.first_name && <p class="text-destructive text-xs">{errors.first_name.message}</p>}
                   </div>
                 ) as any
               }
@@ -158,11 +158,11 @@ const OnboardingStep1 = (props: OnboardingStepProps) => {
               render={({ field }) =>
                 (
                   <div class="flex flex-col gap-2">
-                    <div class="flex h-10.5 items-center gap-2 border border-line-700 px-3">
+                    <div class="flex h-10.5 items-center gap-2 border border-line-700 px-3 focus-within:outline focus-within:outline-primary">
                       <Icon icon="hugeicons:user-02" fontSize="18" className="flex-shrink-0" />
-                      <input {...field} placeholder="Doe" class="min-w-0 flex-1 text-sm placeholder:text-grey-400" />
+                      <input {...field} placeholder="Doe" class="min-w-0 flex-1 text-sm outline-none placeholder:text-grey-400" />
                     </div>
-                    {errors.last_name && <p class="text-red-500 text-xs">{errors.last_name.message}</p>}
+                    {errors.last_name && <p class="text-destructive text-xs">{errors.last_name.message}</p>}
                   </div>
                 ) as any
               }
@@ -190,7 +190,7 @@ const OnboardingStep1 = (props: OnboardingStepProps) => {
                     icon="material-symbols-light:work-outline"
                     maxItems={1}
                   />
-                  {errors.profession && <p class="text-red-500 text-xs">{errors.profession.message}</p>}
+                  {errors.profession && <p class="text-destructive text-xs">{errors.profession.message}</p>}
                 </div>
               ) as any
             }
@@ -206,11 +206,11 @@ const OnboardingStep1 = (props: OnboardingStepProps) => {
             render={({ field }) =>
               (
                 <div class="flex flex-col gap-2">
-                  <div class="flex h-10.5 items-center gap-2 border border-line-700 px-3">
+                  <div class="flex h-10.5 items-center gap-2 border border-line-700 px-3 focus-within:outline focus-within:outline-primary">
                     <Icon icon="material-symbols-light:add-business-outline-rounded" fontSize="18" />
-                    <input {...field} placeholder="John's Tailoring" class="flex-1 text-sm placeholder:text-grey-400" />
+                    <input {...field} placeholder="John's Tailoring" class="flex-1 text-sm outline-none placeholder:text-grey-400" />
                   </div>
-                  {errors.business_name && <p class="text-red-500 text-xs">{errors.business_name.message}</p>}
+                  {errors.business_name && <p class="text-destructive text-xs">{errors.business_name.message}</p>}
                 </div>
               ) as any
             }
@@ -226,11 +226,11 @@ const OnboardingStep1 = (props: OnboardingStepProps) => {
             render={({ field }) =>
               (
                 <div class="flex flex-col gap-2">
-                  <div class="flex h-10.5 items-center gap-2 border border-line-700 px-3">
+                  <div class="flex h-10.5 items-center gap-2 border border-line-700 px-3 focus-within:outline focus-within:outline-primary">
                     <Icon icon="hugeicons:maps-location-02" fontSize="18" />
-                    <input {...field} placeholder="123 Main St, City, State" class="flex-1 text-sm placeholder:text-grey-400" />
+                    <input {...field} placeholder="123 Main St, City, State" class="flex-1 text-sm outline-none placeholder:text-grey-400" />
                   </div>
-                  {errors.business_address && <p class="text-red-500 text-xs">{errors.business_address.message}</p>}
+                  {errors.business_address && <p class="text-destructive text-xs">{errors.business_address.message}</p>}
                 </div>
               ) as any
             }
@@ -275,7 +275,7 @@ const OnboardingStep2 = (props: OnboardingStepProps) => {
             (
               <div class="flex flex-col gap-4">
                 <CheckboxGroup options={SkillChoices as any} value={field.value} onChange={field.onChange} />
-                {errors.skills && <p class="text-red-500 text-xs">{errors.skills.message}</p>}
+                {errors.skills && <p class="text-destructive text-xs">{errors.skills.message}</p>}
               </div>
             ) as any
           }
@@ -339,7 +339,7 @@ const OnboardingStep3 = (props: OnboardingStepProps) => {
             ) as any
           }
         />
-        {errors.theme && <p class="mt-2 text-red-500 text-xs">{errors.theme.message}</p>}
+        {errors.theme && <p class="mt-2 text-destructive text-xs">{errors.theme.message}</p>}
       </div>
       <Button class="w-full gap-3" type="submit" disabled={props.isSubmitting}>
         {props.isSubmitting ? "Submitting..." : "Complete Setup"}

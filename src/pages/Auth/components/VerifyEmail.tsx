@@ -73,7 +73,7 @@ export const VerifyEmail = () => {
           <div class="flex w-full items-center gap-3 px-4">
             <Controller name="code" control={formMethods.control} render={({ field }) => (<InputOTPGroup value={String(field.value || "")} onChange={field.onChange} />) as any} />
           </div>
-          {formMethods.formState.errors.code && <p class="text-red-500 text-xs">{formMethods.formState.errors.code.message}</p>}
+          {formMethods.formState.errors.code && <p class="text-destructive text-xs">{formMethods.formState.errors.code.message}</p>}
         </Label>
 
         <div class="flex flex-col gap-3">

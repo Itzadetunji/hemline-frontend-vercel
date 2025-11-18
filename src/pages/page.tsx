@@ -79,7 +79,7 @@ export const LandingPage = () => {
             </p>
             <form class="flex flex-wrap items-center justify-end gap-2" onSubmit={handleSubmit}>
               <div class="flex flex-col gap-1">
-                <Label class="flex h-10.5 items-center gap-3.5 border border-line-700 px-3 max-md:h-8">
+                <Label class="flex h-10.5 items-center gap-3.5 border border-line-700 px-3 focus-within:outline focus-within:outline-primary max-md:h-8">
                   <i className="size-4.5">
                     <Icon icon="fluent:mail-16-regular" fontSize="18" />
                   </i>
@@ -87,11 +87,13 @@ export const LandingPage = () => {
                     name="email"
                     control={formMethods.control}
                     render={({ field }) =>
-                      (<input {...field} ref={emailInputRef} type="email" placeholder="hello@hemline.studio" class="flex-1 text-sm placeholder:text-grey-400" />) as any
+                      (
+                        <input {...field} ref={emailInputRef} type="email" placeholder="hello@hemline.studio" class="flex-1 text-sm outline-none placeholder:text-grey-400" />
+                      ) as any
                     }
                   />
                 </Label>
-                {formMethods.formState.errors.email && <p class="text-red-500 text-xs">{formMethods.formState.errors.email.message}</p>}
+                {formMethods.formState.errors.email && <p class="text-destructive text-xs">{formMethods.formState.errors.email.message}</p>}
               </div>
 
               <Button class="h-10.5 w-fit gap-3 max-md:h-8" type="submit" disabled={waitlistMutation.isPending}>

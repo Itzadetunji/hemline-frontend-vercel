@@ -61,7 +61,7 @@ export const EditFolderDialog = (props: EditFolderDialogProps) => {
             <Label htmlFor="folder-name" class="font-medium text-sm">
               Folder name
             </Label>
-            <div class="flex h-10.5 items-center gap-3.5 border border-line-700 px-3">
+            <div class="flex h-10.5 items-center gap-3.5 border border-line-700 px-3 focus-within:outline focus-within:outline-primary">
               <i className="size-4.5">
                 <Icon icon="bi:folder" fontSize={18} />
               </i>
@@ -70,7 +70,7 @@ export const EditFolderDialog = (props: EditFolderDialogProps) => {
                 type="text"
                 value={folderName}
                 onInput={(e) => setFolderName((e.target as HTMLInputElement).value)}
-                class="flex-1 text-sm placeholder:text-grey-400"
+                class="flex-1 text-sm outline-none placeholder:text-grey-400"
                 placeholder="Enter folder name"
               />
             </div>

@@ -132,7 +132,7 @@ export const ShareToClientDialog = (props: ShareToClientDialogProps) => {
               <Label htmlFor="client-email" class="font-medium text-sm">
                 Client's email
               </Label>
-              <div class="flex h-10.5 items-center gap-3.5 border border-line-700 px-3">
+              <div class="flex h-10.5 items-center gap-3.5 border border-line-700 px-3 focus-within:outline focus-within:outline-primary">
                 <input
                   {...formMethods.register("email", {
                     onChange: () => {
@@ -142,14 +142,14 @@ export const ShareToClientDialog = (props: ShareToClientDialogProps) => {
                   })}
                   id="client-email"
                   placeholder="hello@hemline.studio"
-                  class="flex-1 text-sm placeholder:text-grey-400 disabled:opacity-50"
+                  class="flex-1 text-sm outline-none placeholder:text-grey-400 disabled:opacity-50"
                 />
                 <Button type="submit" class="!px-1 !py-1 h-fit gap-0" variant="outline" disabled={shareFolderMutation.isPending}>
                   <Icon icon="solar:arrow-up-linear" fontSize={16} />
                   <p class="ml-1 text-sm">Send</p>
                 </Button>
               </div>
-              {(formMethods.formState.errors as any).email && <p class="text-red-500 text-sm">{(formMethods.formState.errors as any).message}</p>}
+              {(formMethods.formState.errors as any).email && <p class="text-destructive text-sm">{(formMethods.formState.errors as any).message}</p>}
             </div>
           </form>
 

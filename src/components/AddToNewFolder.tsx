@@ -13,6 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Label } from "./ui/label";
 import { RadioGroup } from "./ui/radio-group";
 import { selectingSignal } from "@/layout/Header";
+import { useLocation } from "preact-iso";
 
 interface AddToNewFolderProps {
   addToNewFolder: boolean;
@@ -23,6 +24,7 @@ interface AddToNewFolderProps {
 }
 
 export const AddToNewFolder = (props: AddToNewFolderProps) => {
+  const location = useLocation();
   const createFolderMutation = useCreateFolder();
   const randomColor = Math.floor(Math.random() * 9);
   const {
@@ -52,7 +54,7 @@ export const AddToNewFolder = (props: AddToNewFolderProps) => {
 
     console.log(payload);
     await createFolderMutation.mutateAsync(payload, {
-      onSuccess: () => {
+      onSuccess: (data) => {
         props.onSuccess();
         toast.success("Images added to new folder", {});
         selectingSignal.value = {
@@ -60,6 +62,8 @@ export const AddToNewFolder = (props: AddToNewFolderProps) => {
           selectedItems: [],
         };
         reset();
+
+        location.route(`/gallery/folders/${data?.data.id}`);
       },
       onError: (error) => {
         toast.error(error.response?.data.errors?.[0] || "Error adding images to folders", {});
@@ -106,11 +110,11 @@ export const AddToNewFolder = (props: AddToNewFolderProps) => {
               render={({ field }) =>
                 (
                   <div class="flex flex-col gap-2">
-                    <div class="flex h-10.5 items-center gap-2 border border-line-700 px-3">
+                    <div class="flex h-10.5 items-center gap-2 border border-line-700 px-3 focus-within:outline focus-within:outline-primary">
                       <Icon icon="bi:folder" fontSize="18" className="flex-shrink-0" />
-                      <input {...field} placeholder="Wedding works" class="min-w-0 flex-1 text-sm placeholder:text-grey-400" />
+                      <input {...field} placeholder="Wedding works" class="min-w-0 flex-1 text-sm outline-none placeholder:text-grey-400" />
                     </div>
-                    {errors.folder?.name && <p class="text-red-500 text-xs">{errors.folder?.name.message}</p>}
+                    {errors.folder?.name && <p class="text-destructive text-xs">{errors.folder?.name.message}</p>}
                   </div>
                 ) as any
               }
@@ -144,7 +148,7 @@ export const AddToNewFolder = (props: AddToNewFolderProps) => {
                         />
                       )}
                     />
-                    {errors.folder?.folder_color && <p class="text-red-500 text-xs">{errors.folder?.folder_color.message}</p>}
+                    {errors.folder?.folder_color && <p class="text-destructive text-xs">{errors.folder?.folder_color.message}</p>}
                   </div>
                 ) as any
               }

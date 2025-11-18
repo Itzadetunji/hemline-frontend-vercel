@@ -142,7 +142,7 @@ export const AddToExistingFolder = (props: AddToExistingFolderProps) => {
                         return <FolderCard folder={folder} isSelected={isSelected} />;
                       }}
                     />
-                    {errors.folder_ids && <p class="text-red-500 text-xs">{errors.folder_ids.message}</p>}
+                    {errors.folder_ids && <p class="text-destructive text-xs">{errors.folder_ids.message}</p>}
                   </div>
                 ) as any
               }

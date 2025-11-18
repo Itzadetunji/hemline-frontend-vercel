@@ -66,7 +66,7 @@ export const OrdersTab = () => {
                             placeholder="blue senator"
                             class="flex min-h-10.5 flex-1 items-center gap-3.5 border border-line-700 px-3 text-sm placeholder:text-grey-400"
                           />
-                          {errors.client?.orders?.[index]?.item && <p class="text-red-500 text-xs">{errors.client.orders[index]?.item?.message}</p>}
+                          {errors.client?.orders?.[index]?.item && <p class="text-destructive text-xs">{errors.client.orders[index]?.item?.message}</p>}
                         </div>
                       ) as any
                     }
@@ -125,7 +125,7 @@ export const OrdersTab = () => {
                             placeholder="The client want it to be fitted and the trousers should be very long and fitted"
                             class="flex min-h-20 flex-1 items-center gap-3.5 border border-line-700 px-3 py-3 text-sm placeholder:text-grey-400"
                           />
-                          {errors.client?.orders?.[index]?.notes && <p class="text-red-500 text-xs">{errors.client.orders[index]?.notes?.message}</p>}
+                          {errors.client?.orders?.[index]?.notes && <p class="text-destructive text-xs">{errors.client.orders[index]?.notes?.message}</p>}
                         </div>
                       ) as any
                     }
@@ -154,7 +154,7 @@ export const OrdersTab = () => {
                             </button>
                             <input {...field} type="date" class="pointer-events-none absolute inset-0 opacity-0" />
                           </div>
-                          {errors.client?.orders?.[index]?.due_date && <p class="text-red-500 text-xs">{errors.client.orders[index]?.due_date?.message}</p>}
+                          {errors.client?.orders?.[index]?.due_date && <p class="text-destructive text-xs">{errors.client.orders[index]?.due_date?.message}</p>}
                         </div>
                       ) as any;
                     }}

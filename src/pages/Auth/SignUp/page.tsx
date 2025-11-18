@@ -45,15 +45,15 @@ export const SignUp = () => {
         <Label class="flex flex-col items-stretch gap-4">
           <p class="font-medium text-sm leading-0">Email</p>
           <div class="flex flex-col gap-1.5">
-            <div class="flex h-10.5 items-center gap-3.5 border border-line-700 px-3">
+            <div class="flex h-10.5 items-center gap-3.5 border border-line-700 px-3 focus-within:outline focus-within:outline-primary">
               <Icon icon="fluent:mail-16-regular" fontSize="18" />
               <Controller
                 name="email"
                 control={formMethods.control}
-                render={({ field }) => (<input {...field} type="email" placeholder="hello@hemline.studio" class="flex-1 text-sm placeholder:text-grey-400" />) as any}
+                render={({ field }) => (<input {...field} type="email" placeholder="hello@hemline.studio" class="flex-1 text-sm outline-none placeholder:text-grey-400" />) as any}
               />
             </div>
-            {formMethods.formState.errors.email && <p class="text-red-500 text-xs">{formMethods.formState.errors.email.message}</p>}
+            {formMethods.formState.errors.email && <p class="text-destructive text-xs">{formMethods.formState.errors.email.message}</p>}
           </div>
         </Label>
 

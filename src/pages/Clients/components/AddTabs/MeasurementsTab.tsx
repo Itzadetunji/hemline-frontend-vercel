@@ -74,7 +74,7 @@ export const MeasurementsTab = () => {
                     icon={null}
                     maxItems={1}
                   />
-                  {formMethods.formState.errors.client?.measurement_unit && <p class="text-red-500 text-xs">{formMethods.formState.errors.client.measurement_unit.message}</p>}
+                  {formMethods.formState.errors.client?.measurement_unit && <p class="text-destructive text-xs">{formMethods.formState.errors.client.measurement_unit.message}</p>}
                 </div>
               ) as any
             }

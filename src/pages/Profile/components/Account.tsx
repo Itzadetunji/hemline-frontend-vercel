@@ -100,11 +100,11 @@ export const Account = () => {
     };
   };
 
-  const updateTheme = () => {
-    // if (typeof window !== "undefined") {
-    //   localStorage.setItem("theme", payload.theme);
-    // }
-  };
+  // const updateTheme = () => {
+  //   // if (typeof window !== "undefined") {
+  //   //   localStorage.setItem("theme", payload.theme);
+  //   // }
+  // };
 
   useLayoutEffect(() => {
     if (getUserProfile.data) {
@@ -143,156 +143,158 @@ export const Account = () => {
             <div class="flex w-full flex-1 flex-col gap-6">
               {/* Full Name - Split into first and last */}
               <div class="flex w-full items-start justify-between gap-4">
-                <Label class="flex min-w-0 flex-1 flex-col items-stretch gap-4">
-                  <p class="font-medium text-sm leading-1">First name</p>
-                  <Controller
-                    name="first_name"
-                    control={formMethods.control}
-                    render={({ field }) =>
-                      (
-                        <div class="flex flex-col gap-2">
-                          <div class="flex h-10.5 items-center gap-2 border border-line-700 px-3">
+                <div className="flex min-w-0 flex-1 flex-col gap-1">
+                  <Label class="flex min-w-0 flex-1 flex-col items-stretch gap-4">
+                    <p class="font-medium text-sm leading-1">First name</p>
+                    <Controller
+                      name="first_name"
+                      control={formMethods.control}
+                      render={({ field }) =>
+                        (
+                          <div class="flex h-10.5 items-center gap-2 border border-line-700 px-3 focus-within:outline focus-within:outline-primary">
                             <Icon icon="hugeicons:user-02" fontSize="18" className="flex-shrink-0" />
-                            <input {...field} placeholder="John" class="min-w-0 flex-1 text-sm placeholder:text-grey-400" disabled={!isEditing} />
+                            <input {...field} placeholder="John" class="min-w-0 flex-1 text-sm outline-none placeholder:text-grey-400" disabled={!isEditing} />
                             {!isEditing && (
                               <button type="button" onClick={onEdit}>
                                 <Icon icon="iconoir:edit" fontSize="18" className="flex-shrink-0" />
                               </button>
                             )}
                           </div>
-                          {formMethods.formState.errors.first_name && <p class="text-red-500 text-xs">{formMethods.formState.errors.first_name.message}</p>}
-                        </div>
-                      ) as any
-                    }
-                  />
-                </Label>
-                <Label class="flex min-w-0 flex-1 flex-col items-stretch gap-4">
-                  <p class="font-medium text-sm leading-1">Last name</p>
-                  <Controller
-                    name="last_name"
-                    control={formMethods.control}
-                    render={({ field }) =>
-                      (
-                        <div class="flex flex-col gap-2">
-                          <div class="flex h-10.5 items-center gap-2 border border-line-700 px-3">
+                        ) as any
+                      }
+                    />
+                  </Label>
+                  {formMethods.formState.errors.first_name && <p class="text-destructive text-xs">{formMethods.formState.errors.first_name.message}</p>}
+                </div>
+                <div className="flex min-w-0 flex-1 flex-col gap-1">
+                  <Label class="flex min-w-0 flex-1 flex-col items-stretch gap-4">
+                    <p class="font-medium text-sm leading-1">Last name</p>
+                    <Controller
+                      name="last_name"
+                      control={formMethods.control}
+                      render={({ field }) =>
+                        (
+                          <div class="flex h-10.5 items-center gap-2 border border-line-700 px-3 focus-within:outline focus-within:outline-primary">
                             <Icon icon="hugeicons:user-02" fontSize="18" className="flex-shrink-0" />
-                            <input {...field} placeholder="Doe" class="min-w-0 flex-1 text-sm placeholder:text-grey-400" disabled={!isEditing} />
+                            <input {...field} placeholder="Doe" class="min-w-0 flex-1 text-sm outline-none placeholder:text-grey-400" disabled={!isEditing} />
                             {!isEditing && (
                               <button type="button" onClick={onEdit}>
                                 <Icon icon="iconoir:edit" fontSize="18" className="flex-shrink-0" />
                               </button>
                             )}
                           </div>
-                          {formMethods.formState.errors.last_name && <p class="text-red-500 text-xs">{formMethods.formState.errors.last_name.message}</p>}
-                        </div>
-                      ) as any
-                    }
-                  />
-                </Label>
+                        ) as any
+                      }
+                    />
+                  </Label>
+                  {formMethods.formState.errors.last_name && <p class="text-destructive text-xs">{formMethods.formState.errors.last_name.message}</p>}
+                </div>
               </div>
 
               {/* Profession */}
-              <Label class="flex flex-col items-stretch gap-4">
-                <p class="font-medium text-sm leading-1">Profession</p>
-                <Controller
-                  name="profession"
-                  control={formMethods.control}
-                  render={({ field }) =>
-                    (
-                      <div class="flex flex-col gap-2">
-                        <Select
-                          options={Profession.map((prof) => ({
-                            label: prof,
-                            value: prof,
-                          }))}
-                          value={field.value ? [field.value] : []}
-                          onChange={(selected) => field.onChange(selected[0] || "")}
-                          placeholder="Select your profession"
-                          icon="material-symbols-light:work-outline"
-                          maxItems={1}
-                          disabled={!isEditing}
-                        />
-                        {formMethods.formState.errors.profession && <p class="text-red-500 text-xs">{formMethods.formState.errors.profession.message}</p>}
-                      </div>
-                    ) as any
-                  }
-                />
-              </Label>
+              <div class="flex flex-col gap-1">
+                <Label class="flex flex-col items-stretch gap-4">
+                  <p class="font-medium text-sm leading-1">Profession</p>
+                  <Controller
+                    name="profession"
+                    control={formMethods.control}
+                    render={({ field }) =>
+                      (
+                        <div class="flex flex-col gap-2">
+                          <Select
+                            options={Profession.map((prof) => ({
+                              label: prof,
+                              value: prof,
+                            }))}
+                            value={field.value ? [field.value] : []}
+                            onChange={(selected) => field.onChange(selected[0] || "")}
+                            placeholder="Select your profession"
+                            icon="material-symbols-light:work-outline"
+                            maxItems={1}
+                            disabled={!isEditing}
+                          />
+                        </div>
+                      ) as any
+                    }
+                  />
+                </Label>
+                {formMethods.formState.errors.profession && <p class="text-destructive text-xs">{formMethods.formState.errors.profession.message}</p>}
+              </div>
 
               {/* Business Name */}
-              <Label class="flex flex-col items-stretch gap-4">
-                <p class="font-medium text-sm leading-1">Business name</p>
-                <Controller
-                  name="business_name"
-                  control={formMethods.control}
-                  render={({ field }) =>
-                    (
-                      <div class="flex flex-col gap-2">
-                        <div class="flex h-10.5 items-center gap-2 border border-line-700 px-3">
+              <div class="flex flex-col gap-1">
+                <Label class="flex flex-col items-stretch gap-4">
+                  <p class="font-medium text-sm leading-1">Business name</p>
+                  <Controller
+                    name="business_name"
+                    control={formMethods.control}
+                    render={({ field }) =>
+                      (
+                        <div class="flex h-10.5 items-center gap-2 border border-line-700 px-3 focus-within:outline focus-within:outline-primary">
                           <Icon icon="material-symbols-light:add-business-outline-rounded" fontSize="18" />
-                          <input {...field} placeholder="John's Tailoring" class="flex-1 text-sm placeholder:text-grey-400" disabled={!isEditing} />
+                          <input {...field} placeholder="John's Tailoring" class="flex-1 text-sm outline-none placeholder:text-grey-400" disabled={!isEditing} />
                           {!isEditing && (
                             <button type="button" onClick={onEdit}>
                               <Icon icon="iconoir:edit" fontSize="18" className="flex-shrink-0" />
                             </button>
                           )}
                         </div>
-                        {formMethods.formState.errors.business_name && <p class="text-red-500 text-xs">{formMethods.formState.errors.business_name.message}</p>}
-                      </div>
-                    ) as any
-                  }
-                />
-              </Label>
+                      ) as any
+                    }
+                  />
+                </Label>
+                {formMethods.formState.errors.business_name && <p class="text-destructive text-xs">{formMethods.formState.errors.business_name.message}</p>}
+              </div>
 
               {/* Business Address */}
-              <Label class="flex flex-col items-stretch gap-4">
-                <p class="font-medium text-sm leading-1">Business address</p>
-                <Controller
-                  name="business_address"
-                  control={formMethods.control}
-                  render={({ field }) =>
-                    (
-                      <div class="flex flex-col gap-2">
-                        <div class="flex h-10.5 items-center gap-2 border border-line-700 px-3">
+              <div class="flex flex-col gap-1">
+                <Label class="flex flex-col items-stretch gap-4">
+                  <p class="font-medium text-sm leading-1">Business address</p>
+                  <Controller
+                    name="business_address"
+                    control={formMethods.control}
+                    render={({ field }) =>
+                      (
+                        <div class="flex h-10.5 items-center gap-2 border border-line-700 px-3 focus-within:outline focus-within:outline-primary">
                           <Icon icon="hugeicons:maps-location-02" fontSize="18" />
-                          <input {...field} placeholder="123 Main St, City, State" class="flex-1 text-sm placeholder:text-grey-400" disabled={!isEditing} />
+                          <input {...field} placeholder="123 Main St, City, State" class="flex-1 text-sm outline-none placeholder:text-grey-400" disabled={!isEditing} />
                           {!isEditing && (
                             <button type="button" onClick={onEdit}>
                               <Icon icon="iconoir:edit" fontSize="18" className="flex-shrink-0" />
                             </button>
                           )}
                         </div>
-                        {formMethods.formState.errors.business_address && <p class="text-red-500 text-xs">{formMethods.formState.errors.business_address.message}</p>}
-                      </div>
-                    ) as any
-                  }
-                />
-              </Label>
+                      ) as any
+                    }
+                  />
+                </Label>
+                {formMethods.formState.errors.business_address && <p class="text-destructive text-xs">{formMethods.formState.errors.business_address.message}</p>}
+              </div>
 
               {/* Phone Number */}
-              <Label class="flex flex-col items-stretch gap-4">
-                <p class="font-medium text-sm leading-1">Phone Number</p>
-                <Controller
-                  name="phone_number"
-                  control={formMethods.control}
-                  render={({ field }) =>
-                    (
-                      <div class="flex flex-col gap-2">
-                        <div class="flex h-10.5 items-center gap-2 border border-line-700 px-3">
+              <div class="flex flex-col gap-1">
+                <Label class="flex flex-col items-stretch gap-4">
+                  <p class="font-medium text-sm leading-1">Phone Number</p>
+                  <Controller
+                    name="phone_number"
+                    control={formMethods.control}
+                    render={({ field }) =>
+                      (
+                        <div class="flex h-10.5 items-center gap-2 border border-line-700 px-3 focus-within:outline focus-within:outline-primary">
                           <Icon icon="solar:phone-linear" fontSize="18" />
-                          <input {...field} placeholder="070896043564" class="flex-1 text-sm placeholder:text-grey-400" disabled={!isEditing} />
+                          <input {...field} placeholder="070896043564" class="flex-1 text-sm outline-none placeholder:text-grey-400" disabled={!isEditing} />
                           {!isEditing && (
                             <button type="button" onClick={onEdit}>
                               <Icon icon="iconoir:edit" fontSize="18" className="flex-shrink-0" />
                             </button>
                           )}
                         </div>
-                        {formMethods.formState.errors.phone_number && <p class="text-red-500 text-xs">{formMethods.formState.errors.phone_number.message}</p>}
-                      </div>
-                    ) as any
-                  }
-                />
-              </Label>
+                      ) as any
+                    }
+                  />
+                </Label>
+                {formMethods.formState.errors.phone_number && <p class="text-destructive text-xs">{formMethods.formState.errors.phone_number.message}</p>}
+              </div>
             </div>
           </div>
 
@@ -316,7 +318,7 @@ export const Account = () => {
                   (
                     <div class="flex flex-col gap-4">
                       <CheckboxGroup options={SkillChoices as any} value={field.value} onChange={field.onChange} isDisabled={!isEditing} />
-                      {formMethods.formState.errors.skills && <p class="text-red-500 text-xs">{formMethods.formState.errors.skills.message}</p>}
+                      {formMethods.formState.errors.skills && <p class="text-destructive text-xs">{formMethods.formState.errors.skills.message}</p>}
                     </div>
                   ) as any
                 }
@@ -325,7 +327,7 @@ export const Account = () => {
           </div>
         </form>
 
-        <div class="flex flex-col gap-6">
+        {/* <div class="flex flex-col gap-6">
           <div class="flex flex-col gap-2">
             <p class="font-medium text-base leading-none">Appearance</p>
             <p class="font-medium text-grey-500 text-sm leading-none">Choose your default appearance</p>
@@ -338,7 +340,7 @@ export const Account = () => {
           >
             <p class="font-medium text-sm">Dark Mode</p>
           </form>
-        </div>
+        </div> */}
       </div>
     </>
   );

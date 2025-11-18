@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Icon } from "@iconify/react";
 import { signal } from "@preact/signals";
-import type { JSX } from "preact";
+import type { TargetedSubmitEvent } from "preact";
 import { Controller, useForm } from "react-hook-form";
 
 import { useUpdateCustomField } from "@/api/http/v1/custom_fields/custom_fields.hooks";
@@ -9,7 +9,6 @@ import { type CustomField, CustomFieldAttributeType, type UpdateCustomFieldPaylo
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Select } from "@/components/ui/select";
 import { useLayoutEffect } from "preact/hooks";
 import toast from "react-hot-toast";
 
@@ -42,9 +41,14 @@ export const EditCustomFieldsDialog = () => {
   const formMethods = useForm<UpdateCustomFieldPayload>({
     resolver: zodResolver(UpdateCustomFieldSchema) as any,
     mode: "onChange",
+    defaultValues: {
+      custom_field: {
+        field_type: CustomFieldAttributeType[0], // measurement
+      },
+    },
   });
 
-  const handleSubmit = (e: JSX.TargetedSubmitEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: TargetedSubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     formMethods.handleSubmit(onSubmit)(e as any);
   };
@@ -100,25 +104,28 @@ export const EditCustomFieldsDialog = () => {
         <form class="flex flex-col gap-6" onSubmit={handleSubmit}>
           <div class="flex w-full flex-1 flex-col gap-6">
             {/* Custom Field Title */}
-            <Label class="flex flex-col items-stretch gap-4">
-              <p class="font-medium text-sm leading-1">Enter title</p>
-              <Controller
-                name="custom_field.field_name"
-                control={formMethods.control}
-                render={({ field }) =>
-                  (
-                    <div class="flex flex-col gap-2">
+            <div class="flex flex-col gap-1">
+              <Label class="flex flex-col items-stretch gap-4">
+                <p class="font-medium text-sm leading-1">Enter title</p>
+                <Controller
+                  name="custom_field.field_name"
+                  control={formMethods.control}
+                  render={({ field }) =>
+                    (
                       <div class="flex h-10.5 items-center gap-2 border border-line-700 px-3">
-                        <input {...field} placeholder="Rim Size" class="flex-1 text-sm placeholder:text-grey-400" />
+                        <input
+                          {...field}
+                          placeholder="Rim Size"
+                          class="min-h-10.5 flex-1 border border-line-700 px-3 text-sm outline-primary placeholder:text-grey-400 focus:ring-primary"
+                        />
                       </div>
-                      {formMethods.formState.errors.custom_field?.field_name && <p class="text-red-500 text-xs">{formMethods.formState.errors.custom_field.field_name.message}</p>}
-                    </div>
-                  ) as any
-                }
-              />
-            </Label>
-
-            {/* Custom Field Type */}
+                    ) as any
+                  }
+                />
+              </Label>
+              {formMethods.formState.errors.custom_field?.field_name && <p class="text-destructive text-xs">{formMethods.formState.errors.custom_field.field_name.message}</p>}
+            </div>
+            {/* Custom Field Type
             <Label class="flex flex-col items-stretch gap-4">
               <p class="font-medium text-sm leading-0">Select Type</p>
               <Controller
@@ -140,12 +147,14 @@ export const EditCustomFieldsDialog = () => {
                         itemClassName="capitalize"
                         maxItems={1}
                       />
-                      {formMethods.formState.errors.custom_field?.field_type && <p class="text-red-500 text-xs">{formMethods.formState.errors.custom_field?.field_type.message}</p>}
+                      {formMethods.formState.errors.custom_field?.field_type && (
+                        <p class="text-destructive text-xs">{formMethods.formState.errors.custom_field?.field_type.message}</p>
+                      )}
                     </div>
                   ) as any
                 }
               />
-            </Label>
+            </Label> */}
           </div>
 
           <DialogFooter class="p-0">
