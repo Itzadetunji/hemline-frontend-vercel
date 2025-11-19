@@ -52,13 +52,21 @@ export interface User {
   business_image: string;
 }
 
+export interface NotMarkedForDeletionProfile {
+  user: User;
+  access_token: string;
+}
+
+export interface MarkedForDeletionProfile {
+  access_token: string;
+  to_be_deleted: boolean;
+  date_requested_for_deletion: string;
+}
+
 export interface GetUserProfileResponse {
   message: string;
   success: boolean;
-  data: {
-    user: User;
-    access_token: string;
-  };
+  data: NotMarkedForDeletionProfile | MarkedForDeletionProfile;
 }
 
 export const Profession = ["Tailors / Dressmakers", "Fashion Designers", "Costume Designers (Theater/Film/TV)", "Seamstresses", "Medical Garment Makers"] as const;
@@ -105,6 +113,12 @@ export const OnboardingFormSchema = z.object({
 export type OnboardingFormData = z.infer<typeof OnboardingFormSchema>;
 
 export interface OnboardingUserResponse {
+  message: string;
+  success: boolean;
+  data: { user: User; access_token: string };
+}
+
+export interface CancelDeleteAccountResponse {
   message: string;
   success: boolean;
   data: { user: User; access_token: string };

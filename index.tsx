@@ -18,6 +18,7 @@ const Document = () => {
             padding: "4px 4px",
             color: "var(--primary)",
             borderRadius: "0px",
+            textAlign: "center",
           },
           icon: null,
         }}

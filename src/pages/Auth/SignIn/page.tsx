@@ -20,8 +20,7 @@ export const SignIn = () => {
 
   const onSubmit: SubmitHandler<RequestMagicLinkPayload> = async (payload) => {
     await getMagicLinkMutation.mutateAsync(payload, {
-      onSuccess: (data) => {
-        localStorage.setItem("magic-code", (data as any).debug.code);
+      onSuccess: () => {
         setEmail(payload.email);
       },
       onError: (error) => {

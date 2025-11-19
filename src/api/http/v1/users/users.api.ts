@@ -1,5 +1,12 @@
 import $http from "../../xhr";
-import type { GetUserProfileResponse, OnboardingFormData, OnboardingUserResponse, RequestMagicLinkPayload, VerifyMagicCodePayload } from "./users.types";
+import type {
+  CancelDeleteAccountResponse,
+  GetUserProfileResponse,
+  OnboardingFormData,
+  OnboardingUserResponse,
+  RequestMagicLinkPayload,
+  VerifyMagicCodePayload,
+} from "./users.types";
 
 export const USERS_ENDPOINTS = {
   getUserProfile: "/auth/profile",
@@ -9,6 +16,7 @@ export const USERS_ENDPOINTS = {
   updateUserProfile: "/users/profile",
   updateBusinessImage: "/users/business_image",
   logout: "/auth/logout",
+  deleteAccount: "/auth/request_delete_account",
   refreshToken: "/auth/refresh",
 } as const;
 
@@ -40,4 +48,8 @@ export const USERS_API = {
   UPDATE_BUSINESS_IMAGE: async (data: FormData): Promise<OnboardingUserResponse> => await $http.patch(USERS_ENDPOINTS.updateBusinessImage, data).then((res) => res.data),
 
   LOGOUT: async (): Promise<OnboardingUserResponse> => await $http.delete(USERS_ENDPOINTS.logout).then((res) => res.data),
+
+  DELETE_ACCOUNT: async (): Promise<{ message: string }> => await $http.delete(USERS_ENDPOINTS.deleteAccount).then((res) => res.data),
+
+  CANCEL_DELETE_ACCOUNT: async (): Promise<CancelDeleteAccountResponse> => await $http.post("/auth/cancel_delete_account").then((res) => res.data),
 };

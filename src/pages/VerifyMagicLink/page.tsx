@@ -3,6 +3,8 @@ import { clearEmail } from "@/stores/authStore";
 import { userStore } from "@/stores/userStore";
 import { useLocation, useRoute } from "preact-iso";
 import { useEffect } from "preact/hooks";
+import { AccountDeletionPendingModal } from "../Auth/components/AccountDeletionPendingModal";
+import type { MarkedForDeletionProfile, NotMarkedForDeletionProfile } from "@/api/http/v1/users/users.types";
 
 export const VerifyMagicLink = () => {
   const { query } = useRoute();
@@ -12,13 +14,16 @@ export const VerifyMagicLink = () => {
 
   useEffect(() => {
     if (verifyMagicLinkMutation.data && verifyMagicLinkMutation.isSuccess) {
+      // If account is pending deletion, do not redirect yet
+      if ((verifyMagicLinkMutation.data.data as MarkedForDeletionProfile).to_be_deleted) return;
+
       clearEmail();
-      if (verifyMagicLinkMutation.data.data.user.has_onboarded) location.route("/gallery", true);
+      if ((verifyMagicLinkMutation.data.data as NotMarkedForDeletionProfile).user.has_onboarded) location.route("/gallery", true);
       else location.route("/onboarding", true);
 
       clearEmail();
     }
-  }, [verifyMagicLinkMutation.isSuccess]);
+  }, [verifyMagicLinkMutation.isSuccess, verifyMagicLinkMutation.data]);
 
   useEffect(() => {
     const token = query.token;
@@ -36,6 +41,7 @@ export const VerifyMagicLink = () => {
   return (
     <div class="flex min-h-[100dvh] items-center justify-center">
       <img src="/assets/brand/logo.svg" class="animate-pulse" alt="Brand Logo" />
+      <AccountDeletionPendingModal />
     </div>
   );
 };

@@ -6,6 +6,7 @@ export interface UserSignal {
   user: User | null;
   theme: ThemeType;
   access_token?: string;
+  to_be_deleted?: boolean;
 }
 
 const getInitialState = (): UserSignal => {

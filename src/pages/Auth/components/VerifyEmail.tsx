@@ -5,10 +5,17 @@ import { useEffect, useRef, useState } from "preact/hooks";
 import { Controller, type SubmitHandler, useForm } from "react-hook-form";
 
 import { useGetMagicLink, useVeriftMagicCode } from "@/api/http/v1/users/users.hooks";
-import { type RequestMagicLinkPayload, type VerifyMagicCodePayload, VerifyMagicCodeSchema } from "@/api/http/v1/users/users.types";
+import {
+  type MarkedForDeletionProfile,
+  type NotMarkedForDeletionProfile,
+  type RequestMagicLinkPayload,
+  type VerifyMagicCodePayload,
+  VerifyMagicCodeSchema,
+} from "@/api/http/v1/users/users.types";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { clearEmail, emailSignal, setEmail } from "@/stores/authStore";
+import { AccountDeletionPendingModal } from "./AccountDeletionPendingModal";
 
 export const VerifyEmail = () => {
   const location = useLocation();
@@ -24,8 +31,11 @@ export const VerifyEmail = () => {
       onSuccess: (data) => {
         console.log(data);
 
+        // If account is pending deletion, do not redirect yet
+        if ((data.data as MarkedForDeletionProfile).to_be_deleted) return;
+
         // Navigate based on onboarding status
-        if (data.data.user.has_onboarded) location.route("/gallery");
+        if ((data.data as NotMarkedForDeletionProfile).user.has_onboarded) location.route("/gallery");
         else location.route("/onboarding");
 
         clearEmail();
@@ -35,7 +45,7 @@ export const VerifyEmail = () => {
         if (error.status === 422)
           return formMethods.setError("code", {
             type: "manual",
-            message: error.response?.data?.error,
+            message: error.response?.data?.errors[0] ?? error.response?.data?.message,
           });
 
         formMethods.setError("code", {
@@ -53,6 +63,7 @@ export const VerifyEmail = () => {
 
   return (
     <main class="flex h-[100dvh] flex-col items-stretch gap-9.5 px-4 py-4">
+      <AccountDeletionPendingModal />
       <div class="flex flex-col gap-10">
         <img src="/assets/brand/logo.svg" class="size-9" alt="Brand Logo" />
         <div class="flex flex-col gap-6">
@@ -67,7 +78,7 @@ export const VerifyEmail = () => {
       <form class="flex flex-1 flex-col gap-6" onSubmit={handleSubmit}>
         <Label class="flex flex-col items-stretch gap-4">
           <div class="flex flex-col gap-4">
-            <h2 class="text-2xl leading-0">Login with Otp : {localStorage.getItem("magic-code")}</h2>
+            <h2 class="text-2xl leading-0">Login with Otp</h2>
             <p class="font-medium text-grey-400 text-sm">Enter the six digit code we sent with the link below.</p>
           </div>
           <div class="flex w-full items-center gap-3 px-4">

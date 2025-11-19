@@ -6,10 +6,11 @@ import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
-import { useGetUserProfile, usersQuerykeys, useUpdateBusinessImage, useUpdateUserProfile } from "@/api/http/v1/users/users.hooks";
-import { type OnboardingFormData, OnboardingFormSchema, Profession, SkillChoices } from "@/api/http/v1/users/users.types";
+import { useGetUserProfile, usersQuerykeys, useUpdateBusinessImage, useUpdateUserProfile, useDeleteAccount } from "@/api/http/v1/users/users.hooks";
+import { type NotMarkedForDeletionProfile, type OnboardingFormData, OnboardingFormSchema, Profession, SkillChoices } from "@/api/http/v1/users/users.types";
 import { Button } from "@/components/ui/button";
 import { CheckboxGroup } from "@/components/ui/checkbox-group";
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -81,12 +82,12 @@ export const Account = () => {
   const cancelEditing = () => {
     if (!getUserProfile.data) return;
     const resetData = {
-      first_name: getUserProfile.data.data.user.first_name || "",
-      last_name: getUserProfile.data.data.user.last_name || "",
-      profession: getUserProfile.data.data.user.profession || "Tailors / Dressmakers",
-      business_name: getUserProfile.data.data.user.business_name || "",
-      business_address: getUserProfile.data.data.user.business_address || "",
-      skills: getUserProfile.data.data.user.skills || [],
+      first_name: (getUserProfile.data.data as NotMarkedForDeletionProfile).user.first_name || "",
+      last_name: (getUserProfile.data.data as NotMarkedForDeletionProfile).user.last_name || "",
+      profession: (getUserProfile.data.data as NotMarkedForDeletionProfile).user.profession || "Tailors / Dressmakers",
+      business_name: (getUserProfile.data.data as NotMarkedForDeletionProfile).user.business_name || "",
+      business_address: (getUserProfile.data.data as NotMarkedForDeletionProfile).user.business_address || "",
+      skills: (getUserProfile.data.data as NotMarkedForDeletionProfile).user.skills || [],
     };
 
     formMethods.reset(resetData);
@@ -109,12 +110,12 @@ export const Account = () => {
   useLayoutEffect(() => {
     if (getUserProfile.data) {
       const resetData = {
-        first_name: getUserProfile.data.data.user.first_name || "",
-        last_name: getUserProfile.data.data.user.last_name || "",
-        profession: getUserProfile.data.data.user.profession || "Tailors / Dressmakers",
-        business_name: getUserProfile.data.data.user.business_name || "",
-        business_address: getUserProfile.data.data.user.business_address || "",
-        skills: getUserProfile.data.data.user.skills || [],
+        first_name: (getUserProfile.data.data as NotMarkedForDeletionProfile).user.first_name || "",
+        last_name: (getUserProfile.data.data as NotMarkedForDeletionProfile).user.last_name || "",
+        profession: (getUserProfile.data.data as NotMarkedForDeletionProfile).user.profession || "Tailors / Dressmakers",
+        business_name: (getUserProfile.data.data as NotMarkedForDeletionProfile).user.business_name || "",
+        business_address: (getUserProfile.data.data as NotMarkedForDeletionProfile).user.business_address || "",
+        skills: (getUserProfile.data.data as NotMarkedForDeletionProfile).user.skills || [],
       };
 
       formMethods.reset(resetData);
@@ -327,6 +328,8 @@ export const Account = () => {
           </div>
         </form>
 
+        <DeleteAccount />
+
         {/* <div class="flex flex-col gap-6">
           <div class="flex flex-col gap-2">
             <p class="font-medium text-base leading-none">Appearance</p>
@@ -351,7 +354,7 @@ const UploadLogo = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const updateBusinessImagesMutation = useUpdateBusinessImage();
 
-  const { cachedUrl, isLoading: loading } = useImageCache(getUserProfile.data?.data.user.business_image);
+  const { cachedUrl, isLoading: loading } = useImageCache((getUserProfile.data?.data as NotMarkedForDeletionProfile).user.business_image);
 
   const handleButtonClick = () => {
     fileInputRef.current?.click();
@@ -392,7 +395,7 @@ const UploadLogo = () => {
       <div>
         <figure class="flex gap-3">
           <div class="relative size-16 overflow-hidden rounded-none">
-            {getUserProfile.data?.data.user.business_image && (
+            {(getUserProfile.data?.data as NotMarkedForDeletionProfile).user.business_image && (
               <>
                 {loading && <Skeleton class="absolute inset-0 size-16 h-full w-full rounded-none" />}
 
@@ -405,10 +408,10 @@ const UploadLogo = () => {
               </>
             )}
             <div class="flex size-full items-center justify-center bg-muted">
-              {!getUserProfile.data?.data.user.business_image &&
-                (getUserProfile.data?.data.user.full_name
-                  ? getInitials(getUserProfile.data?.data.user.full_name, true)
-                  : getInitials(getUserProfile.data?.data.user.email as string))}
+              {!(getUserProfile.data?.data as NotMarkedForDeletionProfile).user.business_image &&
+                ((getUserProfile.data?.data as NotMarkedForDeletionProfile).user.full_name
+                  ? getInitials((getUserProfile.data?.data as NotMarkedForDeletionProfile).user.full_name, true)
+                  : getInitials((getUserProfile.data?.data as NotMarkedForDeletionProfile).user.email as string))}
             </div>
           </div>
 
@@ -421,6 +424,66 @@ const UploadLogo = () => {
           </figcaption>
         </figure>
       </div>
+    </div>
+  );
+};
+
+const DeleteAccount = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const deleteAccountMutation = useDeleteAccount();
+
+  const handleDelete = async () => {
+    await deleteAccountMutation.mutateAsync(undefined, {
+      onSuccess: () => {
+        setIsOpen(false);
+      },
+    });
+  };
+
+  return (
+    <div class="flex flex-col gap-6 border-t border-t-line-700 pt-6">
+      <div class="flex flex-col gap-2">
+        <p class="font-medium text-base leading-none">Delete Account</p>
+        <p class="font-medium text-grey-500 text-sm leading-none">Permanently delete your account and all data</p>
+      </div>
+
+      <Button variant="destructive" class="w-fit" type="button" onClick={() => setIsOpen(true)}>
+        Delete Account
+      </Button>
+
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent showClose={false} class="flex flex-col gap-8 rounded-none">
+          <DialogHeader class="p-0">
+            <div class="flex items-center gap-2">
+              <DialogClose class="size-4">
+                <Icon icon="ix:cancel" fontSize={16} />
+              </DialogClose>
+              <p class="font-medium text-sm">Delete Account</p>
+            </div>
+          </DialogHeader>
+          <div class="flex flex-col gap-6">
+            <div class="flex flex-col gap-4">
+              <p class="!font-primary text-2xl leading-0">Are you sure?</p>
+              <p class="font-medium text-sm">This is permanent, your account and all associated data will be deleted.</p>
+            </div>
+            <DialogFooter class="flex flex-row-reverse justify-stretch gap-3">
+              <Button class="flex-1 py-3.5 font-medium text-sm" type="button" onClick={() => setIsOpen(false)} disabled={deleteAccountMutation.isPending}>
+                Keep Account
+              </Button>
+
+              <Button
+                variant="outline"
+                class="flex-1 py-3.5 font-medium text-destructive text-sm hover:text-destructive"
+                type="button"
+                onClick={handleDelete}
+                disabled={deleteAccountMutation.isPending}
+              >
+                {deleteAccountMutation.isPending ? "Deleting..." : "Delete Account"}
+              </Button>
+            </DialogFooter>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
