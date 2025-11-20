@@ -2,6 +2,7 @@ import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Icon } from "@iconify/react";
 import type { TargetedSubmitEvent } from "preact";
+import { useLocation } from "preact-iso";
 
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -12,8 +13,12 @@ import { VerifyEmail } from "../components/VerifyEmail";
 import toast from "react-hot-toast";
 
 export const SignIn = () => {
+  const { query } = useLocation();
   const formMethods = useForm<RequestMagicLinkPayload>({
     resolver: zodResolver(RequestMagicLinkPayloadSchema),
+    defaultValues: {
+      email: (query.email as string) || "",
+    },
   });
 
   const getMagicLinkMutation = useGetMagicLink();
