@@ -18,6 +18,7 @@ import { UploadImages, type UploadImagesHandle } from "./components/UploadImages
 import { useInfiniteGetClients } from "@/api/http/v1/clients/clients.hooks";
 import { useInfiniteGetOrders } from "@/api/http/v1/orders/orders.hooks";
 import { Button } from "@/components/ui/button";
+import { NotMarkedForDeletionProfile } from "@/api/http/v1/users/users.types";
 
 export const Gallery = () => {
   // const [galleryLayout, setGalleryLayout] = useState<"fancy" | "grid">("fancy");
@@ -103,7 +104,7 @@ export const Gallery = () => {
                 <li class="relative min-h-5 min-w-5 p-1">
                   <Icon icon="bi:folder" className="h-4 w-4 text-black" />
                   <p class="-top-0.5 -right-0.5 absolute grid min-h-3.5 min-w-3.5 place-content-center rounded-full bg-primary text-[0.625rem] text-white leading-0">
-                    {getUserProfile.data?.data.user.total_folders || 0}
+                    {(getUserProfile.data?.data as NotMarkedForDeletionProfile).user.total_folders || 0}
                   </p>
                 </li>
               </a>

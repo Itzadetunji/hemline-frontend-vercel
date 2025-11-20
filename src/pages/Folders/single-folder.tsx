@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { SingleGallery } from "../Gallery/components/SingleGallery";
 import { RemoveFromFolderBar } from "./components/RemoveFromFolderBar";
 import { detectBackgroundColor } from "../Gallery/page";
+import { NotMarkedForDeletionProfile } from "@/api/http/v1/users/users.types";
 
 export const SingleFolderGallery = () => {
   // Get folder ID from route params
@@ -116,7 +117,7 @@ export const SingleFolderGallery = () => {
                 <li class="relative min-h-5 min-w-5 p-1">
                   <Icon icon="bi:folder" className="h-4 w-4 text-black" />
                   <p class="-top-0.5 -right-0.5 absolute grid min-h-3.5 min-w-3.5 place-content-center rounded-full bg-primary text-[0.625rem] text-white leading-0">
-                    {getUserProfile.data?.data.user.total_folders || 0}
+                    {(getUserProfile.data?.data as NotMarkedForDeletionProfile).user.total_folders || 0}
                   </p>
                 </li>
               </a>

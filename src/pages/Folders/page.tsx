@@ -15,6 +15,7 @@ import { DeleteFolderDialog } from "./components/DeleteFolderDialog";
 import { EditFolderDialog } from "./components/EditFolderDialog";
 import { SelectFolderType } from "./components/SelectFolderType";
 import { ShareToClientDialog } from "./components/ShareToClientDialog";
+import { NotMarkedForDeletionProfile } from "@/api/http/v1/users/users.types";
 
 export const Folders = () => {
   const [step, setStep] = useState(2);
@@ -78,7 +79,7 @@ export const Folders = () => {
                 <li class="relative min-h-5 min-w-5 p-1">
                   <Icon icon="bi:folder" className="h-4 w-4 text-black" />
                   <p class="-top-0.5 -right-0.5 absolute grid min-h-3.5 min-w-3.5 place-content-center rounded-full bg-primary text-[0.625rem] text-white leading-0">
-                    {getUserProfile.data?.data.user.total_folders || 0}
+                    {(getUserProfile.data?.data as NotMarkedForDeletionProfile).user.total_folders || 0}
                   </p>
                 </li>
               </a>

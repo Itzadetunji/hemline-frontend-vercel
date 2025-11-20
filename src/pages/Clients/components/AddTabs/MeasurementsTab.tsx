@@ -1,5 +1,6 @@
 import { Measurements, MeasurementUnit, type CreateClientPayload, type GenderType, type MeasurementFieldType } from "@/api/http/v1/clients/clients.types";
 import { useGetUserProfile } from "@/api/http/v1/users/users.hooks";
+import { NotMarkedForDeletionProfile } from "@/api/http/v1/users/users.types";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Drawer } from "@/components/ui/drawer";
@@ -46,6 +47,8 @@ export const MeasurementsTab = () => {
   const formMethods = useFormContext<CreateClientPayload>();
 
   const clientGender = formMethods.watch("client.gender");
+
+  const userData = (getUserProfile.data?.data as NotMarkedForDeletionProfile).user;
 
   return (
     <>
@@ -102,13 +105,13 @@ export const MeasurementsTab = () => {
             ) as any
           }
           {!getUserProfile.isLoading &&
-            !!getUserProfile.data?.data.user.custom_fields.length &&
+            !!userData.custom_fields.length &&
             ((
               <AccordionItem value="custom_measurements">
                 {(<AccordionTrigger className="!font-primary flex items-center rounded-none border-line border-b px-3 py-1 text-2xl">Custom Measurements</AccordionTrigger>) as any}
                 <MeasurementItem
                   fields={
-                    getUserProfile.data?.data.user.custom_fields.map((custom_field) => ({
+                    userData.custom_fields.map((custom_field) => ({
                       id: custom_field.data.attributes.id,
                       title: custom_field.data.attributes.field_name,
                     })) as MeasurementFieldType[]

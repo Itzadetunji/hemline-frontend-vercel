@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { EditingClientSignal } from "../../view-client";
 import { MeasurementDrawer, MeasurementItem } from "../AddTabs/MeasurementsTab";
+import { NotMarkedForDeletionProfile } from "@/api/http/v1/users/users.types";
 
 export const EditMeasurementsTab = () => {
   const { params } = useRoute();
@@ -18,6 +19,8 @@ export const EditMeasurementsTab = () => {
 
   const clientGender = formMethods.watch("client.gender");
   const getClientQuery = useGetClient(params.client_id as string);
+
+  const userData = (getUserProfile.data?.data as NotMarkedForDeletionProfile).user;
 
   const onCancel = () => {
     formMethods.reset({
@@ -92,13 +95,13 @@ export const EditMeasurementsTab = () => {
             ) as any
           }
           {!getUserProfile.isLoading &&
-            !!getUserProfile.data?.data.user.custom_fields.length &&
+            !!userData.custom_fields.length &&
             ((
               <AccordionItem value="custom_measurements">
                 {(<AccordionTrigger className="!font-primary flex items-center rounded-none border-line border-b px-3 py-1 text-2xl">Custom Measurements</AccordionTrigger>) as any}
                 <MeasurementItem
                   fields={
-                    getUserProfile.data?.data.user.custom_fields.map((custom_field) => ({
+                    userData.custom_fields.map((custom_field) => ({
                       id: custom_field.data.attributes.id,
                       title: custom_field.data.attributes.field_name,
                     })) as MeasurementFieldType[]
