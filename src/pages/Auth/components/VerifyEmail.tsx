@@ -62,50 +62,56 @@ export const VerifyEmail = () => {
   };
 
   return (
-    <main class="flex h-[100dvh] flex-col items-stretch gap-9.5 px-4 py-4">
-      <AccountDeletionPendingModal />
-      <div class="flex flex-col gap-10">
-        <img src="/assets/brand/logo.svg" class="size-9" alt="Brand Logo" />
-        <div class="flex flex-col gap-6">
-          <h1 class="text-5xl leading-10.5">Verify your email</h1>
-          <p class="text-grey-400 text-sm">We sent a login link to {emailSignal.value}. Click on the link to login into your account.</p>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-2">
-        <hr class="flex-1 border-line-700" /> <p>Or</p>
-      </div>
-      <form class="flex flex-1 flex-col gap-6" onSubmit={handleSubmit}>
-        <Label class="flex flex-col items-stretch gap-4">
-          <div class="flex flex-col gap-4">
-            <h2 class="text-2xl leading-0">Login with Otp</h2>
-            <p class="font-medium text-grey-400 text-sm">Enter the six digit code we sent with the link below.</p>
+    <div class="mx-auto flex max-w-md flex-1 flex-col">
+      <main class="flex h-[100dvh] flex-col items-stretch gap-9.5 px-4 py-4">
+        <AccountDeletionPendingModal />
+        <div class="flex flex-col gap-10">
+          <img src="/assets/brand/logo.svg" class="size-9" alt="Brand Logo" />
+          <div class="flex flex-col gap-6">
+            <h1 class="text-5xl leading-10.5">Verify your email</h1>
+            <p class="text-grey-400 text-sm">We sent a login link to {emailSignal.value}. Click on the link to login into your account.</p>
           </div>
-          <div class="flex w-full items-center gap-3 px-4">
-            <Controller name="code" control={formMethods.control} render={({ field }) => (<InputOTPGroup value={String(field.value || "")} onChange={field.onChange} />) as any} />
-          </div>
-          {formMethods.formState.errors.code && <p class="text-destructive text-xs">{formMethods.formState.errors.code.message}</p>}
-        </Label>
-
-        <div class="flex flex-col gap-3">
-          <Button class="w-full gap-3" type="submit" disabled={verifyMagicCodeMutation.isPending}>
-            Verify
-          </Button>
-          <ResendEmail />
         </div>
-      </form>
-      <p class="text-center text-grey-400 text-sm">
-        By continuing, you agree to our <br />{" "}
-        <a href="terms-and-conditions" class="underline" target="_blank" rel="noopener">
-          Terms of Service
-        </a>{" "}
-        and{" "}
-        <a href="privacy-policy" class="underline" target="_blank" rel="noopener">
-          Privacy Policy
-        </a>
-        .
-      </p>
-    </main>
+
+        <div class="flex items-center gap-2">
+          <hr class="flex-1 border-line-700" /> <p>Or</p>
+        </div>
+        <form class="flex flex-1 flex-col gap-6" onSubmit={handleSubmit}>
+          <Label class="flex flex-col items-stretch gap-4">
+            <div class="flex flex-col gap-4">
+              <h2 class="text-2xl leading-0">Login with Otp</h2>
+              <p class="font-medium text-grey-400 text-sm">Enter the six digit code we sent with the link below.</p>
+            </div>
+            <div class="flex w-full items-center gap-3 px-4">
+              <Controller
+                name="code"
+                control={formMethods.control}
+                render={({ field }) => (<InputOTPGroup value={String(field.value || "")} onChange={field.onChange} />) as any}
+              />
+            </div>
+            {formMethods.formState.errors.code && <p class="text-destructive text-xs">{formMethods.formState.errors.code.message}</p>}
+          </Label>
+
+          <div class="flex flex-col gap-3">
+            <Button class="w-full gap-3" type="submit" disabled={verifyMagicCodeMutation.isPending}>
+              Verify
+            </Button>
+            <ResendEmail />
+          </div>
+        </form>
+        <p class="text-center text-grey-400 text-sm">
+          By continuing, you agree to our <br />{" "}
+          <a href="terms-and-conditions" class="underline" target="_blank" rel="noopener">
+            Terms of Service
+          </a>{" "}
+          and{" "}
+          <a href="privacy-policy" class="underline" target="_blank" rel="noopener">
+            Privacy Policy
+          </a>
+          .
+        </p>
+      </main>
+    </div>
   );
 };
 

@@ -36,9 +36,11 @@ export const ProtectedRoute = (props: any) => {
 
   return (
     <main class="flex min-h-[100dvh] flex-col items-stretch">
-      <Header />
-      <div class="flex flex-1 flex-col">
-        <Route {...props} />
+      <div class="mx-auto flex max-w-md flex-1 flex-col">
+        <Header />
+        <div class="flex flex-1 flex-col">
+          <Route {...props} />
+        </div>
       </div>
       <NavBar />
     </main>
