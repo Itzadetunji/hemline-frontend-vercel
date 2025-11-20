@@ -10,6 +10,7 @@ import { HeroCarousel } from "./components/HeroCarousel";
 import { useWaitlist } from "@/api/http/v1/waitlist.hooks";
 import { type AddToWaitlistPayload, AddToWaitlistPayloadSchema } from "@/api/http/v1/waitlist.hooks";
 import { useRef } from "preact/hooks";
+import { LandingNavbar } from "@/components/LandingNavbar";
 
 export const LandingPage = () => {
   const emailInputRef = useRef<HTMLInputElement>(null);
@@ -41,20 +42,7 @@ export const LandingPage = () => {
 
   return (
     <main class="flex flex-1 flex-col bg-white px-4 pt-6 pb-10 md:min-h-[100dvh] md:px-14">
-      <nav class="flex items-center justify-between">
-        <div class="flex items-center gap-3.5">
-          <img src="/assets/brand/logo.svg" alt="Logo" class="size-9" />
-          <h1 class="text-2xl text-black">HEMLINE</h1>
-        </div>
-        <ul class="flex items-center gap-3">
-          <Button asChild class="border-line" variant="outline">
-            <a href="/sign-in">Log in</a>
-          </Button>
-          <Button asChild class="" variant="secondary">
-            <a href="/sign-up">Sign up free</a>
-          </Button>
-        </ul>
-      </nav>
+      <LandingNavbar />
       <div class="flex flex-1 flex-col items-stretch justify-between gap-10 pt-10 md:pt-30">
         <div class="flex flex-[0.7] items-stretch justify-between gap-10 font-light text-4xl max-md:flex-col md:text-5xl">
           <div class="flex flex-1 flex-col items-start justify-between">

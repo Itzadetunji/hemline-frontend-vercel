@@ -15,6 +15,7 @@ import { Profile } from "@/pages/Profile/page";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { TermsAndConditions } from "@/pages/TermsAndConditions/page";
 import { PrivacyPolicy } from "@/pages/PrivacyPolicy/page";
+import { Support } from "@/pages/Support/page";
 import { LandingPage } from "@/pages/page";
 import { VerifyMagicLink } from "@/pages/VerifyMagicLink/page";
 
@@ -43,6 +44,7 @@ export const Routes = () => {
           <ProtectedRoute path="/onboarding" component={Onboarding} />
           <Route path="/privacy-policy" component={PrivacyPolicy} />
           <Route path="/terms-and-conditions" component={TermsAndConditions} />
+          <Route path="/support" component={Support} />
         </Router>
 
         {/* Public Routes - Redirect if already authenticated */}

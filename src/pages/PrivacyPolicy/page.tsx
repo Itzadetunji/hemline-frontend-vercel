@@ -1,8 +1,12 @@
+import { LandingNavbar } from "@/components/LandingNavbar";
+
 export const PrivacyPolicy = () => {
   return (
-    <div class="min-h-[100dvh] bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
-      <div class="mx-auto max-w-4xl rounded-lg bg-white p-8 shadow-lg">
-        <h1 class="mb-2 font-bold text-3xl text-gray-900">Privacy Policy</h1>
+    <main class="flex flex-1 flex-col bg-white px-4 pt-6 pb-10 md:min-h-[100dvh] md:px-14">
+      <LandingNavbar className="mb-10" />
+
+      <div class="mx-auto max-w-4xl">
+        <h1 class="mb-2 font-light text-4xl md:text-5xl">Privacy Policy</h1>
         <p class="mb-8 text-gray-600 text-sm">Effective Date: October 31, 2025</p>
 
         <section class="mb-8">
@@ -71,7 +75,7 @@ export const PrivacyPolicy = () => {
 
         <div class="mt-12 border-gray-200 border-t pt-6">
           <p class="text-center text-gray-600 text-sm">
-            For privacy-related inquiries, please contact our
+            For privacy-related inquiries, please contact our{" "}
             <a href="mailto:hello@hemline.studio" class="underline">
               support team - hello@hemline.studio
             </a>
@@ -79,6 +83,6 @@ export const PrivacyPolicy = () => {
           </p>
         </div>
       </div>
-    </div>
+    </main>
   );
 };
