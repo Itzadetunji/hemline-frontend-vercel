@@ -91,13 +91,18 @@ export const LandingPage = () => {
 
         <div class="mt-12 flex flex-col items-center gap-8 text-center">
           <p class="max-w-[55ch] text-black text-xl">Upload photos, group them into collections, and share your work with clients through a clean, private link.</p>
-          <Button asChild>
+          <Button asChild variant="secondary" class="h-11 gap-1 text-black">
             <a href="/sign-up">
+              <span class="size-5">
+                <Icon icon="iconoir:upload" className="size-5 text-black" />
+              </span>
               <p>Start Uploading</p>
             </a>
           </Button>
         </div>
+        <img src="/assets/landing-page/thread-scissors.svg" alt="Scissors and Thread" class="mt-12 px-14" />
       </section>
+      <section class="px-4 md:px-14"></section>
     </main>
   );
 };

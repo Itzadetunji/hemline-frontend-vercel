@@ -7,7 +7,7 @@ interface LandingNavbarProps {
 
 export const LandingNavbar = ({ className }: LandingNavbarProps) => {
   return (
-    <nav class={cn("flex items-center justify-between", className)}>
+    <nav class={cn("flex items-center justify-between px-4 md:px-14", className)}>
       <a href="/" class="flex items-center gap-3.5">
         <img src="/assets/brand/logo.svg" alt="Logo" class="size-9" />
         <h1 class="text-2xl text-black">HEMLINE</h1>
