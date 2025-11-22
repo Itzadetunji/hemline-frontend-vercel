@@ -62,7 +62,7 @@ export const PublicFolderGallery = () => {
   }, [allImages.length]);
 
   return (
-    <div class="mx-auto flex max-w-md flex-1 flex-col">
+    <div class="mx-auto flex w-full max-w-md flex-1 flex-col">
       <NavBar />
       <div class="flex flex-1 flex-col">
         <header class="sticky top-0 z-50 flex items-center justify-between gap-2 bg-white px-4 pt-4 pb-3">

@@ -39,7 +39,7 @@ export const VerifyMagicLink = () => {
   }, [query.token]);
 
   return (
-    <div class="mx-auto flex max-w-md flex-1 flex-col">
+    <div class="mx-auto flex w-full max-w-md flex-1 flex-col">
       <div class="flex min-h-[100dvh] items-center justify-center">
         <img src="/assets/brand/logo.svg" class="animate-pulse" alt="Brand Logo" />
         <AccountDeletionPendingModal />

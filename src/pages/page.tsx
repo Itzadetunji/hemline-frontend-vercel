@@ -31,9 +31,9 @@ export const LandingPage = () => {
   console.log(formMethods.getValues(), formMethods.formState.errors);
 
   return (
-    <main class="flex flex-1 flex-col bg-white px-4 pt-6 pb-10 md:min-h-[100dvh] md:px-14">
+    <main class="flex flex-1 flex-col bg-white pt-6 pb-10 md:min-h-[100dvh]">
       <LandingNavbar />
-      <div class="flex flex-1 flex-col items-stretch justify-between gap-10 pt-10 md:pt-30">
+      <section class="flex flex-1 flex-col items-stretch justify-between gap-10 px-4 pt-10 md:px-14 md:pt-30 xl:min-h-dvh">
         <div class="flex flex-[0.7] items-stretch justify-between gap-10 font-light text-4xl max-md:flex-col md:text-5xl">
           <div class="flex flex-1 flex-col items-start justify-between">
             <p>
@@ -82,7 +82,22 @@ export const LandingPage = () => {
             </form>
           </div>
         </div>
-      </div>
+      </section>
+      <section class="mt-38.5 flex flex-col">
+        <h1 class="!font-secondary px-4 pl-25 font-medium text-5xl leading-normal md:px-14">
+          Your portfolio — finally <br /> organized.
+        </h1>
+        <div class="h-70 w-full bg-primary-50" />
+
+        <div class="mt-12 flex flex-col items-center gap-8 text-center">
+          <p class="max-w-[55ch] text-black text-xl">Upload photos, group them into collections, and share your work with clients through a clean, private link.</p>
+          <Button asChild>
+            <a href="/sign-up">
+              <p>Start Uploading</p>
+            </a>
+          </Button>
+        </div>
+      </section>
     </main>
   );
 };
