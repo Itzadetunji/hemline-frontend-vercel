@@ -3,12 +3,13 @@ import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { TargetedSubmitEvent } from "preact";
 import { useLocation } from "preact-iso";
+import Lenis from "lenis";
 
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { HeroCarousel } from "./components/HeroCarousel";
 import { type AddToWaitlistPayload, AddToWaitlistPayloadSchema } from "@/api/http/v1/waitlist.hooks";
-import { useRef } from "preact/hooks";
+import { useEffect, useRef } from "preact/hooks";
 import { LandingNavbar } from "@/components/LandingNavbar";
 import { cn } from "@/lib/utils";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -17,6 +18,21 @@ import { CollectionCarousel } from "./components/LandingPageCarousel";
 export const LandingPage = () => {
   const emailInputRef = useRef<HTMLInputElement>(null);
   const location = useLocation();
+
+  useEffect(() => {
+    const lenis = new Lenis();
+
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    return () => {
+      lenis.destroy();
+    };
+  }, []);
 
   const formMethods = useForm<AddToWaitlistPayload>({
     resolver: zodResolver(AddToWaitlistPayloadSchema),
