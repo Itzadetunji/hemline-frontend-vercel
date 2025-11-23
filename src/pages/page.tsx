@@ -153,9 +153,9 @@ export const LandingPage = () => {
         </p>
       </section>
       <img src="/assets/landing-page/fabrics.webp" class="mt-10 max-h-108 object-cover sm:mt-20" alt="" />
-      <picture class="mt-12 h-28 object-cover sm:mt-20 sm:max-h-108">
+      <picture class="mt-12">
         <source media="(min-width: 768px)" srcSet="/assets/landing-page/collection-pin-1.png" />
-        <img src="/assets/landing-page/collection-pin-2.png" alt="" />
+        <img src="/assets/landing-page/collection-pin-2.png" alt="" class="min-hh-28 w-full object-cover sm:mt-20 sm:max-h-108" />
       </picture>
 
       <section class="mt-16 flex w-full flex-col items-center px-4 sm:mt-22">
