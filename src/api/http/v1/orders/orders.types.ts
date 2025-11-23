@@ -1,140 +1,135 @@
 import { z } from "zod";
 
 // Order status choices
-export const OrderStatus = [
-	"pending",
-	"in_progress",
-	"completed",
-	"cancelled",
-] as const;
+export const OrderStatus = ["pending", "in_progress", "completed", "cancelled"] as const;
 export type OrderStatusType = (typeof OrderStatus)[number];
 
 // Order attributes
 export interface OrderAttributes {
-	id: string;
-	client_id: string;
-	client_name: string;
-	item: string;
-	quantity: number;
-	notes?: string;
-	is_done: boolean;
-	due_date?: string;
-	overdue: boolean;
-	created_at: string;
-	updated_at: string;
+  id: string;
+  client_id: string;
+  client_name: string;
+  item: string;
+  quantity: number;
+  notes?: string;
+  is_done: boolean;
+  due_date?: string;
+  overdue: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 // Order data structure
 export interface OrderData {
-	id: string;
-	type: "order";
-	attributes: OrderAttributes;
+  id: string;
+  type: "order";
+  attributes: OrderAttributes;
 }
 
 // Order structure
 export interface Order {
-	data: OrderData;
+  data: OrderData;
 }
 
 // Pagination structure
 export interface Pagination {
-	current_page: number;
-	total_pages: number;
-	total_count: number;
-	per_page: number;
+  current_page: number;
+  total_pages: number;
+  total_count: number;
+  per_page: number;
 }
 
 // List all orders response
 export interface ListOrdersResponse {
-	success: boolean;
-	message: string;
-	data: {
-		orders: OrderAttributes[];
-		pagination: Pagination;
-	};
+  success: boolean;
+  message: string;
+  data: {
+    orders: OrderAttributes[];
+    pagination: Pagination;
+  };
 }
 
 // Single order response
 export interface GetOrderResponse {
-	success: boolean;
-	message: string;
-	data: {
-		order: OrderAttributes;
-	};
+  success: boolean;
+  message: string;
+  data: {
+    order: OrderAttributes;
+  };
 }
 
 // Create order response
 export interface CreateOrderResponse {
-	success: boolean;
-	message: string;
-	data: {
-		order: OrderAttributes;
-	};
+  success: boolean;
+  message: string;
+  data: {
+    order: OrderAttributes;
+  };
 }
 
 // Update order response
 export interface UpdateOrderResponse {
-	success: boolean;
-	message: string;
-	data: OrderAttributes;
+  success: boolean;
+  message: string;
+  data: OrderAttributes;
 }
 
 // Delete order response
 export interface DeleteOrderResponse {
-	success: boolean;
-	message: string;
+  success: boolean;
+  message: string;
 }
 
 // Delete orders response
 export interface DeleteOrdersResponse {
-	success: boolean;
-	message: string;
-	data: {
-		affected_count: number;
-	};
+  success: boolean;
+  message: string;
+  data: {
+    affected_count: number;
+  };
 }
 
 export const OrderSchema = z.object({
-	client_id: z.string().min(1, "Client ID is required"),
-	item: z.string().min(1, "Item is required"),
-	quantity: z.number().min(1, "Quantity must be at least 1"),
-	notes: z.string().optional(),
-	is_done: z.boolean().optional().default(false),
-	due_date: z.string().optional(),
+  client_id: z.string().min(1, "Client ID is required"),
+  item: z.string().min(1, "Item is required"),
+  quantity: z.number().min(1, "Quantity must be at least 1"),
+  notes: z.string().optional(),
+  is_done: z.boolean().optional().default(false),
+  due_date: z.string().optional(),
 });
 
 // Create order payload schema
 export const CreateOrderSchema = z.object({
-	order: OrderSchema,
+  order: OrderSchema,
 });
 
 export type CreateOrderPayload = z.infer<typeof CreateOrderSchema>;
 
 // Update order payload schema
 export const UpdateOrderSchema = z.object({
-	order: z.object({
-		item: z.string().optional(),
-		quantity: z.number().optional(),
-		notes: z.string().optional(),
-		is_done: z.boolean().optional(),
-		due_date: z.string().optional(),
-	}),
+  order: z.object({
+    item: z.string().optional(),
+    quantity: z.number().optional(),
+    notes: z.string().optional(),
+    is_done: z.boolean().optional(),
+    due_date: z.string().optional(),
+  }),
 });
 
 export type UpdateOrderPayload = z.infer<typeof UpdateOrderSchema>;
 
 // Delete orders payload schema
 export const DeleteOrdersSchema = z.object({
-	order_ids: z.array(z.string()).min(1, "At least one order ID is required"),
+  order_ids: z.array(z.string()).min(1, "At least one order ID is required"),
 });
 
 export type DeleteOrdersPayload = z.infer<typeof DeleteOrdersSchema>;
 
 export interface GetAllOrdersParams {
-	page?: number;
-	per_page?: number;
-	search?: string;
-	sort_by?: "a-z" | "z-a" | "last_updated" | "due_date_asc" | "due_date_desc";
-	status?: "pending" | "completed" | "overdue" | "upcoming";
-	client_id?: string;
+  page?: number;
+  per_page?: number;
+  search?: string;
+  sort_by?: "a-z" | "z-a" | "last_updated" | "due_date_asc" | "due_date_desc";
+  status?: "pending" | "completed" | "overdue" | "upcoming";
+  client_id?: string;
 }

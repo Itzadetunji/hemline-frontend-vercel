@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { EditingClientSignal } from "../../view-client";
 import { MeasurementDrawer, MeasurementItem } from "../AddTabs/MeasurementsTab";
-import { NotMarkedForDeletionProfile } from "@/api/http/v1/users/users.types";
+import type { NotMarkedForDeletionProfile } from "@/api/http/v1/users/users.types";
 
 export const EditMeasurementsTab = () => {
   const { params } = useRoute();

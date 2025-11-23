@@ -4,8 +4,8 @@ import { signal } from "@preact/signals";
 import type { TargetedSubmitEvent } from "preact";
 import { Controller, useForm } from "react-hook-form";
 
-import { useUpdateCustomField } from "@/api/http/v1/custom_fields/custom_fields.hooks";
-import { type CustomField, CustomFieldAttributeType, type UpdateCustomFieldPayload, UpdateCustomFieldSchema } from "@/api/http/v1/custom_fields/custom_fields.types";
+import { useUpdateCustomField } from "@/api/http/v1/custom_fields/custom-fields.hooks";
+import { type CustomField, CustomFieldAttributeType, type UpdateCustomFieldPayload, UpdateCustomFieldSchema } from "@/api/http/v1/custom_fields/custom-fields.types";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";

@@ -1,6 +1,6 @@
 import { Measurements, MeasurementUnit, type CreateClientPayload, type GenderType, type MeasurementFieldType } from "@/api/http/v1/clients/clients.types";
 import { useGetUserProfile } from "@/api/http/v1/users/users.hooks";
-import { NotMarkedForDeletionProfile } from "@/api/http/v1/users/users.types";
+import type { NotMarkedForDeletionProfile } from "@/api/http/v1/users/users.types";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Drawer } from "@/components/ui/drawer";

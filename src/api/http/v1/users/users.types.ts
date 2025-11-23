@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { CustomFieldType } from "../custom_fields/custom_fields.types";
+import type { CustomFieldType } from "../custom_fields/custom-fields.types";
 
 export const VerifyMagicCodeSchema = z.object({
   code: z.union([z.string().regex(/^\d{6}$/, "Must be exactly 6 digits"), z.number().int().min(100000).max(999999)]),

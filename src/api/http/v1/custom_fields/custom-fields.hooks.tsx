@@ -2,8 +2,8 @@ import type { AxiosError } from "axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
-import { CUSTOM_FIELDS_API } from "./custom_fields.api";
-import type { CustomFieldsListResponse, CustomFieldResponse, CreateCustomFieldPayload, UpdateCustomFieldPayload } from "./custom_fields.types";
+import { CUSTOM_FIELDS_API } from "./custom-fields.api";
+import type { CustomFieldsListResponse, CustomFieldResponse, CreateCustomFieldPayload, UpdateCustomFieldPayload } from "./custom-fields.types";
 import { createQueryKey } from "@/lib/queryClient";
 
 export const customFieldsQueryKeys = {

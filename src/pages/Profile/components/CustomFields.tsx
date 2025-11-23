@@ -2,8 +2,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { TargetedSubmitEvent } from "preact";
 import { Controller, useForm } from "react-hook-form";
 
-import { useCreateCustomField, useGetCustomFields } from "@/api/http/v1/custom_fields/custom_fields.hooks";
-import { type CreateCustomFieldPayload, CreateCustomFieldSchema, type CustomField, CustomFieldAttributeType } from "@/api/http/v1/custom_fields/custom_fields.types";
+import { useCreateCustomField, useGetCustomFields } from "@/api/http/v1/custom_fields/custom-fields.hooks";
+import { type CreateCustomFieldPayload, CreateCustomFieldSchema, type CustomField, CustomFieldAttributeType } from "@/api/http/v1/custom_fields/custom-fields.types";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";

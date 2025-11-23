@@ -14,7 +14,7 @@ function AccordionItem({ className, ...props }: ComponentProps<typeof AccordionP
   return <AccordionPrimitive.Item data-slot="accordion-item" className={cn("border-b last:border-b-0", className)} {...props} />;
 }
 
-function AccordionTrigger({ className, children, ...props }: ComponentProps<typeof AccordionPrimitive.Trigger>) {
+function AccordionTrigger({ className, showIcon = true, children, ...props }: ComponentProps<typeof AccordionPrimitive.Trigger> & { showIcon?: boolean }) {
   return (
     <AccordionPrimitive.Header className="flex">
       {
@@ -28,7 +28,10 @@ function AccordionTrigger({ className, children, ...props }: ComponentProps<type
             {...props}
           >
             {children}
-            {(<Icon icon="lucide:chevron-down" className="pointer-events-none size-4 shrink-0 translate-y-0.5 text-muted-foreground transition-transform duration-200" />) as any}
+            {showIcon &&
+              ((
+                <Icon icon="lucide:chevron-down" className="pointer-events-none size-4 shrink-0 translate-y-0.5 text-muted-foreground transition-transform duration-200" />
+              ) as any)}
           </AccordionPrimitive.Trigger>
         ) as any
       }

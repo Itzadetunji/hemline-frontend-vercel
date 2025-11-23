@@ -15,7 +15,7 @@ import { DeleteFolderDialog } from "./components/DeleteFolderDialog";
 import { EditFolderDialog } from "./components/EditFolderDialog";
 import { SelectFolderType } from "./components/SelectFolderType";
 import { ShareToClientDialog } from "./components/ShareToClientDialog";
-import { NotMarkedForDeletionProfile } from "@/api/http/v1/users/users.types";
+import type { NotMarkedForDeletionProfile } from "@/api/http/v1/users/users.types";
 
 export const Folders = () => {
   const [step, setStep] = useState(2);

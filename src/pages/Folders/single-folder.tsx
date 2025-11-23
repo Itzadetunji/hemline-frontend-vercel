@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
 import { SingleGallery } from "../Gallery/components/SingleGallery";
 import { RemoveFromFolderBar } from "./components/RemoveFromFolderBar";
 import { detectBackgroundColor } from "../Gallery/page";
-import { NotMarkedForDeletionProfile } from "@/api/http/v1/users/users.types";
+import type { NotMarkedForDeletionProfile } from "@/api/http/v1/users/users.types";
 
 export const SingleFolderGallery = () => {
   // Get folder ID from route params

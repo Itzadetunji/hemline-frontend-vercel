@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 import { useLocation } from "preact-iso";
 import { DeleteOrders, deleteOrdersSignal } from "./components/DeleteOrders";
 import { exportOrdersToCSV, OrdersActionBar } from "./components/OrdersActionBar";
-import { NotMarkedForDeletionProfile } from "@/api/http/v1/users/users.types";
+import type { NotMarkedForDeletionProfile } from "@/api/http/v1/users/users.types";
 
 export const Orders = () => {
   const getUserProfile = useGetUserProfile();

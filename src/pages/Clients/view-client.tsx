@@ -14,7 +14,7 @@ import { EditDetailsTab } from "./components/EditTabs/EditDetailsTab";
 import { EditMeasurementsTab } from "./components/EditTabs/EditMeasurementsTab";
 import { EditOrdersTab } from "./components/EditTabs/EditOrdersTab";
 import { useInfiniteGetOrders } from "@/api/http/v1/orders/orders.hooks";
-import { NotMarkedForDeletionProfile } from "@/api/http/v1/users/users.types";
+import type { NotMarkedForDeletionProfile } from "@/api/http/v1/users/users.types";
 
 interface EditingClientSignalProps {
   isEditing: boolean;

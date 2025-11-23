@@ -6,7 +6,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Skeleton } from "@/components/ui/skeleton";
 import { useImageCache } from "@/hooks/useImageCache";
 import { cn, getInitials } from "@/lib/utils";
-import { NotMarkedForDeletionProfile } from "@/api/http/v1/users/users.types";
+import type { NotMarkedForDeletionProfile } from "@/api/http/v1/users/users.types";
 
 // Signal for header content that can be accessed anywhere
 interface headerContentSignalType {

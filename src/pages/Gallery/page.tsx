@@ -18,7 +18,7 @@ import { UploadImages, type UploadImagesHandle } from "./components/UploadImages
 import { useInfiniteGetClients } from "@/api/http/v1/clients/clients.hooks";
 import { useInfiniteGetOrders } from "@/api/http/v1/orders/orders.hooks";
 import { Button } from "@/components/ui/button";
-import { NotMarkedForDeletionProfile } from "@/api/http/v1/users/users.types";
+import type { NotMarkedForDeletionProfile } from "@/api/http/v1/users/users.types";
 
 export const Gallery = () => {
   // const [galleryLayout, setGalleryLayout] = useState<"fancy" | "grid">("fancy");

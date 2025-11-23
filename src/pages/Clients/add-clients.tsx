@@ -12,7 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { CreateClientSchema, type CreateClientPayload } from "@/api/http/v1/clients/clients.types";
 import { useCreateClient } from "@/api/http/v1/clients/clients.hooks";
 import { useLocation } from "preact-iso";
-import { NotMarkedForDeletionProfile } from "@/api/http/v1/users/users.types";
+import type { NotMarkedForDeletionProfile } from "@/api/http/v1/users/users.types";
 
 export const AddClients = () => {
   const getUserProfile = useGetUserProfile();

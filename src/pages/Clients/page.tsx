@@ -10,7 +10,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { headerContentSignal, selectingSignal } from "@/layout/Header";
 import { ClientSkeleton } from "./components/ClientSkeleton";
 import { cn } from "@/lib/utils";
-import { NotMarkedForDeletionProfile } from "@/api/http/v1/users/users.types";
+import type { NotMarkedForDeletionProfile } from "@/api/http/v1/users/users.types";
 
 export const Clients = () => {
   const getUserProfile = useGetUserProfile();
