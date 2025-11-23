@@ -13,6 +13,7 @@
     "check:unsafe": "biome check --write --unsafe ."
   },
   "dependencies": {
+    "@gsap/react": "^2.1.2",
     "@hookform/resolvers": "^5.2.2",
     "@preact/compat": "^18.3.1",
     "@preact/signals": "^2.3.1",
