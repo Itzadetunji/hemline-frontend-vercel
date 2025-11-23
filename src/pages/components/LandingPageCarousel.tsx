@@ -7,48 +7,43 @@ import { useRef } from "preact/hooks";
 export const CollectionCarousel = () => {
   const containerRef = useRef<HTMLUListElement | null>(null);
 
+  // Double the items for seamless looping
+  const extendedCarousel = [...carousel, ...carousel];
+
   useGSAP(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    // I am cloning the items so the animation can be seamless
-    const items = container.children;
-    const itemsArray = Array.from(items);
-
-    // Add all the items to the div there
-    itemsArray.forEach((item) => {
-      const clone = item.cloneNode(true);
-      container.appendChild(clone);
-    });
-
-    // The width is half of the width of the container since we cloned the items
-    const totalWidth = container.scrollWidth / 2;
+    // Calculate the width of the original set (distance to the start of the first duplicate)
+    // The first duplicate is at index `carousel.length`
+    const originalSetWidth = (container.children[carousel.length] as HTMLElement)?.offsetLeft || container.scrollWidth / 2;
 
     // Timeline for gsap
-    const tl = gsap.timeline({ repeat: -1 });
-
-    tl.to(container, {
-      x: -totalWidth,
-      duration: 30,
+    const tl = gsap.to(container, {
+      x: -originalSetWidth,
+      duration: 30, // Slower duration for a smoother, premium feel
       ease: "none",
-      onComplete: () => {
-        gsap.set(container, { x: 0 });
-      },
+      repeat: -1,
     });
 
-    container.addEventListener("mouseenter", () => tl.pause());
-    container.addEventListener("mouseleave", () => tl.resume());
+    const pause = () => tl.pause();
+    const resume = () => tl.play();
+
+    container.addEventListener("mouseenter", pause);
+    container.addEventListener("mouseleave", resume);
 
     return () => {
+      container.removeEventListener("mouseenter", pause);
+      container.removeEventListener("mouseleave", resume);
       tl.kill();
     };
   }, []);
 
   return (
-    <div className="h-70 self-start overflow-hidden py-8">
-      <ul ref={containerRef} className="flex items-center gap-4" id="partner-container" style={{ width: "fit-content" }}>
-        {carousel.map((partner, idx) => (
-          <img key={partner} src={partner} alt={partner.split("/")[5]} className="h-56 w-43 object-cover" id={`carousel-${idx}`} />
+    <div className="h-70 w-0 min-w-full self-start overflow-hidden py-8">
+      <ul ref={containerRef} className="flex items-center gap-4" style={{ width: "max-content" }}>
+        {extendedCarousel.map((partner, idx) => (
+          <img key={`${partner}-${idx}`} src={partner} alt="Collection Item" className="h-56 w-43 object-cover" />
         ))}
       </ul>
     </div>
@@ -56,6 +51,12 @@ export const CollectionCarousel = () => {
 };
 
 const carousel = [
+  "/assets/landing-page/carousel/carousel-1.jpg",
+  "/assets/landing-page/carousel/carousel-2.jpg",
+  "/assets/landing-page/carousel/carousel-3.jpg",
+  "/assets/landing-page/carousel/carousel-4.jpg",
+  "/assets/landing-page/carousel/carousel-5.jpg",
+  "/assets/landing-page/carousel/carousel-6.jpg",
   "/assets/landing-page/carousel/carousel-1.jpg",
   "/assets/landing-page/carousel/carousel-2.jpg",
   "/assets/landing-page/carousel/carousel-3.jpg",

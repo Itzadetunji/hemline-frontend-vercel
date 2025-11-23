@@ -88,7 +88,7 @@ export const LandingPage = () => {
         <h1 class="!font-secondary px-4 font-medium text-3xl leading-normal sm:pl-25 sm:text-5xl md:px-14">
           Your portfolio — finally <br /> organized.
         </h1>
-        {/* <div class="w-full bg-primary-50" /> */}
+
         <CollectionCarousel />
 
         <div class="mt-6 flex flex-col items-center gap-6 px-4 text-center sm:mt-12 sm:gap-8">
@@ -102,7 +102,6 @@ export const LandingPage = () => {
             </a>
           </Button>
         </div>
-
         <picture class="mt-12 flex w-full justify-center px-4 sm:px-14">
           <source media="(min-width: 768px)" srcSet="/assets/landing-page/threads-scissors-1.svg" />
           <img src="/assets/landing-page/threads-scissors-2.svg" alt="Scissors and Thread" />
@@ -152,11 +151,13 @@ export const LandingPage = () => {
           <p class="text-center">
             Create folders, add images, and manage everything with the same <br class="max-sm:hidden" /> simplicity as your photo gallery.
           </p>
-          <Button class="h-10.5 w-fit gap-2 px-2.5 max-md:h-9" type="submit">
-            <i class="grid size-5 place-content-center">
-              <Icon icon="iconoir:arrow-right" className="h-5 w-5 text-white" />
-            </i>
-            <p class="text-white">Join now</p>
+          <Button class="h-10.5 w-fit gap-2 px-2.5 max-md:h-9" asChild>
+            <a href="/sign-up">
+              <i class="grid size-5 place-content-center">
+                <Icon icon="iconoir:arrow-right" className="h-5 w-5 text-white" />
+              </i>
+              <p class="text-white">Join now</p>
+            </a>
           </Button>
         </div>
         <div class="mt-10 grid w-full max-w-6xl grid-cols-24 gap-4 max-md:flex max-md:flex-col sm:gap-2.5">
@@ -222,7 +223,7 @@ export const LandingPage = () => {
           </div>
         </Accordion>
       </section>
-      <footer class="mt-16 flex flex-1 flex-col items-stretch justify-between bg-primary px-4 pt-10 pb-20 sm:mt-30 sm:pt-14 md:px-14 md:pt-30 xl:min-h-[calc(100dvh-16rem)]">
+      <footer class="mt-16 flex flex-1 flex-col items-stretch justify-between bg-primary px-4 pt-10 pb-16 sm:mt-30 sm:pt-14 sm:pb-20 md:px-14 md:pt-30 xl:min-h-[calc(100dvh-16rem)]">
         <h1 class="!font-secondary !tracking-normal text-3xl text-white sm:text-5xl">Your Workflow Made Simple</h1>
         <div class="mt-8 flex items-center justify-between gap-6 border-b border-b-line pb-10 max-md:flex-col sm:mt-11 sm:gap-10 sm:pb-12">
           <picture class="flex max-h-58 max-md:w-full max-md:justify-center max-md:self-start md:min-h-58 md:min-w-58">
