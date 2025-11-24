@@ -27,3 +27,4 @@ dev-dist
 /lib
 
 .env
+temp_public

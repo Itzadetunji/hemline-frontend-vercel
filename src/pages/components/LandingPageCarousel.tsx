@@ -51,16 +51,16 @@ export const CollectionCarousel = () => {
 };
 
 const carousel = [
-  "/assets/landing-page/carousel/carousel-1.jpg",
-  "/assets/landing-page/carousel/carousel-2.jpg",
-  "/assets/landing-page/carousel/carousel-3.jpg",
-  "/assets/landing-page/carousel/carousel-4.jpg",
-  "/assets/landing-page/carousel/carousel-5.jpg",
-  "/assets/landing-page/carousel/carousel-6.jpg",
-  "/assets/landing-page/carousel/carousel-1.jpg",
-  "/assets/landing-page/carousel/carousel-2.jpg",
-  "/assets/landing-page/carousel/carousel-3.jpg",
-  "/assets/landing-page/carousel/carousel-4.jpg",
-  "/assets/landing-page/carousel/carousel-5.jpg",
-  "/assets/landing-page/carousel/carousel-6.jpg",
+  "/assets/landing-page/carousel/carousel-1.webp",
+  "/assets/landing-page/carousel/carousel-2.webp",
+  "/assets/landing-page/carousel/carousel-3.webp",
+  "/assets/landing-page/carousel/carousel-4.webp",
+  "/assets/landing-page/carousel/carousel-5.webp",
+  "/assets/landing-page/carousel/carousel-6.webp",
+  "/assets/landing-page/carousel/carousel-1.webp",
+  "/assets/landing-page/carousel/carousel-2.webp",
+  "/assets/landing-page/carousel/carousel-3.webp",
+  "/assets/landing-page/carousel/carousel-4.webp",
+  "/assets/landing-page/carousel/carousel-5.webp",
+  "/assets/landing-page/carousel/carousel-6.webp",
 ];

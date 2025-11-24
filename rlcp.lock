@@ -1,0 +1,31 @@
+{
+  "conversions": {
+    "public/assets/folder-icons/folder-8.png": "public/assets/folder-icons/folder-8.webp",
+    "public/assets/folder-icons/folder-9.png": "public/assets/folder-icons/folder-9.webp",
+    "public/assets/folder-icons/folder-1.png": "public/assets/folder-icons/folder-1.webp",
+    "public/assets/folder-icons/folder-2.png": "public/assets/folder-icons/folder-2.webp",
+    "public/assets/folder-icons/folder-3.png": "public/assets/folder-icons/folder-3.webp",
+    "public/assets/folder-icons/folder-7.png": "public/assets/folder-icons/folder-7.webp",
+    "public/assets/folder-icons/folder-6.png": "public/assets/folder-icons/folder-6.webp",
+    "public/assets/folder-icons/folder-4.png": "public/assets/folder-icons/folder-4.webp",
+    "public/assets/folder-icons/folder-5.png": "public/assets/folder-icons/folder-5.webp",
+    "public/assets/hero-section/hero-carousel-1.webp": "public/assets/hero-section/hero-carousel-1.webp",
+    "public/assets/hero-section/hero-carousel-3.webp": "public/assets/hero-section/hero-carousel-3.webp",
+    "public/assets/hero-section/hero-carousel-2.webp": "public/assets/hero-section/hero-carousel-2.webp",
+    "public/assets/landing-page/fabrics.webp": "public/assets/landing-page/fabrics.webp",
+    "public/assets/landing-page/one-place-clients.png": "public/assets/landing-page/one-place-clients.webp",
+    "public/assets/landing-page/collection-pin-1.png": "public/assets/landing-page/collection-pin-1.webp",
+    "public/assets/landing-page/collection-pin-2.png": "public/assets/landing-page/collection-pin-2.webp",
+    "public/assets/landing-page/carousel/carousel-8.jpg": "public/assets/landing-page/carousel/carousel-8.webp",
+    "public/assets/landing-page/carousel/carousel-6.jpg": "public/assets/landing-page/carousel/carousel-6.webp",
+    "public/assets/landing-page/carousel/carousel-7.jpg": "public/assets/landing-page/carousel/carousel-7.webp",
+    "public/assets/landing-page/carousel/carousel-5.jpg": "public/assets/landing-page/carousel/carousel-5.webp",
+    "public/assets/landing-page/carousel/carousel-4.jpg": "public/assets/landing-page/carousel/carousel-4.webp",
+    "public/assets/landing-page/carousel/carousel-1.jpg": "public/assets/landing-page/carousel/carousel-1.webp",
+    "public/assets/landing-page/carousel/carousel-3.jpg": "public/assets/landing-page/carousel/carousel-3.webp",
+    "public/assets/landing-page/carousel/carousel-2.jpg": "public/assets/landing-page/carousel/carousel-2.webp",
+    "public/assets/landing-page/manage/manage-2.png": "public/assets/landing-page/manage/manage-2.webp",
+    "public/assets/landing-page/manage/manage-3.png": "public/assets/landing-page/manage/manage-3.webp",
+    "public/assets/landing-page/manage/manage-1.png": "public/assets/landing-page/manage/manage-1.webp"
+  }
+}

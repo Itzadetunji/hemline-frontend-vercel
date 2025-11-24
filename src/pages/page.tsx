@@ -128,7 +128,7 @@ export const LandingPage = () => {
           <h1 class="font-medium font-secondary! text-3xl sm:text-5xl">
             Manage every client in <br /> one place.
           </h1>
-          <img src="/assets/landing-page/one-place-clients.png" alt="All Clients" class="mt-10 w-full max-w-sm sm:mt-12" />
+          <img src="/assets/landing-page/one-place-clients.webp" alt="All Clients" class="mt-10 w-full max-w-sm sm:mt-12" />
           <p class="sm:-mt-8 mt-1 text-sm sm:text-xl">
             Keep client details, measurements, and orders beautifully <br />
             organized — so you can focus on creating, not remembering.
@@ -154,8 +154,8 @@ export const LandingPage = () => {
       </section>
       <img src="/assets/landing-page/fabrics.webp" class="mt-10 max-h-108 object-cover sm:mt-20" alt="" />
       <picture class="mt-12">
-        <source media="(min-width: 768px)" srcSet="/assets/landing-page/collection-pin-1.png" />
-        <img src="/assets/landing-page/collection-pin-2.png" alt="" class="min-hh-28 w-full object-cover sm:mt-20 sm:max-h-108" />
+        <source media="(min-width: 768px)" srcSet="/assets/landing-page/collection-pin-1.webp" />
+        <img src="/assets/landing-page/collection-pin-2.webp" alt="" class="min-hh-28 w-full object-cover sm:mt-20 sm:max-h-108" />
       </picture>
 
       <section class="mt-16 flex w-full flex-col items-center px-4 sm:mt-22">
@@ -338,12 +338,12 @@ export const LandingPage = () => {
 
 const clientFeatures = [
   {
-    src: "/assets/landing-page/manage/manage-1.png",
+    src: "/assets/landing-page/manage/manage-1.webp",
     title: "Client Info",
     description: "Keep client details, notes, and project history all in one space.",
   },
-  { src: "/assets/landing-page/manage/manage-2.png", title: "Measurements", description: "Save every measurement digitally — upper body, lower body, or custom fields." },
-  { src: "/assets/landing-page/manage/manage-3.png", title: "Orders & Deliverables", description: "Track what's in progress, completed, or delivered, so you never lose track." },
+  { src: "/assets/landing-page/manage/manage-2.webp", title: "Measurements", description: "Save every measurement digitally — upper body, lower body, or custom fields." },
+  { src: "/assets/landing-page/manage/manage-3.webp", title: "Orders & Deliverables", description: "Track what's in progress, completed, or delivered, so you never lose track." },
 ];
 
 const organizeFeatures = [

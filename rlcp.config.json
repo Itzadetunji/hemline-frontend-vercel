@@ -1,0 +1,8 @@
+{
+  "input": "public",
+  "output": "temp_public",
+  "blacklists": ["public/assets/brand", "lib", "dist", "dev-dist"],
+  "file_size": "smallest",
+  "preferred_type": "webp",
+  "working_directory": "./src"
+}
