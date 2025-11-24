@@ -305,7 +305,8 @@ const NavbarCard = (props: { tab: Tab }) => {
 
   const link = getLink(props.tab);
 
-  if (!link) return null;
+  if (link?.endsWith("null")) return null;
+
   return (
     <>
       <a href={link} class="" target="_blank" rel="noreferrer">
