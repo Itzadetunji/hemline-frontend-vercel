@@ -153,7 +153,9 @@ export const Account = () => {
                       render={({ field }) =>
                         (
                           <div class="flex h-10.5 items-center gap-2 border border-line-700 px-3 focus-within:outline focus-within:outline-primary">
-                            <Icon icon="hugeicons:user-02" fontSize="18" className="flex-shrink-0" />
+                            <i className="size-4.5">
+                              <Icon icon="hugeicons:user-02" fontSize="18" className="flex-shrink-0" />
+                            </i>
                             <input {...field} placeholder="John" class="min-w-0 flex-1 text-sm outline-none placeholder:text-grey-400" disabled={!isEditing} />
                             {!isEditing && (
                               <button type="button" onClick={onEdit}>
@@ -176,7 +178,9 @@ export const Account = () => {
                       render={({ field }) =>
                         (
                           <div class="flex h-10.5 items-center gap-2 border border-line-700 px-3 focus-within:outline focus-within:outline-primary">
-                            <Icon icon="hugeicons:user-02" fontSize="18" className="flex-shrink-0" />
+                            <i className="size-4.5">
+                              <Icon icon="hugeicons:user-02" fontSize="18" className="flex-shrink-0" />
+                            </i>
                             <input {...field} placeholder="Doe" class="min-w-0 flex-1 text-sm outline-none placeholder:text-grey-400" disabled={!isEditing} />
                             {!isEditing && (
                               <button type="button" onClick={onEdit}>
@@ -232,7 +236,9 @@ export const Account = () => {
                     render={({ field }) =>
                       (
                         <div class="flex h-10.5 items-center gap-2 border border-line-700 px-3 focus-within:outline focus-within:outline-primary">
-                          <Icon icon="material-symbols-light:add-business-outline-rounded" fontSize="18" />
+                          <i className="size-4.5">
+                            <Icon icon="material-symbols-light:add-business-outline-rounded" fontSize="18" />
+                          </i>
                           <input {...field} placeholder="John's Tailoring" class="flex-1 text-sm outline-none placeholder:text-grey-400" disabled={!isEditing} />
                           {!isEditing && (
                             <button type="button" onClick={onEdit}>
@@ -257,7 +263,9 @@ export const Account = () => {
                     render={({ field }) =>
                       (
                         <div class="flex h-10.5 items-center gap-2 border border-line-700 px-3 focus-within:outline focus-within:outline-primary">
-                          <Icon icon="hugeicons:maps-location-02" fontSize="18" />
+                          <i className="size-4.5">
+                            <Icon icon="hugeicons:maps-location-02" fontSize="18" />
+                          </i>
                           <input {...field} placeholder="123 Main St, City, State" class="flex-1 text-sm outline-none placeholder:text-grey-400" disabled={!isEditing} />
                           {!isEditing && (
                             <button type="button" onClick={onEdit}>
@@ -282,7 +290,9 @@ export const Account = () => {
                     render={({ field }) =>
                       (
                         <div class="flex h-10.5 items-center gap-2 border border-line-700 px-3 focus-within:outline focus-within:outline-primary">
-                          <Icon icon="solar:phone-linear" fontSize="18" />
+                          <i className="size-4.5">
+                            <Icon icon="solar:phone-linear" fontSize="18" />
+                          </i>
                           <input {...field} placeholder="070896043564" class="flex-1 text-sm outline-none placeholder:text-grey-400" disabled={!isEditing} />
                           {!isEditing && (
                             <button type="button" onClick={onEdit}>
@@ -295,6 +305,24 @@ export const Account = () => {
                   />
                 </Label>
                 {formMethods.formState.errors.phone_number && <p class="text-destructive text-xs">{formMethods.formState.errors.phone_number.message}</p>}
+              </div>
+
+              {/* Email */}
+              <div class="flex flex-col gap-1">
+                <Label class="flex flex-col items-stretch gap-4">
+                  <p class="font-medium text-sm leading-1">Phone Number</p>
+                  <div class="flex h-10.5 items-center gap-2 border border-line-700 px-3 focus-within:outline focus-within:outline-primary">
+                    <i className="size-4.5">
+                      <Icon icon="fluent:mail-16-regular" fontSize="18" />
+                    </i>
+                    <input
+                      value={(getUserProfile?.data?.data as NotMarkedForDeletionProfile).user?.email}
+                      readOnly
+                      class="flex-1 text-sm outline-none placeholder:text-grey-400"
+                      disabled
+                    />
+                  </div>
+                </Label>
               </div>
             </div>
           </div>

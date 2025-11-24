@@ -390,7 +390,7 @@ const FolderCard = (props: FolderCardProps) => {
       ref={props.isLastItem ? props.observerRef : null}
     >
       <div class="relative cursor-pointer overflow-hidden">
-        <img src={`/assets/folder-icons/folder-${folderIconNumber}.png`} alt={props.folder.name} class="h-15.5 w-17.25" />
+        <img src={`/assets/folder-icons/folder-${folderIconNumber}.webp`} alt={props.folder.name} class="h-15.5 w-17.25" />
         {props.folder.cover_image && <img src={props.folder.cover_image} alt={props.folder.name} class="-translate-x-1/2 absolute top-6 left-1/2 h-8 w-11 bg-[red] object-cover" />}
       </div>
       <div class="flex w-full flex-col items-center text-center">

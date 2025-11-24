@@ -375,11 +375,11 @@
   h4,
   h5,
   h6 {
-    @apply font-primary text-black;
+    @apply font-primary;
   }
 
   p {
-    @apply font-secondary text-black;
+    @apply font-secondary;
   }
 }
 
