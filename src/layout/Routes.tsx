@@ -1,5 +1,7 @@
 import { ErrorBoundary, LocationProvider, Route, Router } from "preact-iso";
+import { Capacitor } from "@capacitor/core";
 
+import { NativeLayout } from "./NativeLayout";
 import { Onboarding } from "@/pages/Auth/Onboarding/page";
 import { SignIn } from "@/pages/Auth/SignIn/page";
 import { SignUp } from "@/pages/Auth/SignUp/page";
@@ -20,32 +22,36 @@ import { LandingPage } from "@/pages/page";
 import { VerifyMagicLink } from "@/pages/VerifyMagicLink/page";
 
 export const Routes = () => {
+  const isNative = Capacitor.isNativePlatform();
+
   return (
     <LocationProvider>
       <ErrorBoundary>
         {/* Protected Routes - Require Authentication */}
 
-        <Router>
-          <Route path="/" component={LandingPage} />
-          <ProtectedRoute path="/gallery" component={Gallery} />
-          <Route path="/sign-up" component={SignUp} />
-          <Route path="/sign-in" component={SignIn} />
-          <Route path="/verify-magic-link" component={VerifyMagicLink} />
-          <ProtectedRoute path="/onboarding" component={Onboarding} />
-          <ProtectedRoute path="/gallery" component={Gallery} />
-          <ProtectedRoute path="/gallery/folders" component={Folders} />
-          <ProtectedRoute path="/gallery/folders/:folder_id" component={SingleFolderGallery} />
-          <Route path="/folders/:public_id" component={PublicFolderGallery} />
-          <ProtectedRoute path="/clients" component={Clients} />
-          <ProtectedRoute path="/clients/add" component={AddClients} />
-          <ProtectedRoute path="/clients/orders" component={Orders} />
-          <ProtectedRoute path="/clients/:client_id" component={ViewClient} />
-          <ProtectedRoute path="/profile" component={Profile} />
-          <ProtectedRoute path="/onboarding" component={Onboarding} />
-          <Route path="/privacy-policy" component={PrivacyPolicy} />
-          <Route path="/terms-and-conditions" component={TermsAndConditions} />
-          <Route path="/support" component={Support} />
-        </Router>
+        <NativeLayout>
+          <Router>
+            {isNative ? <ProtectedRoute path="/" component={Gallery} /> : <Route path="/" component={LandingPage} />}
+            <ProtectedRoute path="/gallery" component={Gallery} />
+            <Route path="/sign-up" component={SignUp} />
+            <Route path="/sign-in" component={SignIn} />
+            <Route path="/verify-magic-link" component={VerifyMagicLink} />
+            <ProtectedRoute path="/onboarding" component={Onboarding} />
+            <ProtectedRoute path="/gallery" component={Gallery} />
+            <ProtectedRoute path="/gallery/folders" component={Folders} />
+            <ProtectedRoute path="/gallery/folders/:folder_id" component={SingleFolderGallery} />
+            <Route path="/folders/:public_id" component={PublicFolderGallery} />
+            <ProtectedRoute path="/clients" component={Clients} />
+            <ProtectedRoute path="/clients/add" component={AddClients} />
+            <ProtectedRoute path="/clients/orders" component={Orders} />
+            <ProtectedRoute path="/clients/:client_id" component={ViewClient} />
+            <ProtectedRoute path="/profile" component={Profile} />
+            <ProtectedRoute path="/onboarding" component={Onboarding} />
+            <Route path="/privacy-policy" component={PrivacyPolicy} />
+            <Route path="/terms-and-conditions" component={TermsAndConditions} />
+            <Route path="/support" component={Support} />
+          </Router>
+        </NativeLayout>
 
         {/* Public Routes - Redirect if already authenticated */}
       </ErrorBoundary>

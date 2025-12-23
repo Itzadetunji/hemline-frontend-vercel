@@ -67,8 +67,8 @@ export const Onboarding = () => {
     <FormProvider {...formMethods}>
       {
         (
-          <form onSubmit={handleSubmit}>
-            <main class="flex h-[100dvh] flex-col items-stretch gap-8 px-4 py-4">
+          <form onSubmit={handleSubmit} class="flex flex-1">
+            <main class="flex flex-1 flex-col items-stretch gap-8 px-4 py-4">
               <div class="flex items-center justify-between gap-4">
                 {step > 1 && (
                   <button type="button" onClick={() => setStep(step - 1)}>

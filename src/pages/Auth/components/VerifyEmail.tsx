@@ -63,7 +63,7 @@ export const VerifyEmail = () => {
 
   return (
     <div class="mx-auto flex w-full max-w-md flex-1 flex-col">
-      <main class="flex h-[100dvh] flex-col items-stretch gap-9.5 px-4 py-4">
+      <main class="flex flex-1 flex-col items-stretch gap-9.5 px-4 py-4">
         <AccountDeletionPendingModal />
         <div class="flex flex-col gap-10">
           <img src="/assets/brand/logo.svg" class="size-9" alt="Brand Logo" />

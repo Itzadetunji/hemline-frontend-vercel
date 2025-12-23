@@ -50,7 +50,7 @@ export const LandingPage = () => {
   console.log(formMethods.getValues(), formMethods.formState.errors);
 
   return (
-    <main class="flex flex-1 flex-col bg-white pt-6 md:min-h-[100dvh]">
+    <main class="flex flex-1 flex-col bg-white pt-6">
       <LandingNavbar />
       <section class="flex flex-1 flex-col items-stretch justify-between gap-10 px-4 pt-10 md:px-14 md:pt-30 xl:min-h-dvh">
         <div class="flex flex-[0.7] items-stretch justify-between gap-10 font-light text-4xl max-md:flex-col md:text-5xl">
