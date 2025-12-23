@@ -43,6 +43,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.4",
+    "@capacitor/assets": "^3.0.5",
     "@iconify/react": "^6.0.2",
     "@locator/babel-jsx": "^0.4.4",
     "@preact/preset-vite": "^2.10.2",
