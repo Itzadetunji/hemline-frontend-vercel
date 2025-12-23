@@ -7,7 +7,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useImageCache } from "@/hooks/useImageCache";
 import { cn, getInitials } from "@/lib/utils";
 import type { NotMarkedForDeletionProfile } from "@/api/http/v1/users/users.types";
-import { useScreenScroll } from "@/hooks/useScreenScroll";
 import { Capacitor } from "@capacitor/core";
 
 // Signal for header content that can be accessed anywhere
@@ -36,7 +35,6 @@ export const selectingSignal = signal<{
 export const Header = () => {
   const getUserProfile = useGetUserProfile();
   const logoutMutation = useLogout();
-  const dimensions = useScreenScroll();
   const isNative = Capacitor.isNativePlatform();
 
   const userData = (getUserProfile.data?.data as NotMarkedForDeletionProfile).user;
