@@ -7,6 +7,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useImageCache } from "@/hooks/useImageCache";
 import { cn, getInitials } from "@/lib/utils";
 import type { NotMarkedForDeletionProfile } from "@/api/http/v1/users/users.types";
+import { useScreenScroll } from "@/hooks/useScreenScroll";
+import { Capacitor } from "@capacitor/core";
 
 // Signal for header content that can be accessed anywhere
 interface headerContentSignalType {
@@ -34,6 +36,8 @@ export const selectingSignal = signal<{
 export const Header = () => {
   const getUserProfile = useGetUserProfile();
   const logoutMutation = useLogout();
+  const dimensions = useScreenScroll();
+  const isNative = Capacitor.isNativePlatform();
 
   const userData = (getUserProfile.data?.data as NotMarkedForDeletionProfile).user;
 
@@ -45,55 +49,68 @@ export const Header = () => {
   const headerTitleContent = typeof headerContentSignal.value.title === "function" ? headerContentSignal.value.title() : headerContentSignal.value.title;
 
   return (
-    <header class="sticky top-0 z-50 flex items-center justify-between gap-2 bg-white px-4 pt-4 pb-3">
-      {headerTitleContent}
-      <ul class="flex items-center justify-end gap-3">
-        {headerContent}
-        <Popover>
-          <PopoverTrigger asChild>
-            <li class="relative size-9 overflow-hidden rounded-full">
-              {userData.business_image ? (
-                <>
-                  {loading && <Skeleton class="absolute inset-0 size-9 h-full w-full rounded-full" />}
+    <header
+      class={cn("sticky top-0 z-50 bg-white")}
+      style={
+        isNative
+          ? {
+              marginTop: "calc(-1 * env(safe-area-inset-top))",
+              paddingTop: "env(safe-area-inset-top)",
+              top: 0,
+            }
+          : { top: 0 }
+      }
+    >
+      <div class="flex items-center justify-between gap-2 px-4 pt-4 pb-3">
+        {headerTitleContent}
+        <ul class="flex items-center justify-end gap-3">
+          {headerContent}
+          <Popover>
+            <PopoverTrigger asChild>
+              <li class="relative size-9 overflow-hidden rounded-full">
+                {userData.business_image ? (
+                  <>
+                    {loading && <Skeleton class="absolute inset-0 size-9 h-full w-full rounded-full" />}
 
-                  <img
-                    src={cachedUrl}
-                    alt="Business Logo"
-                    class={cn("size-9 h-full w-full object-cover transition-opacity duration-300", loading ? "opacity-0" : "opacity-100")}
-                    crossOrigin="anonymous"
-                  />
-                </>
-              ) : (
-                <div class="grid size-9 place-content-center rounded-full bg-primary text-center font-medium text-white text-xl">
-                  {userData && getInitials(userData.business_name ?? userData.full_name)}
-                </div>
-              )}
-            </li>
-          </PopoverTrigger>
-          <PopoverContent className="!top-14 !right-124 mr-4 flex w-40 flex-col items-stretch rounded-sm border-line-400 bg-white/70 drop-shadow-[0.6px_0.8px_9px_rgba(0,0,0,0,95)] backdrop-blur-lg">
-            <ul class="flex flex-col gap-3">
-              <a href="/profile" class="flex cursor-pointer items-center justify-between gap-2 text-grey-500">
-                <p class="font-medium text-sm">Profile</p>
-                <div class="min-w-5 p-1">
-                  <Icon icon="hugeicons:user-02" className="h-4 w-4 text-black" />
-                </div>
-              </a>
-              <button
-                type="button"
-                class="flex cursor-pointer items-center justify-between gap-2 text-destructive"
-                onClick={() => logoutMutation.mutate()}
-                disabled={logoutMutation.isPending}
-              >
-                <p class="font-medium text-sm">Logout</p>
+                    <img
+                      src={cachedUrl}
+                      alt="Business Logo"
+                      class={cn("size-9 h-full w-full object-cover transition-opacity duration-300", loading ? "opacity-0" : "opacity-100")}
+                      crossOrigin="anonymous"
+                    />
+                  </>
+                ) : (
+                  <div class="grid size-9 place-content-center rounded-full bg-primary text-center font-medium text-white text-xl">
+                    {userData && getInitials(userData.business_name ?? userData.full_name)}
+                  </div>
+                )}
+              </li>
+            </PopoverTrigger>
+            <PopoverContent className="!top-14 !right-124 mr-4 flex w-40 flex-col items-stretch rounded-sm border-line-400 bg-white/70 drop-shadow-[0.6px_0.8px_9px_rgba(0,0,0,0,95)] backdrop-blur-lg">
+              <ul class="flex flex-col gap-3">
+                <a href="/profile" class="flex cursor-pointer items-center justify-between gap-2 text-grey-500">
+                  <p class="font-medium text-sm">Profile</p>
+                  <div class="min-w-5 p-1">
+                    <Icon icon="hugeicons:user-02" className="h-4 w-4 text-black" />
+                  </div>
+                </a>
+                <button
+                  type="button"
+                  class="flex cursor-pointer items-center justify-between gap-2 text-destructive"
+                  onClick={() => logoutMutation.mutate()}
+                  disabled={logoutMutation.isPending}
+                >
+                  <p class="font-medium text-sm">Logout</p>
 
-                <div class="min-w-5 p-1">
-                  <Icon icon="ion:log-out-outline" className="h-4 w-4" />
-                </div>
-              </button>
-            </ul>
-          </PopoverContent>
-        </Popover>
-      </ul>
+                  <div class="min-w-5 p-1">
+                    <Icon icon="ion:log-out-outline" className="h-4 w-4" />
+                  </div>
+                </button>
+              </ul>
+            </PopoverContent>
+          </Popover>
+        </ul>
+      </div>
     </header>
   );
 };

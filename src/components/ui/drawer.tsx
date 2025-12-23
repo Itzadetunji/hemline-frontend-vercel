@@ -25,11 +25,13 @@ export const Drawer = ({ isOpen, onClose, children, className = "", drawerClass 
       const { zIndex: newZIndex, cleanup } = zIndexManager.register("DRAWER");
       setZIndex(newZIndex);
       cleanupRef.current = cleanup;
+      document.body.style.overflow = "hidden";
     } else {
       if (cleanupRef.current) {
         cleanupRef.current();
         cleanupRef.current = null;
       }
+      document.body.style.overflow = "";
     }
 
     return () => {
@@ -37,34 +39,13 @@ export const Drawer = ({ isOpen, onClose, children, className = "", drawerClass 
         cleanupRef.current();
         cleanupRef.current = null;
       }
+      document.body.style.overflow = "";
     };
   }, [isOpen]);
 
   useLayoutEffect(() => {
     const $elem = drawerRef.current;
     if (!$elem) return;
-
-    let scrollTop: number;
-    let scrollStyles: JSAnimation | null = null;
-
-    function blockScrolling() {
-      if (scrollStyles) return;
-      const $scroll = document.scrollingElement;
-      if (!$scroll) return;
-      scrollTop = $scroll.scrollTop;
-      scrollStyles = utils.set([document.documentElement, $scroll], {
-        overflow: "hidden",
-        position: "sticky",
-        height: `${window.innerHeight - 1}px`,
-      });
-    }
-
-    function enableScrolling() {
-      if (!scrollStyles) return;
-      scrollStyles.revert();
-      scrollStyles = null;
-      window.scrollTo({ top: scrollTop, behavior: "instant" as any });
-    }
 
     timeline.current = createTimeline({
       autoplay: false,
@@ -80,7 +61,6 @@ export const Drawer = ({ isOpen, onClose, children, className = "", drawerClass 
         if (timeline.current) {
           timeline.current.progress = self.progressY;
         }
-        self.progressY < 0.95 ? blockScrolling() : enableScrolling();
       },
       onRelease: (self) => {
         // The drawer is going to closed state
@@ -92,10 +72,6 @@ export const Drawer = ({ isOpen, onClose, children, className = "", drawerClass 
     });
 
     drawerInstance.current.progressY = 100;
-
-    return () => {
-      enableScrolling();
-    };
   }, []);
 
   useLayoutEffect(() => {
@@ -125,7 +101,7 @@ export const Drawer = ({ isOpen, onClose, children, className = "", drawerClass 
       <div ref={drawerRef} class={cn("fixed right-0 bottom-0 left-0 h-[91%] w-full will-change-transform", drawerClass)} style={{ zIndex }} data-type="drawer">
         <div class="relative flex h-full w-full flex-col overflow-hidden rounded-t-3xl border-t border-t-line-500 bg-white">
           {/* Content */}
-          <div class={className}>{children}</div>
+          <div class={cn("flex-1 overflow-y-auto", className)}>{children}</div>
         </div>
       </div>
     </>

@@ -127,7 +127,7 @@ export const AddClients = () => {
     <FormProvider {...formMethods}>
       {
         (
-          <form onSubmit={handleSubmit} class="flex flex-1 flex-col px-4 pt-6">
+          <form onSubmit={handleSubmit} class="flex flex-1 flex-col px-4">
             <AddClientsTabs activeTab={activeTab} setActiveTab={handleTabChange} />
 
             {activeTab === "details" && <DetailsTab />}

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Drawer } from "@/components/ui/drawer";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
+import { Capacitor } from "@capacitor/core";
 import { Icon } from "@iconify/react";
 import { signal } from "@preact/signals";
 import { useEffect, useRef } from "preact/hooks";
@@ -192,6 +193,7 @@ export const MeasurementItem = (props: { fields: MeasurementFieldType[]; is_uppe
 };
 
 export const MeasurementDrawer = () => {
+  const isNative = Capacitor.isNativePlatform();
   const { control, setValue, watch } = useFormContext<CreateClientPayload>();
   const currentMeasurement = measurementDrawerSignal.value.measurement;
 
@@ -203,7 +205,7 @@ export const MeasurementDrawer = () => {
   };
 
   useEffect(() => {
-    if (measurementDrawerSignal.value.isOpen) {
+    if (measurementDrawerSignal.value.isOpen && !isNative) {
       setTimeout(() => {
         inputRef.current?.focus();
       }, 100);
