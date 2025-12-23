@@ -5,9 +5,12 @@ import { useLocation, useRoute } from "preact-iso";
 import { useEffect } from "preact/hooks";
 import { AccountDeletionPendingModal } from "../Auth/components/AccountDeletionPendingModal";
 import type { MarkedForDeletionProfile, NotMarkedForDeletionProfile } from "@/api/http/v1/users/users.types";
+import { cn } from "@/lib/utils";
+import { Capacitor } from "@capacitor/core";
 
 export const VerifyMagicLink = () => {
   const { query } = useRoute();
+  const isNative = Capacitor.isNativePlatform();
   const location = useLocation();
 
   const verifyMagicLinkMutation = useVerifyMagicLink();
@@ -39,7 +42,11 @@ export const VerifyMagicLink = () => {
   }, [query.token]);
 
   return (
-    <div class="mx-auto flex w-full max-w-md flex-1 flex-col">
+    <div
+      class={cn("mx-auto flex w-full max-w-md flex-1 flex-col", {
+        "max-w-md": !isNative,
+      })}
+    >
       <div class="flex flex-1 items-center justify-center">
         <img src="/assets/brand/logo.svg" class="animate-pulse" alt="Brand Logo" />
         <AccountDeletionPendingModal />

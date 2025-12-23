@@ -4,6 +4,8 @@ import { isAuthenticated } from "@/stores/authStore";
 import { userSignal } from "@/stores/userStore";
 import { Route, useLocation } from "preact-iso";
 import { Header, NavBar } from "./Header";
+import { cn } from "@/lib/utils";
+import { Capacitor } from "@capacitor/core";
 
 /**
  * ProtectedRoute component that wraps routes requiring authentication
@@ -14,6 +16,7 @@ import { Header, NavBar } from "./Header";
  */
 export const ProtectedRoute = (props: any) => {
   const location = useLocation();
+  const isNative = Capacitor.isNativePlatform();
   const isUserAuthenticated = isAuthenticated.value;
   const getUserProfile = useGetUserProfile();
 
@@ -36,7 +39,11 @@ export const ProtectedRoute = (props: any) => {
 
   return (
     <main class="flex flex-1 flex-col items-stretch">
-      <div class="mx-auto flex w-full max-w-md flex-1 flex-col">
+      <div
+        class={cn("mx-auto flex w-full flex-1 flex-col", {
+          "max-w-md": !isNative,
+        })}
+      >
         <Header />
         <div class="flex flex-1 flex-col">
           <Route {...props} />

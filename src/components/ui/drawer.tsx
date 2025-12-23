@@ -1,7 +1,8 @@
 import { cn } from "@/lib/utils";
 import { zIndexManager } from "@/lib/z-index-manager";
-import { animate, createDraggable, createTimeline, type Draggable, type JSAnimation, type Timeline, utils } from "animejs";
+import { animate, createDraggable, createTimeline, type Draggable, type Timeline } from "animejs";
 import type { ComponentChildren } from "preact";
+import { createPortal } from "preact/compat";
 import { useLayoutEffect, useRef, useState } from "preact/hooks";
 
 interface DrawerProps {
@@ -25,13 +26,13 @@ export const Drawer = ({ isOpen, onClose, children, className = "", drawerClass 
       const { zIndex: newZIndex, cleanup } = zIndexManager.register("DRAWER");
       setZIndex(newZIndex);
       cleanupRef.current = cleanup;
-      document.body.style.overflow = "hidden";
+      // document.body.style.overflow = "hidden";
     } else {
       if (cleanupRef.current) {
         cleanupRef.current();
         cleanupRef.current = null;
       }
-      document.body.style.overflow = "";
+      // document.body.style.overflow = "";
     }
 
     return () => {
@@ -39,7 +40,7 @@ export const Drawer = ({ isOpen, onClose, children, className = "", drawerClass 
         cleanupRef.current();
         cleanupRef.current = null;
       }
-      document.body.style.overflow = "";
+      // document.body.style.overflow = "";
     };
   }, [isOpen]);
 
@@ -94,16 +95,17 @@ export const Drawer = ({ isOpen, onClose, children, className = "", drawerClass 
     }
   }, [isOpen]);
 
-  return (
+  return createPortal(
     <>
       {/* Drawer */}
 
-      <div ref={drawerRef} class={cn("fixed right-0 bottom-0 left-0 h-[91%] w-full will-change-transform", drawerClass)} style={{ zIndex }} data-type="drawer">
+      <div ref={drawerRef} class={cn("fixed right-0 bottom-0 left-0 h-9/10 w-full will-change-transform", drawerClass)} style={{ zIndex }} data-type="drawer">
         <div class="relative flex h-full w-full flex-col overflow-hidden rounded-t-3xl border-t border-t-line-500 bg-white">
           {/* Content */}
           <div class={cn("flex-1 overflow-y-auto", className)}>{children}</div>
         </div>
       </div>
-    </>
+    </>,
+    document.body
   );
 };

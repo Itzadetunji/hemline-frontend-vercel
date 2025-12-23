@@ -217,7 +217,7 @@ export const MeasurementDrawer = () => {
       isOpen={measurementDrawerSignal.value.isOpen}
       onClose={() => handleClose()}
       className="flex flex-1 flex-col gap-8 overflow-y-auto px-4 py-5"
-      drawerClass="h-[60%] min-h-fit"
+      drawerClass="h-6/10 min-h-fit"
     >
       <div class="flex flex-1 flex-col items-stretch gap-6">
         <div class="relative flex items-center justify-between">

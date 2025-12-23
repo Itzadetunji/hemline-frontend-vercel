@@ -10,8 +10,8 @@ const config: CapacitorConfig = {
   },
   plugins: {
     Keyboard: {
-      resize: "body",
-      style: "dark",
+      resize: "native",
+      style: "DEFAULT",
       scrollToInput: true,
     },
   },

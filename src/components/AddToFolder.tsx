@@ -19,14 +19,14 @@ interface AddToFolderProps {
 export const AddToFolder = (props: AddToFolderProps) => {
   const [addToNewFolder, setAddToNewFolder] = useState(false);
   const [addToExistingFolder, setAddToExistingFolder] = useState(false);
-  console.log(addToNewFolder, addToExistingFolder);
+
   return (
     <>
       <Dialog
         open={props.addToFolder}
         onOpenChange={(newValue) => {
           if (newValue) return props.onClose?.();
-          console.log("here");
+
           props.setAddToFolder(newValue);
         }}
       >
