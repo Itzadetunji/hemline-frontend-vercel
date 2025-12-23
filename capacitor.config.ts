@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
-  appId: "com.hemline.studio",
+  appId: "com.adetunji.hemline.studio",
   appName: "Hemline Studio",
   webDir: "dist",
   server: {
