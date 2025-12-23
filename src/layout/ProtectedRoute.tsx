@@ -35,7 +35,7 @@ export const ProtectedRoute = (props: any) => {
   }
 
   return (
-    <main class="flex flex-col items-stretch">
+    <main class="flex flex-1 flex-col items-stretch">
       <div class="mx-auto flex w-full max-w-md flex-1 flex-col">
         <Header />
         <div class="flex flex-1 flex-col">

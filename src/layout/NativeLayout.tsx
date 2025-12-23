@@ -4,18 +4,18 @@ import { ComponentChildren } from "preact";
 export const NativeLayout = ({ children }: { children: ComponentChildren }) => {
   const isNative = Capacitor.isNativePlatform();
 
-  if (!isNative) {
-    return <>{children}</>;
-  }
-
   return (
     <div
-      style={{
-        paddingTop: "env(safe-area-inset-top)",
-        paddingBottom: "env(safe-area-inset-bottom)",
-        paddingLeft: "env(safe-area-inset-left)",
-        paddingRight: "env(safe-area-inset-right)",
-      }}
+      style={
+        isNative
+          ? {
+              paddingTop: "env(safe-area-inset-top)",
+              paddingBottom: "env(safe-area-inset-bottom)",
+              paddingLeft: "env(safe-area-inset-left)",
+              paddingRight: "env(safe-area-inset-right)",
+            }
+          : {}
+      }
       class="flex min-h-[100dvh] flex-col"
     >
       {children}

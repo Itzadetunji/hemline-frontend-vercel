@@ -3,6 +3,7 @@ import { type ShareFolderPayload, ShareFolderSchema, type Folder } from "@/api/h
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Capacitor } from "@capacitor/core";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Icon } from "@iconify/react";
 import type { JSX } from "preact";
@@ -17,6 +18,8 @@ interface ShareToClientDialogProps {
 }
 
 export const ShareToClientDialog = (props: ShareToClientDialogProps) => {
+  const isNative = Capacitor.isNativePlatform();
+
   const [isFolderPublic, setIsFolderPublic] = useState(props.folder.is_public ?? false);
   const [publicFolderUrl, setPublicFolderUrl] = useState(props.folder.public_url ?? "");
   const shareFolderMutation = useShareFolder();
@@ -141,6 +144,7 @@ export const ShareToClientDialog = (props: ShareToClientDialogProps) => {
                     },
                   })}
                   id="client-email"
+                  {...(isNative && { inputMode: "email", type: "email" })}
                   placeholder="hello@hemline.studio"
                   class="flex-1 text-sm outline-none placeholder:text-grey-400 disabled:opacity-50"
                 />
@@ -149,7 +153,7 @@ export const ShareToClientDialog = (props: ShareToClientDialogProps) => {
                   <p class="ml-1 text-sm">Send</p>
                 </Button>
               </div>
-              {(formMethods.formState.errors as any).email && <p class="text-destructive text-sm">{(formMethods.formState.errors as any).message}</p>}
+              {(formMethods.formState.errors as any).share_type && <p class="text-destructive text-sm">{(formMethods.formState.errors as any).share_type.message}</p>}
             </div>
           </form>
 
