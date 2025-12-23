@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { zIndexManager } from "@/lib/z-index-manager";
 import type { ComponentChildren, JSX, RefObject } from "preact";
 import { createContext } from "preact";
-import { useContext, useEffect, useRef, useState } from "preact/hooks";
+import { useContext, useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
 
 // Popover Context
 interface PopoverContextValue {
@@ -179,7 +179,7 @@ export function PopoverContent({ children, className, align = "center", side = "
   const [position, setPosition] = useState({ top: 0, left: 0 });
 
   // Calculate position
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!open || !triggerRef.current || !contentRef.current) return;
 
     const trigger = triggerRef.current;
