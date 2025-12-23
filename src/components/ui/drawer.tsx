@@ -30,13 +30,11 @@ export const Drawer = ({ isOpen, onClose, children, className = "", drawerClass 
       const { zIndex: newZIndex, cleanup } = zIndexManager.register("DRAWER");
       setZIndex(newZIndex);
       cleanupRef.current = cleanup;
-      // document.body.style.overflow = "hidden";
     } else {
       if (cleanupRef.current) {
         cleanupRef.current();
         cleanupRef.current = null;
       }
-      // document.body.style.overflow = "";
     }
 
     return () => {
@@ -44,7 +42,6 @@ export const Drawer = ({ isOpen, onClose, children, className = "", drawerClass 
         cleanupRef.current();
         cleanupRef.current = null;
       }
-      // document.body.style.overflow = "";
     };
   }, [isOpen]);
 
