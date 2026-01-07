@@ -10,7 +10,7 @@ import { useGetMagicLink } from "@/api/http/v1/users/users.hooks";
 import { emailSignal, setEmail } from "@/stores/authStore";
 import { VerifyEmail } from "../components/VerifyEmail";
 import { Capacitor } from "@capacitor/core";
-import { cn } from "@/lib/utils";
+import { cn, openLink } from "@/lib/utils";
 
 export const SignUp = () => {
   const isNative = Capacitor.isNativePlatform();
@@ -83,13 +83,13 @@ export const SignUp = () => {
         </form>
         <p class="text-center text-grey-400 text-sm">
           By continuing, you agree to our <br />{" "}
-          <a href="terms-and-conditions" class="underline" target="_blank" rel="noopener">
+          <button type="button" onClick={() => openLink("terms-and-conditions")} class="underline">
             Terms of Service
-          </a>{" "}
+          </button>{" "}
           and{" "}
-          <a href="privacy-policy" class="underline" target="_blank" rel="noopener">
+          <button type="button" onClick={() => openLink("privacy-policy")} class="underline">
             Privacy Policy
-          </a>
+          </button>
           .
         </p>
       </main>

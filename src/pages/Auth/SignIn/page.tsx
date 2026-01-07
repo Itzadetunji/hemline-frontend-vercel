@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Icon } from "@iconify/react";
 import type { TargetedSubmitEvent } from "preact";
 import { useLocation } from "preact-iso";
+import { Clipboard } from "@capacitor/clipboard";
 
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -11,7 +12,7 @@ import { useGetMagicLink } from "@/api/http/v1/users/users.hooks";
 import { emailSignal, setEmail } from "@/stores/authStore";
 import { VerifyEmail } from "../components/VerifyEmail";
 import toast from "react-hot-toast";
-import { cn } from "@/lib/utils";
+import { cn, openLink } from "@/lib/utils";
 import { Capacitor } from "@capacitor/core";
 
 export const SignIn = () => {
@@ -41,6 +42,7 @@ export const SignIn = () => {
     e.preventDefault();
     formMethods.handleSubmit(onSubmit)(e as any);
   };
+
   console.log(formMethods.getValues());
   if (emailSignal.value.length) return <VerifyEmail />;
 
@@ -93,13 +95,13 @@ export const SignIn = () => {
         </form>
         <p class="text-center text-grey-400 text-sm">
           By continuing, you agree to our <br />{" "}
-          <a href="terms-and-conditions" class="underline" target="_blank" rel="noopener">
+          <button type="button" onClick={() => openLink("terms-and-conditions")} class="underline">
             Terms of Service
-          </a>{" "}
+          </button>{" "}
           and{" "}
-          <a href="privacy-policy" class="underline" target="_blank" rel="noopener">
+          <button type="button" onClick={() => openLink("privacy-policy")} class="underline">
             Privacy Policy
-          </a>
+          </button>
           .
         </p>
       </main>

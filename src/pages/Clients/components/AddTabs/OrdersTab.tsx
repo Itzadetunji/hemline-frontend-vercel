@@ -3,11 +3,13 @@ import { Label } from "@/components/ui/label";
 import { Icon } from "@iconify/react";
 import { useFieldArray, useFormContext, Controller } from "react-hook-form";
 import type { CreateClientPayload } from "@/api/http/v1/clients/clients.types";
+import { Capacitor } from "@capacitor/core";
+import { DatetimePicker } from "@capawesome-team/capacitor-datetime-picker";
 
 export const OrdersTab = () => {
   const {
     control,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useFormContext<CreateClientPayload>();
 
   const { fields, append, remove } = useFieldArray({
@@ -145,9 +147,27 @@ export const OrdersTab = () => {
                             <button
                               type="button"
                               class="flex min-h-10.5 w-full items-center gap-3.5 border border-line-700 px-3 text-left text-sm placeholder:text-grey-400 focus:outline focus:outline-primary"
-                              onClick={(e) => {
-                                const input = e.currentTarget.nextElementSibling as HTMLInputElement;
-                                input?.showPicker();
+                              onClick={async (e) => {
+                                if (Capacitor.isNativePlatform()) {
+                                  try {
+                                    const { value } = await DatetimePicker.present({
+                                      mode: "date",
+                                      value: field.value ? new Date(field.value).toISOString().split("T")[0] : undefined,
+                                      format: "yyyy-MM-dd",
+                                      theme: "light",
+                                      min: new Date().toISOString().split("T")[0],
+                                    });
+
+                                    if (value) {
+                                      field.onChange(value);
+                                    }
+                                  } catch (err) {
+                                    console.error("Date picker cancelled or failed", err);
+                                  }
+                                } else {
+                                  const input = e.currentTarget.nextElementSibling as HTMLInputElement;
+                                  input?.showPicker();
+                                }
                               }}
                             >
                               {formatDate(field.value)}
@@ -172,7 +192,7 @@ export const OrdersTab = () => {
         </div>
       </div>
       <div class="flex flex-col gap-6">
-        <Button class="h-9.5" type="submit">
+        <Button class="h-9.5" type="submit" disabled={isSubmitting}>
           Save
         </Button>
       </div>

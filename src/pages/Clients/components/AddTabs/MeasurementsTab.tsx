@@ -123,7 +123,7 @@ export const MeasurementsTab = () => {
               </AccordionItem>
             ) as any)}
         </Accordion>
-        <Button class="h-9.5" type="submit">
+        <Button class="h-9.5" type="submit" disabled={formMethods.formState.isSubmitting}>
           Save
         </Button>
       </div>

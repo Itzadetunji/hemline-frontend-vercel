@@ -13,10 +13,14 @@
     "check:unsafe": "biome check --write --unsafe ."
   },
   "dependencies": {
+    "@capacitor-community/date-picker": "^7.1.0",
+    "@capacitor/browser": "^8.0.0",
     "@capacitor/cli": "^8.0.0",
+    "@capacitor/clipboard": "^8.0.0",
     "@capacitor/core": "^8.0.0",
     "@capacitor/ios": "^8.0.0",
     "@capacitor/keyboard": "^8.0.0",
+    "@capawesome-team/capacitor-datetime-picker": "^8.0.0",
     "@gsap/react": "^2.1.2",
     "@hookform/resolvers": "^5.2.2",
     "@preact/compat": "^18.3.1",

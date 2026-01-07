@@ -3,6 +3,7 @@ import { type ShareFolderPayload, ShareFolderSchema, type Folder } from "@/api/h
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { copyToClipboard } from "@/lib/utils";
 import { Capacitor } from "@capacitor/core";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Icon } from "@iconify/react";
@@ -75,7 +76,7 @@ export const ShareToClientDialog = (props: ShareToClientDialogProps) => {
   const handleCopyLink = async () => {
     if (publicFolderUrl) {
       try {
-        await navigator.clipboard.writeText(publicFolderUrl);
+        await copyToClipboard(publicFolderUrl);
         toast.success("Link copied to clipboard!");
       } catch (error) {
         toast.error("Failed to copy link to clipboard");
