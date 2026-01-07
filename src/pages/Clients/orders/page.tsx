@@ -18,7 +18,6 @@ import type { NotMarkedForDeletionProfile } from "@/api/http/v1/users/users.type
 
 export const Orders = () => {
   const getUserProfile = useGetUserProfile();
-  const { data, isLoading, isFetchingNextPage, isFetching, hasNextPage, fetchNextPage } = useInfiniteGetOrders();
 
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 200);
@@ -26,7 +25,7 @@ export const Orders = () => {
   const getIniniteOrdersSearchQuery = useInfiniteGetOrders({ search: debouncedSearchTerm, enabled: isSearching });
 
   // Flatten all pages into a single array of orders
-  const allOrders = data?.pages.flatMap((page) => page.data.orders) ?? [];
+  const allOrders = getIniniteOrdersSearchQuery.data?.pages.flatMap((page) => page.data.orders) ?? [];
   const allSearchingOrders = getIniniteOrdersSearchQuery.data?.pages.flatMap((page) => page.data.orders) ?? [];
 
   useLayoutEffect(() => {
@@ -90,10 +89,10 @@ export const Orders = () => {
 
   return (
     <div class="flex flex-1 flex-col gap-10 px-4 pb-24">
-      {!isLoading && allOrders.length === 0 && <NoOders />}
+      {!getIniniteOrdersSearchQuery.isFetching && allOrders.length === 0 && <NoOders />}
       <div
         class={cn("flex flex-col gap-6", {
-          "flex-1": !(getIniniteOrdersSearchQuery.isFetching || isFetching) && allOrders.length !== 0,
+          "flex-1": !getIniniteOrdersSearchQuery.isFetching && allOrders.length !== 0,
         })}
       >
         <Label
@@ -114,8 +113,14 @@ export const Orders = () => {
             />
           </div>
         </Label>
-        {!isSearching && !isLoading && allOrders.length > 0 && (
-          <OrdersList orders={allOrders} hasNextPage={hasNextPage} isFetchingNextPage={isFetchingNextPage} fetchNextPage={fetchNextPage} isFetching={isFetching} />
+        {!isSearching && !getIniniteOrdersSearchQuery.isLoading && allOrders.length > 0 && (
+          <OrdersList
+            orders={allOrders}
+            hasNextPage={getIniniteOrdersSearchQuery.hasNextPage}
+            isFetchingNextPage={getIniniteOrdersSearchQuery.isFetchingNextPage}
+            fetchNextPage={getIniniteOrdersSearchQuery.fetchNextPage}
+            isFetching={getIniniteOrdersSearchQuery.isFetching}
+          />
         )}
 
         {isSearching && (
@@ -129,7 +134,7 @@ export const Orders = () => {
         )}
       </div>
 
-      {(getIniniteOrdersSearchQuery.isFetching || isFetching) && <OrdersSkeleton />}
+      {(getIniniteOrdersSearchQuery.isFetching || getIniniteOrdersSearchQuery.isFetching) && <OrdersSkeleton />}
       <DeleteOrders />
       {deleteOrdersSignal.value.isSelecting && <OrdersActionBar allOrders={allOrders} />}
     </div>
@@ -288,19 +293,19 @@ const OrdersListItem = (props: { order: OrderAttributes; allOrders: OrderAttribu
             </PopoverTrigger>
             <PopoverContent className="flex w-40 flex-col items-stretch rounded-sm border-line-400 bg-white/70 drop-shadow-[0.6px_0.8px_9px_rgba(0,0,0,0,95)] backdrop-blur-lg">
               <ul class="flex flex-col gap-3">
-                <button type="button" class="flex cursor-pointer items-center justify-between gap-2 hover:bg-secondary" onClick={handleEdit}>
+                <button type="button" class="flex cursor-pointer items-center justify-between gap-2" onClick={handleEdit}>
                   <p class="font-medium text-sm">Edit</p>
                   <div class="min-w-5 p-1">
                     <Icon icon="iconoir:edit" className="h-4 w-4 text-black" />
                   </div>
                 </button>
-                <button type="button" onClick={handleExportSingleOrder} class="flex cursor-pointer items-center justify-between gap-2 hover:bg-secondary">
+                <button type="button" onClick={handleExportSingleOrder} class="flex cursor-pointer items-center justify-between gap-2">
                   <p class="font-medium text-sm">Download CSV</p>
                   <div class="min-w-5 p-1">
                     <Icon icon="iconoir:download" className="h-4 w-4 text-black" />
                   </div>
                 </button>
-                <button type="button" onClick={handleDelete} class="flex cursor-pointer items-center justify-between gap-2 hover:bg-secondary">
+                <button type="button" onClick={handleDelete} class="flex cursor-pointer items-center justify-between gap-2">
                   <p class="font-medium text-destructive text-sm">Delete Order </p>
                   <div class="min-w-5 p-1">
                     <Icon icon="material-symbols-light:delete-outline-sharp" className="h-4 w-4 text-destructive" />
@@ -328,7 +333,7 @@ const OrdersListItem = (props: { order: OrderAttributes; allOrders: OrderAttribu
       <label class="flex items-center gap-2 font-medium text-sm">
         <p>Mark as completed</p>
         <div
-          class={cn("flex cursor-pointer items-center justify-between gap-3 transition-colors hover:bg-secondary", {
+          class={cn("flex cursor-pointer items-center justify-between gap-3 transition-colors", {
             "bg-secondary/50": isChecked,
           })}
         >
@@ -365,7 +370,7 @@ export const handleSelectOrderChange = (e: Event, order_id: string) => {
 };
 
 // Format the date in the requested format: "Tue, Oct 7 2025"
-export const formatDateForOrderDueDate = (dateString?: string) => {
+export const formatDateForOrderDueDate = (dateString?: string | null) => {
   if (!dateString) return "Select Date";
   const date = new Date(dateString);
   return new Intl.DateTimeFormat("en-US", {

@@ -15,6 +15,8 @@ import { cn } from "@/lib/utils";
 import { formatDateForOrderDueDate, handleSelectOrderChange, OrdersSkeleton } from "@/pages/Clients/orders/page";
 import { DeleteOrders, deleteOrdersSignal } from "../../orders/components/DeleteOrders";
 import { exportOrdersToCSV, OrdersActionBar } from "../../orders/components/OrdersActionBar";
+import { Capacitor } from "@capacitor/core";
+import { DatetimePicker } from "@capawesome-team/capacitor-datetime-picker";
 
 export const EditOrdersTab = () => {
   const { params } = useRoute();
@@ -58,13 +60,13 @@ export const EditOrdersTab = () => {
     <div class="mt-8 flex flex-1 flex-col gap-6 pb-24">
       <div
         class={cn("flex flex-col", {
-          "py-4": getInfiniteOrdersQuery.isLoading,
-          "flex-1": !getInfiniteOrdersQuery.isLoading,
+          "py-4": getInfiniteOrdersQuery.isFetching,
+          "flex-1": !getInfiniteOrdersQuery.isFetching,
         })}
       >
         {addingNewOrder && !allOrders.length && <AddNewOrderItem setAddingNewOrder={setAddingNewOrder} />}
 
-        {!getInfiniteOrdersQuery.isLoading && !!allOrders.length && (
+        {!getInfiniteOrdersQuery.isFetching && !!allOrders.length && (
           <div class="flex flex-1 flex-col gap-4">
             <div class="flex flex-col gap-4">
               <div class="flex flex-col">
@@ -92,7 +94,7 @@ export const EditOrdersTab = () => {
             </div>
           </div>
         )}
-        {!getInfiniteOrdersQuery.isLoading && !allOrders.length && !addingNewOrder && (
+        {!getInfiniteOrdersQuery.isFetching && !allOrders.length && !addingNewOrder && (
           <div class="flex flex-1 flex-col items-stretch">
             <div class="flex flex-1 flex-col items-center justify-center gap-4">
               <div class="flex flex-col items-center gap-4">
@@ -197,19 +199,19 @@ const OrdersListItem = (props: { order: OrderAttributes; allOrders: OrderAttribu
               </PopoverTrigger>
               <PopoverContent className="flex w-40 flex-col items-stretch rounded-sm border-line-400 bg-white/70 drop-shadow-[0.6px_0.8px_9px_rgba(0,0,0,0,95)] backdrop-blur-lg">
                 <ul class="flex flex-col gap-3">
-                  <button type="button" class="flex cursor-pointer items-center justify-between gap-2 hover:bg-secondary" onClick={handleEdit}>
+                  <button type="button" class="flex cursor-pointer items-center justify-between gap-2" onClick={handleEdit}>
                     <p class="font-medium text-sm">Edit</p>
                     <div class="grid min-w-5 place-content-center p-1">
                       <Icon icon="iconoir:edit" className="h-4 w-4 text-black" />
                     </div>
                   </button>
-                  <button type="button" onClick={handleExportSingleOrder} class="flex cursor-pointer items-center justify-between gap-2 hover:bg-secondary">
+                  <button type="button" onClick={handleExportSingleOrder} class="flex cursor-pointer items-center justify-between gap-2">
                     <p class="font-medium text-sm">Download CSV</p>
                     <div class="grid min-w-5 place-content-center p-1">
                       <Icon icon="iconoir:download" className="h-4 w-4 text-black" />
                     </div>
                   </button>
-                  <button type="button" onClick={handleDelete} class="flex cursor-pointer items-center justify-between gap-2 hover:bg-secondary">
+                  <button type="button" onClick={handleDelete} class="flex cursor-pointer items-center justify-between gap-2">
                     <p class="font-medium text-destructive text-sm">Delete Order </p>
                     <div class="grid min-w-5 place-content-center p-1">
                       <Icon icon="material-symbols-light:delete-outline-sharp" className="h-4 w-4 text-destructive" />
@@ -237,7 +239,7 @@ const OrdersListItem = (props: { order: OrderAttributes; allOrders: OrderAttribu
         <label class="flex items-center gap-2 font-medium text-sm">
           <p>Mark as completed</p>
           <div
-            class={cn("flex cursor-pointer items-center justify-between gap-3 transition-colors hover:bg-secondary", {
+            class={cn("flex cursor-pointer items-center justify-between gap-3 transition-colors", {
               "bg-secondary/50": isChecked,
             })}
           >
@@ -366,6 +368,7 @@ const EditableOrderItem = (props: { order: OrderAttributes; setIsEditing: Dispat
                 <div class="flex flex-col gap-1.5">
                   <textarea
                     {...notesField}
+                    value={notesField.value ?? undefined}
                     placeholder="The client want it to be fitted and the trousers should be very long and fitted"
                     class="flex min-h-20 flex-1 items-center gap-3.5 border border-line-700 px-3 py-3 text-sm placeholder:text-grey-400"
                   />
@@ -389,14 +392,32 @@ const EditableOrderItem = (props: { order: OrderAttributes; setIsEditing: Dispat
                     <button
                       type="button"
                       class="flex min-h-10.5 w-full items-center gap-3.5 border border-line-700 px-3 text-left text-sm placeholder:text-grey-400 focus:outline focus:outline-primary"
-                      onClick={(e) => {
-                        const input = e.currentTarget.nextElementSibling as HTMLInputElement;
-                        input?.showPicker();
+                      onClick={async (e) => {
+                        if (Capacitor.isNativePlatform()) {
+                          try {
+                            const { value } = await DatetimePicker.present({
+                              mode: "date",
+                              value: field.value ? new Date(field.value).toISOString().split("T")[0] : undefined,
+                              format: "yyyy-MM-dd",
+                              theme: "light",
+                              min: new Date().toISOString().split("T")[0],
+                            });
+
+                            if (value) {
+                              field.onChange(value);
+                            }
+                          } catch (err) {
+                            console.error("Date picker cancelled or failed", err);
+                          }
+                        } else {
+                          const input = e.currentTarget.nextElementSibling as HTMLInputElement;
+                          input?.showPicker();
+                        }
                       }}
                     >
                       {formatDateForOrderDueDate(field.value)}
                     </button>
-                    <input {...field} type="date" class="pointer-events-none absolute inset-0 opacity-0" />
+                    <input {...field} value={field.value ?? undefined} type="date" class="pointer-events-none absolute inset-0 opacity-0" />
                   </div>
                   {formMethods.formState.errors.order?.due_date && <p class="text-destructive text-xs">{formMethods.formState.errors.order?.due_date.message}</p>}
                 </div>
@@ -560,14 +581,32 @@ const AddNewOrderItem = (props: { setAddingNewOrder: Dispatch<StateUpdater<boole
                     <button
                       type="button"
                       class="flex min-h-10.5 w-full items-center gap-3.5 border border-line-700 px-3 text-left text-sm placeholder:text-grey-400"
-                      onClick={(e) => {
-                        const input = e.currentTarget.nextElementSibling as HTMLInputElement;
-                        input?.showPicker();
+                      onClick={async (e) => {
+                        if (Capacitor.isNativePlatform()) {
+                          try {
+                            const { value } = await DatetimePicker.present({
+                              mode: "date",
+                              value: field.value ? new Date(field.value).toISOString().split("T")[0] : undefined,
+                              format: "yyyy-MM-dd",
+                              theme: "light",
+                              min: new Date().toISOString().split("T")[0],
+                            });
+
+                            if (value) {
+                              field.onChange(value);
+                            }
+                          } catch (err) {
+                            console.error("Date picker cancelled or failed", err);
+                          }
+                        } else {
+                          const input = e.currentTarget.nextElementSibling as HTMLInputElement;
+                          input?.showPicker();
+                        }
                       }}
                     >
                       {formatDateForOrderDueDate(field.value)}
                     </button>
-                    <input {...field} type="date" class="pointer-events-none absolute inset-0 opacity-0" />
+                    <input {...field} value={field.value ?? ""} type="date" class="pointer-events-none absolute inset-0 opacity-0" />
                   </div>
                   {formMethods.formState.errors.order?.due_date && <p class="text-destructive text-xs">{formMethods.formState.errors.order?.due_date.message}</p>}
                 </div>

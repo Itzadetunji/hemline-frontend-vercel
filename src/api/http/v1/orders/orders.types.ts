@@ -108,11 +108,11 @@ export type CreateOrderPayload = z.infer<typeof CreateOrderSchema>;
 // Update order payload schema
 export const UpdateOrderSchema = z.object({
   order: z.object({
-    item: z.string().optional(),
-    quantity: z.number().optional(),
-    notes: z.string().optional(),
-    is_done: z.boolean().optional(),
-    due_date: z.string().optional(),
+    item: z.string(),
+    quantity: z.number().nullish(),
+    notes: z.string().nullish(),
+    is_done: z.boolean().nullish(),
+    due_date: z.string().nullish(),
   }),
 });
 
