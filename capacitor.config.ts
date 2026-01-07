@@ -4,10 +4,10 @@ const config: CapacitorConfig = {
   appId: "com.adetunji.hemline.studio",
   appName: "Hemline Studio",
   webDir: "dist",
-  server: {
-    url: "http://192.168.1.123:5173",
-    cleartext: true,
-  },
+  // server: {
+  //   url: "http://192.168.1.123:5173",
+  //   cleartext: true,
+  // },
   plugins: {
     CapacitorHttp: {
       enabled: true,
