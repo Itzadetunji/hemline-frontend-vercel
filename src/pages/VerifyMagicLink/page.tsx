@@ -1,16 +1,14 @@
 import { useVerifyMagicLink } from "@/api/http/v1/users/users.hooks";
+import { capacitorStorage } from "@/lib/storage/capacitor-storage";
 import { clearEmail } from "@/stores/authStore";
 import { userStore } from "@/stores/userStore";
 import { useLocation, useRoute } from "preact-iso";
 import { useEffect } from "preact/hooks";
 import { AccountDeletionPendingModal } from "../Auth/components/AccountDeletionPendingModal";
 import type { MarkedForDeletionProfile, NotMarkedForDeletionProfile } from "@/api/http/v1/users/users.types";
-import { cn } from "@/lib/utils";
-import { Capacitor } from "@capacitor/core";
 
 export const VerifyMagicLink = () => {
   const { query } = useRoute();
-  const isNative = Capacitor.isNativePlatform();
   const location = useLocation();
 
   const verifyMagicLinkMutation = useVerifyMagicLink();
@@ -35,18 +33,14 @@ export const VerifyMagicLink = () => {
     } else {
       clearEmail();
       userStore.logout();
-      localStorage.clear();
+      void capacitorStorage.clearAll();
 
       location.route("/sign-in", true);
     }
   }, [query.token]);
 
   return (
-    <div
-      class={cn("mx-auto flex w-full max-w-md flex-1 flex-col", {
-        "max-w-md": !isNative,
-      })}
-    >
+    <div class="mx-auto flex w-full max-w-md flex-1 flex-col">
       <div class="flex flex-1 items-center justify-center">
         <img src="/assets/brand/logo.svg" class="animate-pulse" alt="Brand Logo" />
         <AccountDeletionPendingModal />

@@ -12,11 +12,8 @@ import { selectingSignal } from "@/layout/Header";
 import { cn } from "@/lib/utils";
 import { PublicSingleGallery } from "./components/PublicSingleGallery";
 import { detectBackgroundColor } from "../Gallery/page";
-import { Capacitor } from "@capacitor/core";
 
 export const PublicFolderGallery = () => {
-  const isNative = Capacitor.isNativePlatform();
-
   // Get folder ID from route params
   const { params } = useRoute();
   const folderId = params.public_id;
@@ -67,7 +64,7 @@ export const PublicFolderGallery = () => {
   return (
     <div
       class={cn("mx-auto flex w-full max-w-md flex-1 flex-col", {
-        "max-w-md": !isNative,
+        "max-w-md": true,
       })}
     >
       <NavBar />

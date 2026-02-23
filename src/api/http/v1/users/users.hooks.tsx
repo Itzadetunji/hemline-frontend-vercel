@@ -6,6 +6,7 @@ import { useEffect } from "preact/hooks";
 import toast from "react-hot-toast";
 
 import { createQueryKey } from "@/lib/queryClient";
+import { capacitorStorage } from "@/lib/storage/capacitor-storage";
 import { clearEmail, setEmail } from "@/stores/authStore";
 import { userSignal, userStore } from "@/stores/userStore";
 import { USERS_API } from "./users.api";
@@ -44,8 +45,8 @@ export const useLogout = () => {
       toast.success("Logged out successfully!", { id: "log-out" });
 
       clearEmail();
-      userStore.logout();
-      localStorage.clear();
+      void userStore.logout();
+      void capacitorStorage.clearAll();
 
       queryClient.invalidateQueries();
     }
@@ -60,33 +61,40 @@ export const useGetMagicLink = () => {
   });
 };
 
-export const useGetUserProfile = () => {
+export const useGetUserProfile = (opts?: { enabled?: boolean }) => {
   const location = useLocation();
 
   const getUserProfileQuery = useQuery<GetUserProfileResponse, AxiosError>({
     queryFn: USERS_API.GET_USER_PROFILE,
     queryKey: usersQuerykeys.all,
+    enabled: opts?.enabled ?? true,
   });
 
   useEffect(() => {
-    if (getUserProfileQuery.status === "error") {
-      console.error("Error fetching user profile:", getUserProfileQuery.error);
-      userStore.updateUser({
-        user: null,
-        theme: window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light",
-        access_token: undefined,
-      });
-      setEmail("");
-      location.route("/gallery", true);
-    }
-    if (getUserProfileQuery.status === "success") {
-      // console.log("User profile fetched successfully:", getUserProfileQuery.data);
-      userStore.updateUser({
-        access_token: getUserProfileQuery.data.data.access_token,
-        user: (getUserProfileQuery.data.data as NotMarkedForDeletionProfile).user,
-      });
-    }
-  }, [getUserProfileQuery.status, getUserProfileQuery.data]);
+    const run = async () => {
+      if (getUserProfileQuery.status === "error") {
+        const err = getUserProfileQuery.error as AxiosError<{ expired?: boolean }>;
+        const status = err?.response?.status;
+        const isAuthError = status === 401 || status === 403 || err?.response?.data?.expired;
+        if (isAuthError) {
+          await userStore.updateUser({
+            user: null,
+            theme: window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light",
+            access_token: undefined,
+          });
+          clearEmail();
+          location.route("/sign-in", true);
+        }
+      }
+      if (getUserProfileQuery.status === "success" && getUserProfileQuery.data) {
+        await userStore.updateUser({
+          access_token: getUserProfileQuery.data.data.access_token,
+          user: (getUserProfileQuery.data.data as NotMarkedForDeletionProfile).user,
+        });
+      }
+    };
+    run();
+  }, [getUserProfileQuery.status, getUserProfileQuery.data, getUserProfileQuery.error]);
 
   return getUserProfileQuery;
 };
@@ -96,11 +104,11 @@ export const useVeriftMagicCode = () => {
 
   return useMutation<GetUserProfileResponse, AxiosError<{ message: string; errors: string[] }>, VerifyMagicCodePayload>({
     mutationFn: USERS_API.VERIFY_MAGIC_CODE,
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       console.log("Magic code verified successfully:", data);
 
-      // Store access token regardless of deletion status
-      userStore.updateUser({
+      // Store access token regardless of deletion status - await so persist completes before app can close
+      await userStore.updateUser({
         access_token: data.data.access_token,
       });
 
@@ -113,8 +121,8 @@ export const useVeriftMagicCode = () => {
         return;
       }
 
-      // Update the user store with the new user data
-      userStore.updateUser({
+      // Update the user store with the new user data - await so persist completes
+      await userStore.updateUser({
         access_token: data.data.access_token,
         user: (data.data as NotMarkedForDeletionProfile).user,
       });
@@ -143,11 +151,11 @@ export const useVerifyMagicLink = () => {
 
   return useMutation<GetUserProfileResponse, AxiosError<Record<string, any>>, string>({
     mutationFn: () => USERS_API.VERIFY_MAGIC_LINK(token),
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       console.log("Magic link verified successfully:", data);
 
-      // Store access token regardless of deletion status
-      userStore.updateUser({
+      // Store access token regardless of deletion status - await so persist completes
+      await userStore.updateUser({
         access_token: data.data.access_token,
       });
 
@@ -160,8 +168,8 @@ export const useVerifyMagicLink = () => {
         return;
       }
 
-      // Update the user store with the new user data
-      userStore.updateUser({
+      // Update the user store with the new user data - await so persist completes
+      await userStore.updateUser({
         access_token: data.data.access_token,
         user: (data.data as NotMarkedForDeletionProfile).user,
         to_be_deleted: false,
@@ -179,7 +187,7 @@ export const useVerifyMagicLink = () => {
       console.error("Error verifying magic code:", error);
       clearEmail();
       userStore.logout();
-      localStorage.clear();
+      void capacitorStorage.clearAll();
 
       toast.error(error.response?.data.errors?.[0] ?? "Invalid or expired magic link");
 
@@ -280,7 +288,7 @@ export const useDeleteAccount = () => {
 
       clearEmail();
       userStore.logout();
-      localStorage.clear();
+      void capacitorStorage.clearAll();
 
       queryClient.invalidateQueries();
       location.route("/sign-in", true);

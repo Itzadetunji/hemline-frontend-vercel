@@ -1,53 +1,32 @@
 /** biome-ignore-all lint/style/useFilenamingConvention: This is just an authstore */
 
 import { computed, signal } from "@preact/signals";
-import { type UserSignal, userSignal } from "./userStore";
+import { userSignal } from "./userStore";
+import { capacitorStorage } from "@/lib/storage/capacitor-storage";
 
-// Initialize email signal with value from localStorage
-const getStoredEmail = () => {
-  if (typeof window !== "undefined") {
-    return localStorage.getItem("email") || "";
+export const emailSignal = signal<string>("");
+
+export async function loadEmailFromStorage() {
+  try {
+    const email = await capacitorStorage.getEmail();
+    emailSignal.value = email || "";
+  } catch {
+    emailSignal.value = "";
   }
-  return "";
-};
+}
 
-export const emailSignal = signal<string>(getStoredEmail());
-
-// Computed signal to check if user is authenticated
 export const isAuthenticated = computed(() => {
-  // Check if we have a valid user object with required properties
-  const userStore = userSignal.value;
-  console.log(userStore);
-  if (!userStore?.user || !userStore?.access_token) {
-    console.log(userStore);
-    return false;
-  }
-
-  // Additional check with localStorage for persistence
-  if (typeof window !== "undefined") {
-    try {
-      const stored = localStorage.getItem("user-storage");
-      if (stored) {
-        const { user: storedUser } = JSON.parse(stored) as UserSignal;
-        return !!storedUser?.id;
-      }
-    } catch (error) {
-      console.warn("Failed to parse stored auth data:", error);
-    }
-  }
-
-  return false;
+  const store = userSignal.value;
+  return !!(store?.user?.id && store?.access_token);
 });
 
-// Helper functions to manage email state and localStorage sync
-export const setEmail = (email: string) => {
+export const setEmail = async (email: string) => {
   emailSignal.value = email;
-  if (typeof window !== "undefined") {
-    if (email) {
-      localStorage.setItem("email", email);
-    } else {
-      localStorage.removeItem("email");
-    }
+  try {
+    if (email) await capacitorStorage.setEmail(email);
+    else await capacitorStorage.removeEmail();
+  } catch (err) {
+    console.warn("Failed to persist email:", err);
   }
 };
 

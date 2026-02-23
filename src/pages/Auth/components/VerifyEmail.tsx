@@ -16,12 +16,10 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { clearEmail, emailSignal, setEmail } from "@/stores/authStore";
 import { AccountDeletionPendingModal } from "./AccountDeletionPendingModal";
-import { Capacitor } from "@capacitor/core";
 import { cn } from "@/lib/utils";
 
 export const VerifyEmail = () => {
   const location = useLocation();
-  const isNative = Capacitor.isNativePlatform();
 
   const formMethods = useForm<VerifyMagicCodePayload>({
     resolver: zodResolver(VerifyMagicCodeSchema),
@@ -65,11 +63,7 @@ export const VerifyEmail = () => {
   };
 
   return (
-    <div
-      class={cn("mx-auto flex w-full flex-1 flex-col", {
-        "max-w-md": !isNative,
-      })}
-    >
+    <div class="mx-auto flex w-full max-w-md flex-1 flex-col">
       <main class="flex flex-1 flex-col items-stretch gap-9.5 px-4 py-4">
         <AccountDeletionPendingModal />
         <div class="flex flex-col gap-10">
@@ -147,8 +141,6 @@ const ResendEmail = () => {
     await getMagicLinkMutation.mutateAsync(payload, {
       onSuccess: (data) => {
         setEmail(payload.email);
-
-        localStorage.setItem("magic-code", (data as any).debug.code);
 
         setIsDisabled(true); // disable button again
         setEmailSent(true);

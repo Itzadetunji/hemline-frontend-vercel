@@ -1,7 +1,7 @@
 import type { ThemeType, User } from "@/api/http/v1/users/users.types";
-import { computed, effect, signal } from "@preact/signals";
+import { computed, signal } from "@preact/signals";
+import { capacitorStorage } from "@/lib/storage/capacitor-storage";
 
-// User type (same as before)
 export interface UserSignal {
   user: User | null;
   theme: ThemeType;
@@ -9,64 +9,66 @@ export interface UserSignal {
   to_be_deleted?: boolean;
 }
 
-const getInitialState = (): UserSignal => {
+const defaultTheme: ThemeType =
+  typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+
+export const userSignal = signal<UserSignal | null>(null);
+export const authLoadedSignal = signal(false);
+
+export const userThemeSignal = computed(() => userSignal.value?.theme || defaultTheme);
+
+async function persistUser(data: UserSignal | null) {
   try {
-    const stored = localStorage.getItem("user-storage");
-    if (stored) {
-      // console.log(JSON.parse(stored));
-      return JSON.parse(stored);
+    if (data) {
+      await capacitorStorage.setUser(data);
+    } else {
+      await capacitorStorage.removeUser();
     }
-  } catch (error) {
-    console.error("Failed to parse user-storage:", error);
+  } catch (err) {
+    console.warn("Failed to persist user:", err);
   }
+}
 
-  // Fallback to initial state
-  return {
-    user: null,
-    theme: window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light",
-    access_token: undefined,
-  };
-};
+export async function loadUserFromStorage(): Promise<void> {
+  try {
+    const data = await capacitorStorage.getUser();
+    if (data) {
+      userSignal.value = {
+        ...data,
+        theme: data.theme || defaultTheme,
+      };
+    } else {
+      userSignal.value = {
+        user: null,
+        theme: defaultTheme,
+        access_token: undefined,
+      };
+    }
+  } catch (err) {
+    console.warn("Failed to load user from storage:", err);
+    userSignal.value = { user: null, theme: defaultTheme, access_token: undefined };
+  } finally {
+    authLoadedSignal.value = true;
+  }
+}
 
-const userStoreInitialState = getInitialState();
-
-// Create signals for user state
-export const userSignal = signal<UserSignal | null>(userStoreInitialState);
-
-export const userThemeSignal = computed(() => userSignal.value?.theme || "light");
-
-// Actions
 export const userStore = {
-  updateUser: (updates: Partial<UserSignal>) => {
-    const currentUser = userSignal.value;
-    if (currentUser) {
-      const updatedUser = { ...currentUser, ...updates };
-      userSignal.value = updatedUser;
-
-      // Persist changes
-      localStorage.setItem("user-storage", JSON.stringify(updatedUser));
+  /** Updates user state and persists to storage. Returns a Promise so callers can await persistence. */
+  updateUser: (updates: Partial<UserSignal>): Promise<void> => {
+    const current = userSignal.value;
+    if (current) {
+      const updated = { ...current, ...updates };
+      userSignal.value = updated;
+      return persistUser(updated);
     } else {
       const newData = { ...updates } as UserSignal;
       userSignal.value = newData;
-
-      // Persist changes
-      localStorage.setItem("user-storage", JSON.stringify(newData));
+      return persistUser(newData);
     }
   },
 
-  logout: () => {
+  logout: (): Promise<void> => {
     userSignal.value = null;
-    localStorage.removeItem("user-storage");
+    return persistUser(null);
   },
 };
-
-// Auto-persist effect (optional)
-effect(() => {
-  try {
-    if (userSignal.value) {
-      localStorage.setItem("user-storage", JSON.stringify(userSignal.value));
-    }
-  } catch (error) {
-    console.warn("Failed to persist user data to localStorage:", error);
-  }
-});

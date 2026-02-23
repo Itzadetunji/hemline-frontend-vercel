@@ -13,11 +13,9 @@ import { emailSignal, setEmail } from "@/stores/authStore";
 import { VerifyEmail } from "../components/VerifyEmail";
 import toast from "react-hot-toast";
 import { cn, openLink } from "@/lib/utils";
-import { Capacitor } from "@capacitor/core";
 
 export const SignIn = () => {
   const { query } = useLocation();
-  const isNative = Capacitor.isNativePlatform();
   const formMethods = useForm<RequestMagicLinkPayload>({
     resolver: zodResolver(RequestMagicLinkPayloadSchema),
     defaultValues: {
@@ -47,11 +45,7 @@ export const SignIn = () => {
   if (emailSignal.value.length) return <VerifyEmail />;
 
   return (
-    <div
-      class={cn("mx-auto flex w-full flex-1 flex-col", {
-        "max-w-md": !isNative,
-      })}
-    >
+    <div class="mx-auto flex w-full max-w-md flex-1 flex-col">
       <main class="flex flex-1 flex-col items-stretch gap-6 px-4 py-4">
         <div class="flex flex-col gap-10">
           <img src="/assets/brand/logo.svg" class="size-9" alt="Brand Logo" />

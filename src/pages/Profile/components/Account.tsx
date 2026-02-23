@@ -57,9 +57,6 @@ export const Account = () => {
           ...headerContentSignal.value,
           showNavbar: true,
         };
-        if (typeof window !== "undefined") {
-          localStorage.setItem("theme", payload.theme);
-        }
       },
       onError: (error) => {
         toast.error("Profile could not be updated");

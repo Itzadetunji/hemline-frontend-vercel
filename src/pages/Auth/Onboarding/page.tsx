@@ -38,11 +38,6 @@ export const Onboarding = () => {
   const onSubmit = async (payload: OnboardingFormData) => {
     await updateUserProfileMutation.mutateAsync(payload, {
       onSuccess: () => {
-        // Store theme preference locally or in user store
-        if (typeof window !== "undefined") {
-          localStorage.setItem("theme", payload.theme);
-        }
-        // Redirect to home after successful onboarding
         location.route("/gallery");
       },
       onError: (error) => {

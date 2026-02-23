@@ -1,6 +1,5 @@
 import { cn } from "@/lib/utils";
 import { zIndexManager } from "@/lib/z-index-manager";
-import { Capacitor } from "@capacitor/core";
 import { Keyboard } from "@capacitor/keyboard";
 import { animate, createDraggable, createTimeline, type Draggable, type Timeline } from "animejs";
 import type { ComponentChildren } from "preact";
@@ -22,8 +21,6 @@ export const Drawer = ({ isOpen, onClose, children, className = "", drawerClass 
   const openState = useRef(isOpen);
   const [zIndex, setZIndex] = useState(60);
   const cleanupRef = useRef<(() => void) | null>(null);
-
-  const isNative = Capacitor.isNativePlatform();
 
   useLayoutEffect(() => {
     if (isOpen) {
@@ -74,7 +71,7 @@ export const Drawer = ({ isOpen, onClose, children, className = "", drawerClass 
     });
 
     drawerInstance.current.progressY = 100;
-    if (!isOpen && isNative) {
+    if (!isOpen) {
       $elem.style.visibility = "hidden";
     }
   }, []);
@@ -83,7 +80,7 @@ export const Drawer = ({ isOpen, onClose, children, className = "", drawerClass 
     if (!drawerInstance.current) return;
 
     if (isOpen) {
-      if (drawerRef.current && isNative) drawerRef.current.style.visibility = "visible";
+      if (drawerRef.current) drawerRef.current.style.visibility = "visible";
       animate(drawerInstance.current, {
         progressY: 0,
         duration: 500,
@@ -91,22 +88,20 @@ export const Drawer = ({ isOpen, onClose, children, className = "", drawerClass 
       });
       openState.current = true;
     } else {
-      if (isNative) {
-        Keyboard.hide();
-      }
+      Keyboard.hide();
       animate(drawerInstance.current, {
         progressY: 1,
         duration: 500,
         ease: "out(4)",
         complete: () => {
-          if (drawerRef.current && !openState.current && isNative) {
+          if (drawerRef.current && !openState.current) {
             drawerRef.current.style.visibility = "hidden";
           }
         },
       });
       openState.current = false;
     }
-  }, [isOpen, isNative]);
+  }, [isOpen]);
 
   return createPortal(
     <>

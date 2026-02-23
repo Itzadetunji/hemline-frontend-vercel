@@ -1,6 +1,7 @@
 import { accountDeletionPendingSignal, useCancelDeleteAccount } from "@/api/http/v1/users/users.hooks";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader } from "@/components/ui/dialog";
+import { capacitorStorage } from "@/lib/storage/capacitor-storage";
 import { clearEmail } from "@/stores/authStore";
 import { userStore } from "@/stores/userStore";
 import { Icon } from "@iconify/react";
@@ -22,7 +23,7 @@ export const AccountDeletionPendingModal = () => {
     };
     clearEmail();
     userStore.logout();
-    localStorage.clear();
+    void capacitorStorage.clearAll();
     location.route("/sign-in", true);
   };
 

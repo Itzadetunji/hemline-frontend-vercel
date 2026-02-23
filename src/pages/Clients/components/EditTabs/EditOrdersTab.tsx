@@ -15,7 +15,6 @@ import { cn } from "@/lib/utils";
 import { formatDateForOrderDueDate, handleSelectOrderChange, OrdersSkeleton } from "@/pages/Clients/orders/page";
 import { DeleteOrders, deleteOrdersSignal } from "../../orders/components/DeleteOrders";
 import { exportOrdersToCSV, OrdersActionBar } from "../../orders/components/OrdersActionBar";
-import { Capacitor } from "@capacitor/core";
 import { DatetimePicker } from "@capawesome-team/capacitor-datetime-picker";
 
 export const EditOrdersTab = () => {
@@ -392,26 +391,21 @@ const EditableOrderItem = (props: { order: OrderAttributes; setIsEditing: Dispat
                     <button
                       type="button"
                       class="flex min-h-10.5 w-full items-center gap-3.5 border border-line-700 px-3 text-left text-sm placeholder:text-grey-400 focus:outline focus:outline-primary"
-                      onClick={async (e) => {
-                        if (Capacitor.isNativePlatform()) {
-                          try {
-                            const { value } = await DatetimePicker.present({
-                              mode: "date",
-                              value: field.value ? new Date(field.value).toISOString().split("T")[0] : undefined,
-                              format: "yyyy-MM-dd",
-                              theme: "light",
-                              min: new Date().toISOString().split("T")[0],
-                            });
+                      onClick={async () => {
+                        try {
+                          const { value } = await DatetimePicker.present({
+                            mode: "date",
+                            value: field.value ? new Date(field.value).toISOString().split("T")[0] : undefined,
+                            format: "yyyy-MM-dd",
+                            theme: "light",
+                            min: new Date().toISOString().split("T")[0],
+                          });
 
-                            if (value) {
-                              field.onChange(value);
-                            }
-                          } catch (err) {
-                            console.error("Date picker cancelled or failed", err);
+                          if (value) {
+                            field.onChange(value);
                           }
-                        } else {
-                          const input = e.currentTarget.nextElementSibling as HTMLInputElement;
-                          input?.showPicker();
+                        } catch (err) {
+                          console.error("Date picker cancelled or failed", err);
                         }
                       }}
                     >
@@ -581,26 +575,21 @@ const AddNewOrderItem = (props: { setAddingNewOrder: Dispatch<StateUpdater<boole
                     <button
                       type="button"
                       class="flex min-h-10.5 w-full items-center gap-3.5 border border-line-700 px-3 text-left text-sm placeholder:text-grey-400"
-                      onClick={async (e) => {
-                        if (Capacitor.isNativePlatform()) {
-                          try {
-                            const { value } = await DatetimePicker.present({
-                              mode: "date",
-                              value: field.value ? new Date(field.value).toISOString().split("T")[0] : undefined,
-                              format: "yyyy-MM-dd",
-                              theme: "light",
-                              min: new Date().toISOString().split("T")[0],
-                            });
+                      onClick={async () => {
+                        try {
+                          const { value } = await DatetimePicker.present({
+                            mode: "date",
+                            value: field.value ? new Date(field.value).toISOString().split("T")[0] : undefined,
+                            format: "yyyy-MM-dd",
+                            theme: "light",
+                            min: new Date().toISOString().split("T")[0],
+                          });
 
-                            if (value) {
-                              field.onChange(value);
-                            }
-                          } catch (err) {
-                            console.error("Date picker cancelled or failed", err);
+                          if (value) {
+                            field.onChange(value);
                           }
-                        } else {
-                          const input = e.currentTarget.nextElementSibling as HTMLInputElement;
-                          input?.showPicker();
+                        } catch (err) {
+                          console.error("Date picker cancelled or failed", err);
                         }
                       }}
                     >

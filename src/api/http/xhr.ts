@@ -102,8 +102,8 @@ $http.interceptors.response.use(
         if (response.success && response.data.access_token) {
           const newAccessToken = response.data.access_token;
 
-          // Update the user store with new token
-          userStore.updateUser({
+          // Update the user store with new token - await so persist completes
+          await userStore.updateUser({
             access_token: newAccessToken,
             user: response.data.user,
           });

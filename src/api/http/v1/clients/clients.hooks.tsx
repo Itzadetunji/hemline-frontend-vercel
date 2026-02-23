@@ -2,7 +2,14 @@ import type { AxiosError } from "axios";
 import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
-import { CLIENTS_API } from "./clients.api";
+import {
+  getClients,
+  getClient,
+  createClient,
+  updateClient,
+  bulkDeleteClients,
+} from "@/lib/offline/offline-clients";
+import { userSignal } from "@/stores/userStore";
 import type {
   ListClientsResponse,
   GetClientResponse,
@@ -26,33 +33,28 @@ export const clientsQueryKeys = {
 } as const;
 
 export const useGetClients = (params?: GetAllClientsParams & { enabled?: boolean }) => {
+  const userId = userSignal.value?.user?.id;
   return useQuery<ListClientsResponse, AxiosError>({
     queryKey: clientsQueryKeys.list(params),
-    queryFn: () => CLIENTS_API.GET_ALL(params),
-    enabled: params?.enabled ?? true,
+    queryFn: () => getClients(params),
+    enabled: (params?.enabled ?? true) && !!userId,
   });
 };
 
 export const useInfiniteGetClients = (params?: GetAllClientsParams & { enabled?: boolean }) => {
+  const userId = userSignal.value?.user?.id;
   return useInfiniteQuery<ListClientsResponse, AxiosError>({
     queryKey: clientsQueryKeys.infinite(params),
-    queryFn: ({ pageParam = 1 }) =>
-      CLIENTS_API.GET_ALL({
-        ...params,
-        per_page: params?.per_page,
-        page: pageParam as number,
-      }),
-    enabled: params?.enabled ?? true,
+    queryFn: ({ pageParam = 1 }) => getClients({ ...params, page: pageParam as number }),
+    enabled: (params?.enabled ?? true) && !!userId,
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
       if (!lastPage.pagination) return undefined;
-
       const { current_page, total_pages } = lastPage.pagination;
       return current_page < total_pages ? current_page + 1 : undefined;
     },
     getPreviousPageParam: (firstPage) => {
       if (!firstPage.pagination) return undefined;
-
       const { current_page } = firstPage.pagination;
       return current_page > 1 ? current_page - 1 : undefined;
     },
@@ -62,7 +64,7 @@ export const useInfiniteGetClients = (params?: GetAllClientsParams & { enabled?:
 export const useGetClient = (id: string) => {
   return useQuery<GetClientResponse, AxiosError>({
     queryKey: clientsQueryKeys.detail(id),
-    queryFn: () => CLIENTS_API.GET(id),
+    queryFn: () => getClient(id),
     enabled: !!id,
   });
 };
@@ -71,11 +73,9 @@ export const useCreateClient = () => {
   const queryClient = useQueryClient();
 
   return useMutation<CreateClientResponse, AxiosError<{ error: string }>, CreateClientPayload>({
-    mutationFn: CLIENTS_API.CREATE,
+    mutationFn: createClient,
     onSuccess: () => {
       toast.success("Client created successfully!");
-
-      // Invalidate and refetch clients list
       queryClient.invalidateQueries({ queryKey: clientsQueryKeys.lists() });
       queryClient.invalidateQueries({ queryKey: clientsQueryKeys.infinite(), exact: false });
     },
@@ -90,34 +90,18 @@ export const useUpdateClient = () => {
   const queryClient = useQueryClient();
 
   return useMutation<UpdateClientResponse, AxiosError<{ error: string }>, { id: string; payload: UpdateClientPayload }>({
-    mutationFn: ({ id, payload }) => CLIENTS_API.UPDATE(id, payload),
+    mutationFn: ({ id, payload }) => updateClient(id, payload),
     onSuccess: (data, variables) => {
-      // toast.success("Client updated successfully!");
-
-      // Update the specific client detail in cache
       queryClient.setQueryData<GetClientResponse | undefined>(clientsQueryKeys.detail(variables.id), (oldData) => {
         if (!oldData) return oldData;
-        return {
-          ...oldData,
-          data: {
-            ...data.data,
-            data: data.data,
-          },
-        };
+        return { ...oldData, data: { ...data.data, data: data.data } };
       });
-
-      // Invalidate queries to trigger refetch
-      queryClient.invalidateQueries({
-        queryKey: clientsQueryKeys.lists(),
-      });
-      queryClient.invalidateQueries({
-        queryKey: clientsQueryKeys.detail(variables.id),
-      });
+      queryClient.invalidateQueries({ queryKey: clientsQueryKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: clientsQueryKeys.detail(variables.id) });
       queryClient.invalidateQueries({ queryKey: clientsQueryKeys.infinite(), exact: false });
     },
     onError: (error) => {
       console.error("Error updating client:", error);
-      // toast.error("Failed to update client");
     },
   });
 };
@@ -126,11 +110,9 @@ export const useBulkDeleteClients = () => {
   const queryClient = useQueryClient();
 
   return useMutation<DeleteClientsResponse, AxiosError<{ error: string }>, DeleteClientsPayload>({
-    mutationFn: CLIENTS_API.BULK_DELETE,
+    mutationFn: bulkDeleteClients,
     onSuccess: () => {
       toast.success("Clients deleted successfully!");
-
-      // Invalidate and refetch clients list
       queryClient.invalidateQueries({ queryKey: clientsQueryKeys.lists() });
       queryClient.invalidateQueries({ queryKey: clientsQueryKeys.infinite(), exact: false });
     },

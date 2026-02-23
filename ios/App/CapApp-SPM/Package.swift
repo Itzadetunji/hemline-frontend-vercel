@@ -15,6 +15,8 @@ let package = Package(
         .package(name: "CapacitorBrowser", path: "../../../node_modules/@capacitor/browser"),
         .package(name: "CapacitorClipboard", path: "../../../node_modules/@capacitor/clipboard"),
         .package(name: "CapacitorKeyboard", path: "../../../node_modules/@capacitor/keyboard"),
+        .package(name: "CapacitorNetwork", path: "../../../node_modules/@capacitor/network"),
+        .package(name: "CapacitorPreferences", path: "../../../node_modules/@capacitor/preferences"),
         .package(name: "CapawesomeTeamCapacitorDatetimePicker", path: "../../../node_modules/@capawesome-team/capacitor-datetime-picker")
     ],
     targets: [
@@ -26,6 +28,8 @@ let package = Package(
                 .product(name: "CapacitorBrowser", package: "CapacitorBrowser"),
                 .product(name: "CapacitorClipboard", package: "CapacitorClipboard"),
                 .product(name: "CapacitorKeyboard", package: "CapacitorKeyboard"),
+                .product(name: "CapacitorNetwork", package: "CapacitorNetwork"),
+                .product(name: "CapacitorPreferences", package: "CapacitorPreferences"),
                 .product(name: "CapawesomeTeamCapacitorDatetimePicker", package: "CapawesomeTeamCapacitorDatetimePicker")
             ]
         )

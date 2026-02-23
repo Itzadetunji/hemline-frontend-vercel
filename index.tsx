@@ -4,11 +4,14 @@ import { Toaster } from "react-hot-toast";
 
 import { Routes } from "./src/layout/Routes";
 import { queryClient } from "./src/lib/queryClient";
+import { AppInit } from "./src/components/AppInit";
 
 const Document = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      {(<Routes />) as any}
+      <AppInit>
+        {(<Routes />) as any}
+      </AppInit>
       <Toaster
         position="bottom-center"
         reverseOrder={false}

@@ -9,12 +9,9 @@ import { type RequestMagicLinkPayload, RequestMagicLinkPayloadSchema } from "@/a
 import { useGetMagicLink } from "@/api/http/v1/users/users.hooks";
 import { emailSignal, setEmail } from "@/stores/authStore";
 import { VerifyEmail } from "../components/VerifyEmail";
-import { Capacitor } from "@capacitor/core";
 import { cn, openLink } from "@/lib/utils";
 
 export const SignUp = () => {
-  const isNative = Capacitor.isNativePlatform();
-
   const formMethods = useForm<RequestMagicLinkPayload>({
     resolver: zodResolver(RequestMagicLinkPayloadSchema),
   });
@@ -37,11 +34,7 @@ export const SignUp = () => {
   if (emailSignal.value.length) return <VerifyEmail />;
   // console.log(formMethods.formState.);
   return (
-    <div
-      class={cn("mx-auto flex w-full flex-1 flex-col", {
-        "max-w-md": !isNative,
-      })}
-    >
+    <div class="mx-auto flex w-full max-w-md flex-1 flex-col">
       <main class="flex flex-1 flex-col items-stretch gap-6 px-4 py-4">
         <div class="flex flex-col gap-10">
           <img src="/assets/brand/logo.svg" class="size-9" alt="Brand Logo" />
